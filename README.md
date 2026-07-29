@@ -1,11 +1,5 @@
+<img width="2180" height="2323" alt="adersh3" src="https://github.com/user-attachments/assets/662e46d0-8b24-4cc2-ac91-cdaaeee0d641" />
 
-
-## License
-
-![image](https://github.com/adershmern25/Adersh-c-s/blob/2ba3358cbbd645c0e53f07eed981872b1b2c8c23/adersh3.jpg)
-
-
-## new
 
 
 
