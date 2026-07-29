@@ -24,4 +24,4 @@ Design and code is completely written by Laurent Begey and development team.
  - Licensed cover under [MIT]
  - Distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a>
  
-![image alt](https://github.com/adershmern25/Adersh-c-s/blob/ca6055c948d042dd1b302356047e58269d59fe5d/adersh3.jpg)
+<img width="2180" height="2323" alt="Image" src="https://github.com/user-attachments/assets/501762ee-8ba0-48af-bbaf-d27efa4c0315" />
