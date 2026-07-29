@@ -23,3 +23,5 @@ Design and code is completely written by Laurent Begey and development team.
  - Design and Code is Copyright &copy; <a href="https://lbegey78.gumroad.com/" target="_blank">Laurent Begey</a>
  - Licensed cover under [MIT]
  - Distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a>
+ 
+![image alt](https://github.com/adershmern25/Adersh-c-s/blob/ca6055c948d042dd1b302356047e58269d59fe5d/adersh3.jpg)
