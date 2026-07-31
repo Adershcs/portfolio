@@ -1,21 +1,89 @@
 <!DOCTYPE html>
-<html lang="en" x-data="app()" :class="{'dark':dark}" class="scroll-smooth">
+<html lang="en" x-data="{
+  dark: localStorage.getItem('theme')==='dark'||(!localStorage.getItem('theme')&&window.matchMedia('(prefers-color-scheme: dark)').matches),
+  scrolled: false,
+  mobileMenu: false,
+  searchOpen: false,
+  searchQuery: '',
+  selectedIndex: -1,
+  mobileSearchOpen: false,
+  projects: [
+    // UI/UX Projects
+    { id: 1, title: 'Novu — SaaS Dashboard', category: 'UI/UX Design', categoryLink: 'projects-uiux.html', description: 'Complete UX overhaul of a B2B notification platform. Reduced cognitive load by 40% and increased trial-to-paid conversion by 27%.', image: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&q=80' },
+    { id: 2, title: 'Finlo — Onboarding Flow', category: 'UI/UX Design', categoryLink: 'projects-uiux.html', description: 'Redesigned the entire onboarding experience for a personal finance app. Reduced drop-off by 35% through user testing.', image: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=400&q=80' },
+    { id: 3, title: 'Bloom — Mobile App Design', category: 'UI/UX Design', categoryLink: 'projects-uiux.html', description: 'End-to-end mobile app design for a premium skincare brand. Focused on personalized discovery and seamless checkout.', image: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=400&q=80' },
+    // Web Design Projects
+    { id: 4, title: 'Orea — Creative Agency', category: 'Web Design', categoryLink: 'projects-web.html', description: 'Bold editorial website with scroll-driven animations and custom interactions. Built with Tailwind CSS and Alpine.js.', image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&q=80' },
+    { id: 5, title: 'Finlo — Fintech Landing Page', category: 'Web Design', categoryLink: 'projects-web.html', description: 'High-converting marketing site with seamless onboarding flow. Built with Tailwind CSS and Alpine.js for optimal performance.', image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=80' },
+    { id: 6, title: 'Bloom — Admin Dashboard', category: 'Web Design', categoryLink: 'projects-web.html', description: 'Analytics dashboard with real-time data visualization, inventory management, and order tracking for an e-commerce brand.', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=80' },
+    // Graphic Design Projects
+    { id: 7, title: 'Bloom — Brand Identity', category: 'Graphic Design', categoryLink: 'projects-graphic.html', description: 'Complete brand identity redesign for a premium skincare startup. Logo, color palette, typography, and packaging across 6 product lines.', image: 'https://images.unsplash.com/photo-1572188866181-3c6c5e96f6e9?w=400&q=80' },
+    { id: 8, title: 'Summer — Poster Campaign', category: 'Graphic Design', categoryLink: 'projects-graphic.html', description: 'Vibrant poster series for a summer music festival. Custom illustrations, bold typography, and a striking color palette.', image: 'https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=400&q=80' },
+    { id: 9, title: 'Herbal Tea — Packaging Design', category: 'Graphic Design', categoryLink: 'projects-graphic.html', description: 'Eco-friendly packaging design for an organic tea brand. Minimal materials with botanical illustrations and earthy tones.', image: 'https://images.unsplash.com/photo-1594751543129-6701ad444259?w=400&q=80' }
+  ],
+  get searchResults() {
+    if (this.searchQuery.trim() === '') return [];
+    const query = this.searchQuery.toLowerCase().trim();
+    return this.projects.filter(p => 
+      p.title.toLowerCase().includes(query) || 
+      p.description.toLowerCase().includes(query) ||
+      p.category.toLowerCase().includes(query)
+    );
+  },
+  get searchResultCount() {
+    return this.searchResults.length;
+  },
+  clearSearch() {
+    this.searchQuery = '';
+    this.searchOpen = false;
+    this.selectedIndex = -1;
+  },
+  selectResult(index) {
+    if (this.searchResults[index]) {
+      window.location.href = this.searchResults[index].categoryLink;
+    }
+  },
+  handleKeydown(e) {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      this.selectedIndex = Math.min(this.selectedIndex + 1, this.searchResults.length - 1);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      this.selectedIndex = Math.max(this.selectedIndex - 1, -1);
+    } else if (e.key === 'Enter' && this.selectedIndex >= 0) {
+      e.preventDefault();
+      this.selectResult(this.selectedIndex);
+    } else if (e.key === 'Escape') {
+      this.clearSearch();
+      document.activeElement?.blur();
+    }
+  }
+}" :class="{'dark':dark}" x-init="
+  $watch('dark', v => localStorage.setItem('theme', v ? 'dark' : 'light'));
+  window.addEventListener('scroll', () => {
+    scrolled = window.scrollY > 20;
+  }, { passive: true });
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-container')) {
+      searchOpen = false;
+    }
+  });
+" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Eliott — Freelance UI/UX Designer and Frontend Developer. Fast, clean and accessible digital products.">
-    <meta property="og:title" content="Eliott — Freelance UI/UX Designer">
-    <meta property="og:description" content="I design and build digital products that people love to use.">
-    <meta property="og:type" content="website">
-    <title>Eliott — Freelance UI/UX Designer &amp; Frontend Dev</title>
-
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Adersh c.s — UI/UX Designer, Web Designer & Graphic Designer" />
+    <meta name="author" content="Adersh c.s" />
+    <title>Adersh c.s — Designer Portfolio</title>
+    
     <script src="https://cdn.tailwindcss.com">
     </script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js">
     </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
 
     <script>
         tailwind.config = {
@@ -94,13 +162,8 @@
         }
 
         @media (hover: none) and (pointer: coarse) {
-            body {
-                cursor: auto;
-            }
-            .cursor-dot,
-            .cursor-ring {
-                display: none !important;
-            }
+            body { cursor: auto; }
+            .cursor-dot, .cursor-ring { display: none !important; }
         }
 
         ::-webkit-scrollbar {
@@ -137,39 +200,11 @@
             opacity: 1;
             transform: translateY(0);
         }
-        .reveal-left {
-            opacity: 0;
-            transform: translateX(-30px);
-            transition: opacity .7s cubic-bezier(.22, 1, .36, 1), transform .7s cubic-bezier(.22, 1, .36, 1);
-        }
-        .reveal-left.visible {
-            opacity: 1;
-            transform: translateX(0);
-        }
-        .reveal-right {
-            opacity: 0;
-            transform: translateX(30px);
-            transition: opacity .7s cubic-bezier(.22, 1, .36, 1), transform .7s cubic-bezier(.22, 1, .36, 1);
-        }
-        .reveal-right.visible {
-            opacity: 1;
-            transform: translateX(0);
-        }
-        .d1 {
-            transition-delay: .05s;
-        }
-        .d2 {
-            transition-delay: .12s;
-        }
-        .d3 {
-            transition-delay: .19s;
-        }
-        .d4 {
-            transition-delay: .26s;
-        }
-        .d5 {
-            transition-delay: .33s;
-        }
+        .d1 { transition-delay: .05s; }
+        .d2 { transition-delay: .12s; }
+        .d3 { transition-delay: .19s; }
+        .d4 { transition-delay: .26s; }
+        .d5 { transition-delay: .33s; }
 
         .nav-link {
             position: relative;
@@ -238,32 +273,6 @@
             box-shadow: 0 20px 40px -12px rgba(0, 0, 0, .4);
         }
 
-        .skill-tag {
-            transition: all .2s ease;
-        }
-        .skill-tag:hover {
-            border-color: #FF6B2B;
-            color: #FF6B2B;
-        }
-
-        .gradient-text {
-            background: linear-gradient(135deg, #FF6B2B 0%, #FF8F5C 50%, #FF6B2B 100%);
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradientShift 4s ease-in-out infinite;
-        }
-        @keyframes gradientShift {
-            0%,
-            100% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-        }
-
         .glow-orbe {
             position: absolute;
             border-radius: 50%;
@@ -275,658 +284,923 @@
             opacity: .2;
         }
 
-        .form-input {
-            transition: border-color .2s ease, box-shadow .2s ease;
+        .gradient-text {
+            background: linear-gradient(135deg, #FF6B2B 0%, #FF8F5C 50%, #FF6B2B 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease-in-out infinite;
         }
-        .form-input:focus {
-            border-color: #FF6B2B;
-            box-shadow: 0 0 0 3px rgba(255, 107, 43, .15);
-            outline: none;
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
-        a,
-        button,
-        input,
-        textarea,
-        .card-hover,
-        .skill-tag,
-        .nav-link,
-        .shimmer,
-        [role="button"],
-        [role="listitem"],
-        .photo-frame {
-            cursor: none;
+        a, button, .card-hover, .nav-link, .shimmer, .photo-frame, .skill-tag {
+            cursor: pointer;
+        }
+
+        /* ── Search Bar Styles ── */
+        .search-container {
+            position: relative;
+        }
+        .search-toggle-btn {
+            transition: all 0.3s ease;
+        }
+        .search-toggle-btn:hover {
+            background: #f4f4f5;
+        }
+        .dark .search-toggle-btn:hover {
+            background: #27272a;
+        }
+
+        .search-input {
+            transition: all .3s cubic-bezier(.22, 1, .36, 1);
+            width: 0;
+            opacity: 0;
+            padding: 0;
+            border: none;
+            background: transparent;
+            color: inherit;
+            font-size: 0.875rem;
+            outline: none;
+        }
+        .search-input.open {
+            width: 220px;
+            opacity: 1;
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            border: 1.5px solid #e4e4e7;
+            border-radius: 9999px;
+            background: rgba(255,255,255,0.8);
+        }
+        .dark .search-input.open {
+            border-color: #3f3f46;
+            background: rgba(255,255,255,0.06);
+        }
+        .search-input.open:focus {
+            border-color: #FF6B2B;
+            box-shadow: 0 0 0 3px rgba(255,107,43,0.15);
+        }
+        .search-input::placeholder {
+            color: #a1a1aa;
+        }
+
+        /* Search icon inside input */
+        .search-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .search-input-wrapper .search-icon-inner {
+            position: absolute;
+            left: 12px;
+            color: #a1a1aa;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .search-input-wrapper .search-icon-inner.hidden {
+            opacity: 0;
+        }
+
+        /* Search Results Dropdown */
+        .search-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            width: 440px;
+            max-height: 420px;
+            overflow-y: auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px -12px rgba(0,0,0,0.25);
+            border: 1px solid #e4e4e7;
+            z-index: 999;
+            padding: 0.5rem;
+        }
+        .dark .search-dropdown {
+            background: #18181b;
+            border-color: #3f3f46;
+            box-shadow: 0 20px 60px -12px rgba(0,0,0,0.5);
+        }
+        .search-dropdown::-webkit-scrollbar {
+            width: 4px;
+        }
+        .search-dropdown::-webkit-scrollbar-thumb {
+            background: #FF6B2B;
+            border-radius: 99px;
+        }
+
+        .search-result-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 0.8rem;
+            border-radius: 12px;
+            transition: all .2s ease;
+            cursor: pointer;
+        }
+        .search-result-item:hover,
+        .search-result-item.active {
+            background: #f4f4f5;
+        }
+        .dark .search-result-item:hover,
+        .dark .search-result-item.active {
+            background: #27272a;
+        }
+        .search-result-item .result-image {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+            background: #e4e4e7;
+        }
+        .search-result-item .result-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .search-result-item .result-info .result-title {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #18181b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .dark .search-result-item .result-info .result-title {
+            color: #fafafa;
+        }
+        .search-result-item .result-info .result-category {
+            font-size: 0.7rem;
+            color: #a1a1aa;
+        }
+        .search-result-item .result-info .result-desc {
+            font-size: 0.75rem;
+            color: #71717a;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .dark .search-result-item .result-info .result-desc {
+            color: #a1a1aa;
+        }
+
+        .search-empty {
+            padding: 2rem 1rem;
+            text-align: center;
+            color: #a1a1aa;
+            font-size: 0.875rem;
+        }
+        .search-empty .search-query-highlight {
+            color: #FF6B2B;
+            font-weight: 600;
+        }
+
+        /* Search result count badge */
+        .search-result-count {
+            font-size: 0.7rem;
+            color: #a1a1aa;
+            padding: 0.2rem 0.6rem;
+            background: #f4f4f5;
+            border-radius: 9999px;
+            margin-left: 0.5rem;
+        }
+        .dark .search-result-count {
+            background: #27272a;
+        }
+
+        /* Mobile search overlay */
+        .mobile-search-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 6rem;
+            animation: fadeIn 0.25s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .mobile-search-box {
+            width: 90%;
+            max-width: 500px;
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 30px 80px -20px rgba(0,0,0,0.4);
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .dark .mobile-search-box {
+            background: #18181b;
+        }
+        .mobile-search-box .search-input-wrap {
+            position: relative;
+        }
+        .mobile-search-box .search-input-wrap svg {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a1a1aa;
+        }
+        .mobile-search-box input {
+            width: 100%;
+            padding: 0.8rem 1.2rem 0.8rem 2.8rem;
+            border: 2px solid #e4e4e7;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: transparent;
+            color: inherit;
+            outline: none;
+        }
+        .dark .mobile-search-box input {
+            border-color: #3f3f46;
+        }
+        .mobile-search-box input:focus {
+            border-color: #FF6B2B;
+            box-shadow: 0 0 0 3px rgba(255,107,43,0.15);
+        }
+        .mobile-search-results {
+            max-height: 350px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+        .mobile-search-results .result-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 0.8rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background .2s ease;
+        }
+        .mobile-search-results .result-item:hover {
+            background: #f4f4f5;
+        }
+        .dark .mobile-search-results .result-item:hover {
+            background: #27272a;
+        }
+        .mobile-search-results .result-item img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        .mobile-search-results .result-item .info .title {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .mobile-search-results .result-item .info .cat {
+            font-size: 0.7rem;
+            color: #a1a1aa;
+        }
+        .mobile-search-results .empty {
+            padding: 2rem 0;
+            text-align: center;
+            color: #a1a1aa;
+        }
+
+        @media (max-width: 768px) {
+            .search-dropdown {
+                width: 100%;
+                right: 0;
+                left: 0;
+            }
+            .search-input.open {
+                width: 140px;
+            }
+            /* Hide desktop search on mobile */
+            .desktop-search {
+                display: none !important;
+            }
+        }
+        @media (min-width: 769px) {
+            /* Hide mobile search on desktop */
+            .mobile-search-btn {
+                display: none !important;
+            }
         }
     </style>
 </head>
 
 <body class="bg-white dark:bg-[#0a0a0a] text-zinc-800 dark:text-zinc-100 antialiased">
 
-    <!-- ═══ CUSTOM CURSOR ═══ -->
+    <!-- CUSTOM CURSOR -->
     <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
     <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
 
     <!-- ═══ NAV ═══ -->
-  <header class="fixed inset-x-0 top-0 z-50 transition-all duration-300"
-    :class="scrolled ? 'bg-white/85 dark:bg-[#0a0a0a]/85 backdrop-blur-xl border-b border-zinc-200/50 dark:border-zinc-800/50 shadow-sm' : 'bg-transparent border-b border-transparent'">
-    <nav class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between" aria-label="Main navigation">
+    <header class="fixed inset-x-0 top-0 z-50 transition-all duration-300"
+        :class="scrolled ? 'bg-white/85 dark:bg-[#0a0a0a]/85 backdrop-blur-xl border-b border-zinc-200/50 dark:border-zinc-800/50 shadow-sm' : 'bg-transparent border-b border-transparent'">
+        <nav class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between gap-4" aria-label="Main navigation">
 
-        <a href="#hero" class="font-bold text-xl tracking-tight relative z-10 flex items-center gap-1">
-            <span class="text-zinc-900 dark:text-white">eli</span>
-            <span class="text-accent">ott</span>
-            <span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse ml-0.5"></span>
-        </a>
+            <a href="index.html" class="font-bold text-xl tracking-tight relative z-10 flex items-center gap-1 shrink-0">
+                <span class="text-zinc-900 dark:text-white">Ade</span>
+                <span class="text-accent">rsh</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse ml-0.5"></span>
+            </a>
 
-        <ul class="hidden md:flex items-center gap-7 text-sm" role="list">
-            <li><a href="#services" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors" :class="section === 'services' ? 'active' : ''">Services</a></li>
-            <li><a href="#work" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors" :class="section === 'work' ? 'active' : ''">Work</a></li>
-            <li><a href="#about" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors" :class="section === 'about' ? 'active' : ''">About</a></li>
-            <li><a href="#testimonials" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors" :class="section === 'testimonials' ? 'active' : ''">Testimonials</a></li>
-            <li><a href="#blog" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors" :class="section === 'blog' ? 'active' : ''">Blog</a></li>
-        </ul>
+            <ul class="hidden md:flex items-center gap-7 text-sm" role="list">
+                <li><a href="index.html#services" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">Services</a></li>
+                <li><a href="index.html#work" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">Work</a></li>
+                <li><a href="index.html#about" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">About</a></li>
+                <li><a href="index.html#blog" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">Blog</a></li>
+                <li><a href="index.html#contact" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">Contact</a></li>
+            </ul>
 
-        <div class="flex items-center gap-3">
-            <button @click="dark = !dark"
-            class="w-9 h-9 flex items-center justify-center rounded-full border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-            :aria-label="dark ? 'Light mode' : 'Dark mode'">
-            <svg x-show="!dark" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-            <svg x-show="dark" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
-        </button>
-        <a href="#contact" class="hidden md:inline-flex items-center gap-2 shimmer bg-accent text-white text-sm font-medium px-5 py-2 rounded-full hover:bg-accent-light transition-colors">
-            Hire me
-            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-        </a>
-        <button @click="mobileOpen = !mobileOpen" class="md:hidden w-9 h-9 flex items-center justify-center rounded-full border border-zinc-200 dark:border-zinc-800" aria-label="Toggle menu">
-            <svg x-show="!mobileOpen" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-            <svg x-show="mobileOpen" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
+            <div class="flex items-center gap-3">
+                <!-- ═══ DESKTOP SEARCH BAR (hidden on mobile) ═══ -->
+                <div class="desktop-search search-container relative flex items-center">
+                    <button @click="searchOpen = !searchOpen; if(searchOpen) $nextTick(() => $refs.searchInput.focus())" 
+                        class="search-toggle-btn w-9 h-9 flex items-center justify-center rounded-full border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors shrink-0"
+                        aria-label="Search projects">
+                        <svg class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </button>
+                    
+                    <div class="search-input-wrapper">
+                        <svg class="search-icon-inner w-4 h-4" :class="searchOpen ? '' : 'hidden'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                        <input type="text" 
+                            x-ref="searchInput"
+                            x-show="searchOpen"
+                            x-model="searchQuery"
+                            @keydown="handleKeydown"
+                            @focus="searchOpen = true"
+                            placeholder="Search projects..."
+                            class="search-input"
+                            :class="searchOpen ? 'open' : ''"
+                            aria-label="Search projects">
+                    </div>
+                    
+                    <!-- Search Results Dropdown -->
+                    <div x-show="searchOpen && searchQuery.trim() !== ''" x-cloak class="search-dropdown">
+                        <template x-if="searchResults.length > 0">
+                            <div>
+                                <!-- Results count -->
+                                <div class="flex items-center justify-between px-3 py-2 border-b border-zinc-100 dark:border-zinc-800">
+                                    <span class="text-xs text-zinc-500 dark:text-zinc-400">
+                                        Found <span class="font-semibold text-zinc-900 dark:text-white" x-text="searchResultCount"></span> result<span x-show="searchResultCount !== 1">s</span>
+                                    </span>
+                                    <span class="text-xs text-zinc-400 dark:text-zinc-500">Press <kbd class="px-1.5 py-0.5 bg-zinc-100 dark:bg-zinc-800 rounded text-[10px]">esc</kbd> to close</span>
+                                </div>
+                                <template x-for="(result, index) in searchResults" :key="result.id">
+                                    <a :href="result.categoryLink" 
+                                        class="search-result-item" 
+                                        :class="selectedIndex === index ? 'active' : ''"
+                                        @mouseenter="selectedIndex = index">
+                                        <img :src="result.image" :alt="result.title" class="result-image" loading="lazy">
+                                        <div class="result-info">
+                                            <div class="result-title" x-text="result.title"></div>
+                                            <div class="result-category" x-text="result.category"></div>
+                                            <div class="result-desc" x-text="result.description.slice(0, 60) + '...'"></div>
+                                        </div>
+                                        <svg class="w-4 h-4 text-zinc-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                        </svg>
+                                    </a>
+                                </template>
+                                <div class="text-xs text-zinc-400 dark:text-zinc-500 px-3 py-2 border-t border-zinc-100 dark:border-zinc-800 mt-1">
+                                    <span class="flex items-center gap-3">
+                                        <span>↑↓ to navigate</span>
+                                        <span>↵ to select</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </template>
+                        <div x-show="searchResults.length === 0" class="search-empty">
+                            <svg class="w-10 h-10 mx-auto text-zinc-300 dark:text-zinc-600 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <p>No projects found for <span class="search-query-highlight" x-text="`\"${searchQuery}\"`"></span></p>
+                            <p class="text-xs text-zinc-400 mt-1">Try a different keyword</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══ MOBILE SEARCH BUTTON (visible only on mobile) ═══ -->
+                <button @click="mobileSearchOpen = !mobileSearchOpen" class="mobile-search-btn w-9 h-9 flex items-center justify-center rounded-full border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors" aria-label="Search">
+                    <svg class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </button>
+
+                <button @click="dark=!dark" class="w-9 h-9 flex items-center justify-center rounded-full border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors shrink-0" :aria-label="dark ? 'Light mode' : 'Dark mode'">
+                    <svg x-show="!dark" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                    <svg x-show="dark" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
+                </button>
+                <a href="index.html#contact" class="hidden md:inline-flex items-center gap-2 shimmer bg-accent text-white text-sm font-medium px-5 py-2 rounded-full hover:bg-accent-light transition-colors shrink-0">
+                    Hire me
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </a>
+                <button @click="mobileMenu=!mobileMenu" class="md:hidden w-9 h-9 flex items-center justify-center rounded-full border border-zinc-200 dark:border-zinc-800" aria-label="Toggle menu">
+                    <svg x-show="!mobileMenu" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    <svg x-show="mobileMenu" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div x-show="mobileMenu" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" class="md:hidden bg-white dark:bg-[#0a0a0a] border-t border-zinc-100 dark:border-zinc-800">
+            <ul class="flex flex-col px-6 py-6 gap-3 text-sm" role="list">
+                <li><a href="index.html#services" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Services</a></li>
+                <li><a href="index.html#work" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Work</a></li>
+                <li><a href="index.html#about" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">About</a></li>
+                <li><a href="index.html#blog" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Blog</a></li>
+                <li><a href="index.html#contact" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Contact</a></li>
+                <li class="pt-3 border-t border-zinc-100 dark:border-zinc-800">
+                    <a href="index.html#contact" @click="mobileMenu=false" class="inline-flex shimmer bg-accent text-white font-medium text-sm px-6 py-2.5 rounded-full">Hire me →</a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- ═══ MOBILE SEARCH OVERLAY ═══ -->
+    <div x-show="mobileSearchOpen" x-cloak class="mobile-search-overlay" @click.self="mobileSearchOpen = false">
+        <div class="mobile-search-box" @click.stop>
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-semibold text-zinc-900 dark:text-white">Search Projects</h3>
+                <button @click="mobileSearchOpen = false" class="text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="search-input-wrap">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <input type="text" x-model="searchQuery" placeholder="Search projects..." @keydown.enter="if(searchResults.length) window.location.href = searchResults[0].categoryLink" autofocus>
+            </div>
+            <div class="mobile-search-results">
+                <template x-if="searchResults.length > 0">
+                    <div>
+                        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-2" x-text="`${searchResults.length} result${searchResults.length !== 1 ? 's' : ''} found`"></p>
+                        <template x-for="result in searchResults" :key="result.id">
+                            <a :href="result.categoryLink" class="result-item" @click="mobileSearchOpen = false">
+                                <img :src="result.image" :alt="result.title" loading="lazy">
+                                <div class="info">
+                                    <div class="title" x-text="result.title"></div>
+                                    <div class="cat" x-text="result.category"></div>
+                                </div>
+                            </a>
+                        </template>
+                    </div>
+                </template>
+                <div x-show="searchQuery.trim() !== '' && searchResults.length === 0" class="empty">
+                    <svg class="w-10 h-10 mx-auto text-zinc-300 dark:text-zinc-600 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    No projects found
+                </div>
+                <div x-show="searchQuery.trim() === ''" class="empty text-sm">
+                    <svg class="w-10 h-10 mx-auto text-zinc-300 dark:text-zinc-600 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    Type to search across all projects
+                </div>
+            </div>
+        </div>
     </div>
-</nav>
 
-<!-- Mobile menu -->
-<div x-show="mobileOpen" x-cloak
-x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
-x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2"
-class="md:hidden bg-white dark:bg-[#0a0a0a] border-t border-zinc-100 dark:border-zinc-800">
-<ul class="flex flex-col px-6 py-6 gap-3 text-sm" role="list">
-    <li><a href="#services" @click="mobileOpen=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Services</a></li>
-    <li><a href="#work" @click="mobileOpen=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Work</a></li>
-    <li><a href="#about" @click="mobileOpen=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">About</a></li>
-    <li><a href="#testimonials" @click="mobileOpen=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Testimonials</a></li>
-    <li><a href="#blog" @click="mobileOpen=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Blog</a></li>
-    <li class="pt-3 border-t border-zinc-100 dark:border-zinc-800">
-        <a href="#contact" @click="mobileOpen=false" class="inline-flex shimmer bg-accent text-white font-medium text-sm px-6 py-2.5 rounded-full">Hire me →</a>
-    </li>
-</ul>
-</div>
-</header>
+    <main>
 
-<main>
+        <!-- ═══ HERO ═══ -->
+        <section class="relative min-h-screen flex items-center pt-16 overflow-hidden" id="hero">
+            <div class="glow-orbe w-[500px] h-[500px] -top-20 -right-20 bg-accent/20" style="filter:blur(120px)"></div>
+            <div class="glow-orbe w-[400px] h-[400px] -bottom-40 -left-20 bg-accent/10" style="filter:blur(100px)"></div>
 
-    <!-- ═══ HERO ═══ -->
-    <section id="hero" class="relative min-h-screen flex items-center pt-16 overflow-hidden">
-        <div class="glow-orbe w-[500px] h-[500px] -top-20 -right-20 bg-accent/20" style="filter:blur(120px)"></div>
-        <div class="glow-orbe w-[400px] h-[400px] -bottom-40 -left-20 bg-accent/10" style="filter:blur(100px)"></div>
-
-        <div class="relative z-10 max-w-6xl mx-auto px-6 py-20 w-full">
-            <div class="grid lg:grid-cols-2 gap-16 items-center">
-
-                <div>
-                    <div class="reveal visible inline-flex items-center gap-2 bg-orange-50 dark:bg-orange-950/30 border border-orange-200/50 dark:border-orange-800/30 text-accent text-xs font-medium px-3.5 py-1.5 rounded-full mb-6">
-                        <span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></span>
-                        Available for work
-                    </div>
-
-                    <h1 class="reveal visible d1 font-bold text-5xl md:text-6xl lg:text-7xl leading-[1.08] tracking-tight text-zinc-900 dark:text-white mb-5">
-                        Hi, I'm <br><span class="gradient-text">Eliott</span>
-                    </h1>
-
-                    <p class="reveal visible d2 text-lg text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-lg mb-8">
-                        Freelance <span class="font-medium text-zinc-700 dark:text-zinc-300">UI/UX Designer &amp; Frontend Developer</span>.
-                        I craft digital products that are fast, accessible, and a joy to use.
-                    </p>
-
-                    <div class="reveal visible d3 flex flex-wrap gap-3 mb-12">
-                        <a href="#work" class="shimmer inline-flex items-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-medium px-7 py-3.5 rounded-full hover:bg-zinc-700 dark:hover:bg-zinc-200 transition-colors text-sm">
-                            View my work
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                        </a>
-                        <a href="#contact" class="inline-flex items-center gap-2 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 font-medium px-7 py-3.5 rounded-full hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors text-sm">
-                            Let's talk
-                        </a>
-                    </div>
-
-                    <div class="reveal visible d4 flex gap-10 pt-6 border-t border-zinc-100 dark:border-zinc-800">
-                        <div>
-                            <p class="font-bold text-3xl text-zinc-900 dark:text-white">34+</p>
-                            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Projects</p>
-                        </div>
-                        <div>
-                            <p class="font-bold text-3xl text-zinc-900 dark:text-white">21+</p>
-                            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Clients</p>
-                        </div>
-                        <div>
-                            <p class="font-bold text-3xl text-zinc-900 dark:text-white">5+</p>
-                            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Years</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="reveal visible d2 flex justify-center lg:justify-end">
-                    <div class="relative">
-                        <div class="photo-frame w-72 h-72 md:w-80 md:h-80 lg:w-[340px] lg:h-[340px] rounded-3xl shadow-2xl shadow-black/10 dark:shadow-black/30">
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80" alt="Eliott — Freelance UI/UX Designer" loading="eager">
-                        </div>
-                        <div class="absolute -bottom-3 -left-3 bg-accent text-white font-semibold text-sm px-4 py-2.5 rounded-2xl shadow-lg shadow-accent/30 flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
-                            Open to projects
-                        </div>
-                        <div class="absolute -top-3 -right-3 w-16 h-16 bg-accent/10 rounded-full blur-2xl"></div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- ═══ SERVICES ═══ -->
-    <section id="services" class="py-24 bg-zinc-50/80 dark:bg-zinc-900/30">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="text-center max-w-2xl mx-auto mb-16">
-                <p class="reveal text-xs font-semibold text-accent tracking-widest uppercase mb-3">What I do</p>
-                <h2 class="reveal d1 font-bold text-4xl md:text-5xl text-zinc-900 dark:text-white">Services</h2>
-                <p class="reveal d2 text-zinc-500 dark:text-zinc-400 mt-4">I combine design thinking with clean code to deliver digital products that stand out.</p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-6">
-
-                <div class="reveal d1 card-hover group bg-white dark:bg-zinc-900/80 rounded-2xl p-8 border border-zinc-100 dark:border-zinc-800 hover:border-accent/50 transition-all">
-                    <div class="w-14 h-14 flex items-center justify-center bg-orange-50 dark:bg-orange-950/30 rounded-2xl mb-6 group-hover:bg-accent/10 transition-colors">
-                        <svg class="w-7 h-7 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2h-2"/></svg>
-                    </div>
-                    <h3 class="font-bold text-xl text-zinc-900 dark:text-white mb-3">UI/UX Design</h3>
-                    <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">Intuitive, visually compelling interfaces from wireframes to polished prototypes. I put usability first and design with real users in mind.</p>
-                </div>
-
-                <div class="reveal d2 card-hover group bg-white dark:bg-zinc-900/80 rounded-2xl p-8 border border-zinc-100 dark:border-zinc-800 hover:border-accent/50 transition-all">
-                    <div class="w-14 h-14 flex items-center justify-center bg-orange-50 dark:bg-orange-950/30 rounded-2xl mb-6 group-hover:bg-accent/10 transition-colors">
-                        <svg class="w-7 h-7 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
-                    </div>
-                    <h3 class="font-bold text-xl text-zinc-900 dark:text-white mb-3">Frontend Dev</h3>
-                    <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">Production-grade code with Tailwind CSS and Alpine.js. Pixel-perfect, fully responsive, and blazing fast — no bloat, just clean, maintainable code.</p>
-                </div>
-
-                <div class="reveal d3 card-hover group bg-white dark:bg-zinc-900/80 rounded-2xl p-8 border border-zinc-100 dark:border-zinc-800 hover:border-accent/50 transition-all">
-                    <div class="w-14 h-14 flex items-center justify-center bg-orange-50 dark:bg-orange-950/30 rounded-2xl mb-6 group-hover:bg-accent/10 transition-colors">
-                        <svg class="w-7 h-7 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
-                    </div>
-                    <h3 class="font-bold text-xl text-zinc-900 dark:text-white mb-3">Landing Pages</h3>
-                    <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">High-converting pages for SaaS, apps, and personal brands. Designed to communicate value instantly and drive action from the first scroll.</p>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- ═══ WORK ═══ -->
-    <section id="work" class="py-29">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-16">
-                <div>
-                    <p class="reveal text-xs font-semibold text-accent tracking-widest uppercase mb-3">Portfolio</p>
-                    <h2 class="reveal d1 font-bold text-4xl md:text-5xl text-zinc-900 dark:text-white">Selected work</h2>
-                </div>
-                <a href="projects.html" class="reveal d1 text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-accent transition-colors nav-link">All projects →</a>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="reveal d1 card-hover group rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-900/60 border border-zinc-100 dark:border-zinc-800 hover:border-accent/50 md:row-span-2 transition-all">
-                    <div class="photo-frame w-full h-64 md:h-80">
-                        <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=900&q=80" alt="Novu SaaS Dashboard" loading="lazy">
-                    </div>
-                    <div class="p-7 bg-white dark:bg-zinc-900/80">
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="text-xs bg-orange-50 dark:bg-orange-950/30 text-accent border border-orange-200/50 dark:border-orange-800/30 px-3 py-1 rounded-full font-medium">SaaS</span>
-                            <span class="text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-3 py-1 rounded-full">Figma</span>
-                            <span class="text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-3 py-1 rounded-full">Tailwind</span>
-                        </div>
-                        <a href="case-study.html">
-                            <h3 class="font-bold text-2xl text-zinc-900 dark:text-white mb-2 group-hover:text-accent transition-colors">Novu — SaaS Dashboard</h3>
-                        </a>
-                        <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-5">
-                            A complete UX and UI overhaul of a B2B notification platform. Reduced cognitive load by 40% and increased trial-to-paid conversion by 27% through a focused information architecture redesign.
-                                 <br><br>
-                              A complete UX and UI overhaul of a B2B notification platform. Reduced cognitive load by 40% and increased trial-to-paid conversion by 27% through a focused information architecture redesign.
-                         
-                              <br><br>
-                              A complete UX and UI overhaul of a B2B notification platform. Reduced cognitive load by 40% and increased trial-to-paid conversion by 27% through a focused information architecture redesign.
-                         
-                              <br><br>
-                              A complete UX and UI overhaul of a B2B notification platform. Reduced cognitive load by 40% and increased trial-to-paid conversion by 27% through a focused information architecture redesign.
-                         
-                              
-                              </p><a href="case-study.html" class="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:gap-3 transition-all">
-                            View case study
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Project 2 -->
-                <div class="reveal d2 card-hover group rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-900/60 border border-zinc-100 dark:border-zinc-800 hover:border-accent/50 transition-all">
-                    <div class="photo-frame w-full h-52">
-                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80" alt="Finlo Fintech App" loading="lazy">
-                    </div>
-                    <div class="p-6 bg-white dark:bg-zinc-900/80">
-                        <div class="flex flex-wrap gap-2 mb-3">
-                            <span class="text-xs bg-orange-50 dark:bg-orange-950/30 text-accent border border-orange-200/50 dark:border-orange-800/30 px-3 py-1 rounded-full font-medium">Fintech</span>
-                            <span class="text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-3 py-1 rounded-full">Landing page</span>
-                        </div>
-                        <a href="case-study.html">
-                            <h3 class="font-bold text-xl text-zinc-900 dark:text-white mb-1.5 group-hover:text-accent transition-colors">Finlo — Fintech App</h3>
-                        </a>
-                        <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">Marketing site and onboarding flow for a personal finance app. Built with Tailwind CSS and Alpine.js.</p>
-                        <a href="case-study.html" class="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:gap-3 transition-all">
-                            View case study →
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Project 3 -->
-                <div class="reveal d3 card-hover group rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-900/60 border border-zinc-100 dark:border-zinc-800 hover:border-accent/50 transition-all">
-                    <div class="photo-frame w-full h-52">
-                        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80" alt="Orea Creative Agency" loading="lazy">
-                    </div>
-                    <div class="p-6 bg-white dark:bg-zinc-900/80">
-                        <div class="flex flex-wrap gap-2 mb-3">
-                            <span class="text-xs bg-orange-50 dark:bg-orange-950/30 text-accent border border-orange-200/50 dark:border-orange-800/30 px-3 py-1 rounded-full font-medium">Agency</span>
-                            <span class="text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-3 py-1 rounded-full">Animation</span>
-                        </div>
-                        <a href="case-study.html">
-                            <h3 class="font-bold text-xl text-zinc-900 dark:text-white mb-1.5 group-hover:text-accent transition-colors">Orea — Creative Agency</h3>
-                        </a>
-                        <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">Bold editorial site for a Paris-based branding studio with scroll-driven animations and custom interactions.</p>
-                        <a href="case-study.html" class="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:gap-3 transition-all">
-                            View case study →
-                        </a>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- ═══ ABOUT ═══ -->
-    <section id="about" class="py-24 bg-zinc-50/80 dark:bg-zinc-900/30">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="grid lg:grid-cols-2 gap-16 items-center">
-
-                <div class="reveal-left order-2 lg:order-1">
-                    <div class="photo-frame w-full max-w-sm mx-auto rounded-3xl shadow-2xl shadow-black/5 dark:shadow-black/20">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=700&q=80" alt="Eliott" loading="lazy">
-                    </div>
-                </div>
-
-                <div class="order-1 lg:order-2">
-                    <p class="reveal text-xs font-semibold text-accent tracking-widest uppercase mb-3">About me</p>
-                    <h2 class="reveal d1 font-bold text-4xl md:text-5xl text-zinc-900 dark:text-white leading-tight mb-5">Design &amp; code<br>in harmony</h2>
-                    <p class="reveal d2 text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">
-                        I'm Eliott, a freelance designer and frontend developer based in Paris with 5 years of experience shipping digital products for startups, agencies, and scale-ups across Europe. I thrive at the intersection of great design and clean code.
-                    </p>
-                    <p class="reveal d3 text-zinc-500 dark:text-zinc-400 leading-relaxed mb-8">
-                        I believe great interfaces are invisible — they get out of the user's way. My work is fast, accessible, and built to last. When I'm not coding, you'll find me hiking or hunting for a good espresso.
-                    </p>
-                    <div class="reveal d4">
-                        <p class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-3">Stack &amp; tools</p>
-                        <div class="flex flex-wrap gap-2" role="list">
-                            <span role="listitem" class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-3.5 py-1.5 rounded-full cursor-default">Tailwind CSS</span>
-                            <span role="listitem" class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-3.5 py-1.5 rounded-full cursor-default">Alpine.js</span>
-                            <span role="listitem" class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-3.5 py-1.5 rounded-full cursor-default">Figma</span>
-                            <span role="listitem" class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-3.5 py-1.5 rounded-full cursor-default">JavaScript</span>
-                            <span role="listitem" class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-3.5 py-1.5 rounded-full cursor-default">React</span>
-                            <span role="listitem" class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-3.5 py-1.5 rounded-full cursor-default">Symfony</span>
-                            <span role="listitem" class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-3.5 py-1.5 rounded-full cursor-default">Framer</span>
-                            <span role="listitem" class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-3.5 py-1.5 rounded-full cursor-default">Webflow</span>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- ═══ TESTIMONIALS ═══ -->
-    <section id="testimonials" class="py-24">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="text-center max-w-2xl mx-auto mb-16">
-                <p class="reveal text-xs font-semibold text-accent tracking-widest uppercase mb-3">Testimonials</p>
-                <h2 class="reveal d1 font-bold text-4xl md:text-5xl text-zinc-900 dark:text-white">What clients say</h2>
-                <p class="reveal d2 text-zinc-500 dark:text-zinc-400 mt-4">Real feedback from real people I've had the pleasure of working with.</p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-6">
-
-                <blockquote class="reveal d1 bg-white dark:bg-zinc-900/80 rounded-2xl p-7 border border-zinc-100 dark:border-zinc-800 hover:border-accent/30 transition-all">
-                    <div class="flex gap-0.5 mb-4">
-                        <svg class="w-4 h-4 text-accent fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <svg class="w-4 h-4 text-accent fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <svg class="w-4 h-4 text-accent fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <svg class="w-4 h-4 text-accent fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <svg class="w-4 h-4 text-accent fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                    </div>
-                    <p class="text-zinc-600 dark:text-zinc-300 text-sm leading-relaxed mb-6 italic">"Eliott delivered our redesign in record time and the quality blew us away. Our conversion rate jumped 28% in the first month. Absolutely recommend."</p>
-                    <footer class="flex items-center gap-3">
-                        <div class="photo-frame w-10 h-10 rounded-full shrink-0"><img src="https://i.pravatar.cc/80?img=11" alt="Sarah Müller" loading="lazy"></div>
-                        <div>
-                            <p class="font-medium text-sm text-zinc-900 dark:text-white">Sarah Müller</p>
-                            <p class="text-xs text-zinc-500">CPO, Novu</p>
-                        </div>
-                    </footer>
-                </blockquote>
-
-                <blockquote class="reveal d2 bg-zinc-900 dark:bg-zinc-800 rounded-2xl p-7 border border-zinc-800 hover:border-accent/40 transition-all">
-                    <div class="flex gap-0.5 mb-4">
-                        <svg class="w-4 h-4 text-accent fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <svg class="w-4 h-4 text-accent fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <svg class="w-4 h-4 text-accent fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <svg class="w-4 h-4 text-accent fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <svg class="w-4 h-4 text-accent fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                    </div>
-                    <p class="text-zinc-400 text-sm leading-relaxed mb-6 italic">"Working with Eliott is a dream. He asks the right questions, moves fast, and the final result always exceeds what we imagined. Our best hire of 2024."</p>
-                    <footer class="flex items-center gap-3">
-                        <div class="photo-frame w-10 h-10 rounded-full shrink-0"><img src="https://i.pravatar.cc/80?img=52" alt="Thomas Renault" loading="lazy"></div>
-                        <div>
-                            <p class="font-medium text-sm text-white">Thomas Renault</p>
-                            <p class="text-xs text-zinc-500">Founder, Finlo</p>
-                        </div>
-                    </footer>
-                </blockquote>
-
-                <blockquote class="reveal d3 bg-white dark:bg-zinc-900/80 rounded-2xl p-7 border border-zinc-100 dark:border-zinc-800 hover:border-accent/30 transition-all">
-                    <div class="flex gap-0.5 mb-4">
-                        <svg class="w-4 h-4 text-accent fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <svg class="w-4 h-4 text-accent fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <svg class="w-4 h-4 text-accent fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <svg class="w-4 h-4 text-accent fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        <svg class="w-4 h-4 text-accent fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                    </div>
-                    <p class="text-zinc-600 dark:text-zinc-300 text-sm leading-relaxed mb-6 italic">"We had a tight deadline and a vague brief. Eliott turned both into a polished site in under two weeks. Clean code, zero hand-holding needed."</p>
-                    <footer class="flex items-center gap-3">
-                        <div class="photo-frame w-10 h-10 rounded-full shrink-0"><img src="https://i.pravatar.cc/80?img=47" alt="Camille Dufresne" loading="lazy"></div>
-                        <div>
-                            <p class="font-medium text-sm text-zinc-900 dark:text-white">Camille Dufresne</p>
-                            <p class="text-xs text-zinc-500">Creative Director, Orea</p>
-                        </div>
-                    </footer>
-                </blockquote>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- ═══ BLOG ═══ -->
-    <section id="blog" class="py-24 bg-zinc-50/80 dark:bg-zinc-900/30">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-16">
-                <div>
-                    <p class="reveal text-xs font-semibold text-accent tracking-widest uppercase mb-3">Blog</p>
-                    <h2 class="reveal d1 font-bold text-4xl md:text-5xl text-zinc-900 dark:text-white">Latest articles</h2>
-                </div>
-                <a href="blog.html" class="reveal d1 text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-accent transition-colors nav-link">All articles →</a>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-6">
-
-                <article class="reveal d1 card-hover group bg-white dark:bg-zinc-900/80 rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 hover:border-accent/50 transition-all">
-                    <div class="photo-frame w-full h-48">
-                        <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=700&q=80" alt="Why I ditched CSS frameworks" loading="lazy">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-3 mb-3">
-                            <span class="text-xs bg-orange-50 dark:bg-orange-950/30 text-accent border border-orange-200/50 dark:border-orange-800/30 px-2.5 py-1 rounded-full font-medium">Design</span>
-                            <span class="text-xs text-zinc-400">Mar 8, 2025</span>
-                        </div>
-                        <a href="blog-article.html">
-                            <h3 class="font-bold text-lg text-zinc-900 dark:text-white mb-2 group-hover:text-accent transition-colors">Why I ditched heavy CSS frameworks for Tailwind</h3>
-                        </a>
-                        <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">After years of fighting specificity wars, here's what finally convinced me to make the switch.</p>
-                        <a href="blog-article.html" class="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:gap-3 transition-all">Read more →</a>
-                    </div>
-                </article>
-
-                <article class="reveal d2 card-hover group bg-white dark:bg-zinc-900/80 rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 hover:border-accent/50 transition-all">
-                    <div class="photo-frame w-full h-48">
-                        <img src="https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=700&q=80" alt="Design systems" loading="lazy">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-3 mb-3">
-                            <span class="text-xs bg-orange-50 dark:bg-orange-950/30 text-accent border border-orange-200/50 dark:border-orange-800/30 px-2.5 py-1 rounded-full font-medium">Dev</span>
-                            <span class="text-xs text-zinc-400">Feb 21, 2025</span>
-                        </div>
-                        <a href="blog-article.html">
-                            <h3 class="font-bold text-lg text-zinc-900 dark:text-white mb-2 group-hover:text-accent transition-colors">Building a design system in a weekend</h3>
-                        </a>
-                        <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">Tokens, components, docs — the process I follow to spin up a coherent system in 48 hours.</p>
-                        <a href="blog-article.html" class="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:gap-3 transition-all">Read more →</a>
-                    </div>
-                </article>
-
-                <article class="reveal d3 card-hover group bg-white dark:bg-zinc-900/80 rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 hover:border-accent/50 transition-all">
-                    <div class="photo-frame w-full h-48">
-                        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=700&q=80" alt="Freelance lessons" loading="lazy">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-3 mb-3">
-                            <span class="text-xs bg-orange-50 dark:bg-orange-950/30 text-accent border border-orange-200/50 dark:border-orange-800/30 px-2.5 py-1 rounded-full font-medium">Freelance</span>
-                            <span class="text-xs text-zinc-400">Jan 14, 2025</span>
-                        </div>
-                        <a href="blog-article.html">
-                            <h3 class="font-bold text-lg text-zinc-900 dark:text-white mb-2 group-hover:text-accent transition-colors">5 lessons from my first year freelancing</h3>
-                        </a>
-                        <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">Contracts, pricing, scope creep — the things nobody tells you before you go solo.</p>
-                        <a href="blog-article.html" class="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:gap-3 transition-all">Read more →</a>
-                    </div>
-                </article>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- ═══ CONTACT ═══ -->
-    <section id="contact" class="py-24">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="bg-zinc-900 dark:bg-zinc-800 rounded-3xl p-10 md:p-16 relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl pointer-events-none" style="filter:blur(120px)"></div>
-                <div class="absolute bottom-0 left-0 w-64 h-64 bg-accent/5 rounded-full blur-2xl pointer-events-none"></div>
-
-                <div class="relative z-10 grid lg:grid-cols-2 gap-12 items-start">
+            <div class="relative z-10 max-w-6xl mx-auto px-6 py-20 w-full">
+                <div class="grid lg:grid-cols-2 gap-16 items-center">
 
                     <div>
-                        <p class="reveal text-xs font-semibold text-accent tracking-widest uppercase mb-3">Get in touch</p>
-                        <h2 class="reveal d1 font-bold text-4xl md:text-5xl text-white leading-tight mb-5">Let's work<br>together</h2>
-                        <p class="reveal d2 text-zinc-400 leading-relaxed mb-10 max-w-sm">I'm open to UI/UX and frontend missions, short or long-term. Landing page, full product redesign, or just a second pair of eyes — let's talk.</p>
+                        <div class="reveal visible inline-flex items-center gap-2 bg-orange-50 dark:bg-orange-950/30 border border-orange-200/50 dark:border-orange-800/30 text-accent text-xs font-medium px-3.5 py-1.5 rounded-full mb-6">
+                            <span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></span>
+                            Available for work
+                        </div>
 
-                        <div class="reveal d3 flex flex-col gap-5">
-                            <a href="mailto:hello@eliott.dev" class="group flex items-center gap-4 text-zinc-400 hover:text-white transition-colors">
-                                <span class="w-11 h-11 flex items-center justify-center bg-zinc-800 rounded-xl group-hover:bg-accent/20 transition-colors shrink-0">
-                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                                </span>
-                                <span class="text-sm">hello@eliott.dev</span>
+                        <h1 class="reveal visible d1 font-bold text-5xl md:text-6xl lg:text-7xl leading-[1.08] tracking-tight text-zinc-900 dark:text-white mb-5">
+                            Hi, I'm <br><span class="gradient-text">Adersh c.s</span>
+                        </h1>
+
+                        <p class="reveal visible d2 text-lg text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-lg mb-8">
+                            Freelance <span class="font-medium text-zinc-700 dark:text-zinc-300">UI/UX Designer, Web Designer &amp; Graphic Designer</span>.
+                            I craft digital products that are fast, accessible, and a joy to use.
+                        </p>
+
+                        <div class="reveal visible d3 flex flex-wrap gap-3 mb-12">
+                            <a href="#work" class="shimmer inline-flex items-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-medium px-7 py-3.5 rounded-full hover:bg-zinc-700 dark:hover:bg-zinc-200 transition-colors text-sm">
+                                View my work
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                             </a>
-                            <a href="#" class="group flex items-center gap-4 text-zinc-400 hover:text-white transition-colors">
-                                <span class="w-11 h-11 flex items-center justify-center bg-zinc-800 rounded-xl group-hover:bg-accent/20 transition-colors shrink-0">
-                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-                                </span>
-                                <span class="text-sm">linkedin.com/in/eliott-dev</span>
+                            <a href="#" class="inline-flex items-center gap-2 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 font-medium px-7 py-3.5 rounded-full hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors text-sm">
+                                Download CV
                             </a>
-                            <a href="#" class="group flex items-center gap-4 text-zinc-400 hover:text-white transition-colors">
-                                <span class="w-11 h-11 flex items-center justify-center bg-zinc-800 rounded-xl group-hover:bg-accent/20 transition-colors shrink-0">
-                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                                </span>
-                                <span class="text-sm">github.com/eliott-dev</span>
-                            </a>
+                        </div>
+
+                        <div class="reveal visible d4 flex gap-10 pt-6 border-t border-zinc-100 dark:border-zinc-800">
+                            <div>
+                                <p class="font-bold text-3xl text-zinc-900 dark:text-white">12+</p>
+                                <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Projects</p>
+                            </div>
+                            <div>
+                                <p class="font-bold text-3xl text-zinc-900 dark:text-white">8+</p>
+                                <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Clients</p>
+                            </div>
+                            <div>
+                                <p class="font-bold text-3xl text-zinc-900 dark:text-white">2+</p>
+                                <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Years</p>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="reveal d2">
-                        <form action="#" method="POST" class="space-y-4" novalidate>
-                            <div class="grid sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label for="fname" class="block text-xs font-medium text-zinc-400 mb-1.5">Name <span class="text-accent">*</span></label>
-                                    <input type="text" id="fname" name="name" placeholder="Jane Smith" required
-                                    class="form-input w-full bg-zinc-800 border border-zinc-700 text-white text-sm rounded-xl px-4 py-3 placeholder:text-zinc-600">
-                                </div>
-                                <div>
-                                    <label for="femail" class="block text-xs font-medium text-zinc-400 mb-1.5">Email <span class="text-accent">*</span></label>
-                                    <input type="email" id="femail" name="email" placeholder="jane@company.com" required
-                                    class="form-input w-full bg-zinc-800 border border-zinc-700 text-white text-sm rounded-xl px-4 py-3 placeholder:text-zinc-600">
-                                </div>
+                    <div class="reveal visible d2 flex justify-center lg:justify-end">
+                        <div class="relative">
+                            <div class="photo-frame w-72 h-72 md:w-80 md:h-80 lg:w-[340px] lg:h-[340px] rounded-3xl shadow-2xl shadow-black/10 dark:shadow-black/30">
+                                <img src="images/adersh3.jpg" alt="Adersh c.s — Designer" loading="eager">
                             </div>
-                            <div>
-                                <label for="fsubject" class="block text-xs font-medium text-zinc-400 mb-1.5">Subject</label>
-                                <input type="text" id="fsubject" name="subject" placeholder="Project inquiry"
-                                class="form-input w-full bg-zinc-800 border border-zinc-700 text-white text-sm rounded-xl px-4 py-3 placeholder:text-zinc-600">
+                            <div class="absolute -bottom-3 -left-3 bg-accent text-white font-semibold text-sm px-4 py-2.5 rounded-2xl shadow-lg shadow-accent/30 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+                                Open to projects
                             </div>
-                            <div>
-                                <label for="fmessage" class="block text-xs font-medium text-zinc-400 mb-1.5">Message <span class="text-accent">*</span></label>
-                                <textarea id="fmessage" name="message" rows="4" placeholder="Tell me about your project..." required
-                                class="form-input w-full bg-zinc-800 border border-zinc-700 text-white text-sm rounded-xl px-4 py-3 placeholder:text-zinc-600 resize-none"></textarea>
-                            </div>
-                            <button type="submit" class="shimmer w-full bg-accent text-white font-semibold text-sm py-3.5 rounded-xl hover:bg-accent-light transition-colors">
-                                Send message →
-                            </button>
-                        </form>
+                            <div class="absolute -top-3 -right-3 w-16 h-16 bg-accent/10 rounded-full blur-2xl"></div>
+                        </div>
                     </div>
 
                 </div>
             </div>
+        </section>
+
+        <!-- ═══ WORK SECTION ═══ -->
+        <section id="work" class="py-24 bg-zinc-50/80 dark:bg-zinc-900/30">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-16">
+                    <div>
+                        <p class="reveal text-xs font-semibold text-accent tracking-widest uppercase mb-3">Portfolio</p>
+                        <h2 class="reveal d1 font-bold text-4xl md:text-5xl text-zinc-900 dark:text-white">Selected work</h2>
+                    </div>
+                    <a href="projects.html" class="reveal d1 text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-accent transition-colors nav-link">All projects →</a>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6">
+                    
+                    <!-- Card 1: UI/UX Design -->
+                    <div class="reveal d1 card-hover group bg-white dark:bg-zinc-900/80 rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 hover:border-accent/50 transition-all">
+                        <div class="photo-frame w-full h-56">
+                            <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&q=80" alt="UI/UX Design" loading="lazy">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex flex-wrap gap-2 mb-3">
+                                <span class="text-xs bg-orange-50 dark:bg-orange-950/30 text-accent border border-orange-200/50 dark:border-orange-800/30 px-3 py-1 rounded-full font-medium">UX Research</span>
+                                <span class="text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-3 py-1 rounded-full">Product Design</span>
+                                <span class="text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-3 py-1 rounded-full">Prototyping</span>
+                            </div>
+                            <a href="projects-uiux.html">
+                                <h3 class="font-bold text-xl text-zinc-900 dark:text-white mb-2 group-hover:text-accent transition-colors">UI/UX Design</h3>
+                            </a>
+                            <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">
+                                User-centered design solutions — from research and wireframes to high-fidelity prototypes and usability testing.
+                            </p>
+                            <a href="projects-uiux.html" class="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:gap-3 transition-all">
+                                View projects →
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Web Design -->
+                    <div class="reveal d2 card-hover group bg-white dark:bg-zinc-900/80 rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 hover:border-accent/50 transition-all">
+                        <div class="photo-frame w-full h-56">
+                            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80" alt="Web Design" loading="lazy">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex flex-wrap gap-2 mb-3">
+                                <span class="text-xs bg-orange-50 dark:bg-orange-950/30 text-accent border border-orange-200/50 dark:border-orange-800/30 px-3 py-1 rounded-full font-medium">Responsive</span>
+                                <span class="text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-3 py-1 rounded-full">Tailwind</span>
+                                <span class="text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-3 py-1 rounded-full">Alpine.js</span>
+                            </div>
+                            <a href="projects-web.html">
+                                <h3 class="font-bold text-xl text-zinc-900 dark:text-white mb-2 group-hover:text-accent transition-colors">Web Design</h3>
+                            </a>
+                            <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">
+                                Modern, responsive websites — from landing pages and corporate sites to full web applications and dashboards.
+                            </p>
+                            <a href="projects-web.html" class="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:gap-3 transition-all">
+                                View projects →
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Graphic Design -->
+                    <div class="reveal d3 card-hover group bg-white dark:bg-zinc-900/80 rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 hover:border-accent/50 transition-all">
+                        <div class="photo-frame w-full h-56">
+                            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80" alt="Graphic Design" loading="lazy">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex flex-wrap gap-2 mb-3">
+                                <span class="text-xs bg-orange-50 dark:bg-orange-950/30 text-accent border border-orange-200/50 dark:border-orange-800/30 px-3 py-1 rounded-full font-medium">Brand Identity</span>
+                                <span class="text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-3 py-1 rounded-full">Packaging</span>
+                                <span class="text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-3 py-1 rounded-full">Illustration</span>
+                            </div>
+                            <a href="projects-graphic.html">
+                                <h3 class="font-bold text-xl text-zinc-900 dark:text-white mb-2 group-hover:text-accent transition-colors">Graphic Design</h3>
+                            </a>
+                            <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">
+                                Visual storytelling through brand identity, packaging, editorial design, posters, and digital illustrations.
+                            </p>
+                            <a href="projects-graphic.html" class="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:gap-3 transition-all">
+                                View projects →
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="text-center mt-12">
+                    <a href="projects.html" class="inline-flex items-center gap-2 text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-accent transition-colors nav-link">
+                        Browse all projects
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ═══ ABOUT ═══ -->
+        <section id="about" class="py-24">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+                    <div class="reveal-left order-2 lg:order-1">
+                        <div class="photo-frame w-full max-w-sm mx-auto rounded-3xl shadow-2xl shadow-black/5 dark:shadow-black/20">
+                            <img src="images/adersh4.jpg" alt="Adersh c.s" loading="lazy">
+                        </div>
+                    </div>
+
+                    <div class="order-1 lg:order-2">
+                        <p class="reveal text-xs font-semibold text-accent tracking-widest uppercase mb-3">About me</p>
+                        <h2 class="reveal d1 font-bold text-4xl md:text-5xl text-zinc-900 dark:text-white leading-tight mb-5">Design &amp; code<br>in harmony</h2>
+                        <p class="reveal d2 text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">
+                            UI/UX Designer, Web Designer &amp; Graphic Designer. I craft digital products that are fast, accessible, and a joy to use. Based in Kerala with 2+ years of experience shipping digital products for startups and agencies.
+                        </p>
+                        <p class="reveal d3 text-zinc-500 dark:text-zinc-400 leading-relaxed mb-8">
+                            I believe great interfaces are invisible — they get out of the user's way. My work is fast, accessible, and built to last. When I'm not designing, you'll find me exploring new creative techniques or hunting for a good espresso.
+                        </p>
+
+                        <div class="reveal d4">
+                            <a href="moreaboutme.html" class="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:gap-3 transition-all">
+                                More about me
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                                </svg>
+                            </a>
+                        </div><br>
+
+                        <div class="reveal d4">
+                            <p class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-3">Stack &amp; tools</p>
+                            <div class="flex flex-wrap gap-2" role="list">
+                                <span role="listitem" class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-3.5 py-1.5 rounded-full cursor-default">Figma</span>
+                                <span role="listitem" class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-3.5 py-1.5 rounded-full cursor-default">Tailwind CSS</span>
+                                <span role="listitem" class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-3.5 py-1.5 rounded-full cursor-default">Alpine.js</span>
+                                <span role="listitem" class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-3.5 py-1.5 rounded-full cursor-default">JavaScript</span>
+                                <span role="listitem" class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-3.5 py-1.5 rounded-full cursor-default">React</span>
+                                <span role="listitem" class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-3.5 py-1.5 rounded-full cursor-default">Adobe Suite</span>
+                                <span role="listitem" class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-3.5 py-1.5 rounded-full cursor-default">Webflow</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ BLOG ═══ -->
+        <section id="blog" class="py-24 bg-zinc-50/80 dark:bg-zinc-900/30">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-16">
+                    <div>
+                        <p class="reveal text-xs font-semibold text-accent tracking-widest uppercase mb-3">Blog</p>
+                        <h2 class="reveal d1 font-bold text-4xl md:text-5xl text-zinc-900 dark:text-white">Latest articles</h2>
+                    </div>
+                    <a href="blog.html" class="reveal d1 text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-accent transition-colors nav-link">All articles →</a>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Article 1 -->
+                    <article class="reveal d1 card-hover group bg-white dark:bg-zinc-900/80 rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 hover:border-accent/50 transition-all">
+                        <div class="photo-frame w-full h-48">
+                            <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=700&q=80" alt="Why I ditched CSS frameworks" loading="lazy">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="text-xs bg-orange-50 dark:bg-orange-950/30 text-accent border border-orange-200/50 dark:border-orange-800/30 px-2.5 py-1 rounded-full font-medium">Design</span>
+                                <span class="text-xs text-zinc-400">Mar 8, 2025</span>
+                            </div>
+                            <a href="blog-article.html">
+                                <h3 class="font-bold text-lg text-zinc-900 dark:text-white mb-2 group-hover:text-accent transition-colors">Why I ditched heavy CSS frameworks for Tailwind</h3>
+                            </a>
+                            <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">After years of fighting specificity wars, here's what finally convinced me to make the switch.</p>
+                            <a href="blog-article.html" class="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:gap-3 transition-all">
+                                Read more →
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Article 2 -->
+                    <article class="reveal d2 card-hover group bg-white dark:bg-zinc-900/80 rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 hover:border-accent/50 transition-all">
+                        <div class="photo-frame w-full h-48">
+                            <img src="https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=700&q=80" alt="Design systems" loading="lazy">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="text-xs bg-orange-50 dark:bg-orange-950/30 text-accent border border-orange-200/50 dark:border-orange-800/30 px-2.5 py-1 rounded-full font-medium">Dev</span>
+                                <span class="text-xs text-zinc-400">Feb 21, 2025</span>
+                            </div>
+                            <a href="blog-article.html">
+                                <h3 class="font-bold text-lg text-zinc-900 dark:text-white mb-2 group-hover:text-accent transition-colors">Building a design system in a weekend</h3>
+                            </a>
+                            <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">Tokens, components, docs — the process I follow to spin up a coherent system in 48 hours.</p>
+                            <a href="blog-article.html" class="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:gap-3 transition-all">
+                                Read more →
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Article 3 -->
+                    <article class="reveal d3 card-hover group bg-white dark:bg-zinc-900/80 rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 hover:border-accent/50 transition-all">
+                        <div class="photo-frame w-full h-48">
+                            <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=700&q=80" alt="Freelance lessons" loading="lazy">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="text-xs bg-orange-50 dark:bg-orange-950/30 text-accent border border-orange-200/50 dark:border-orange-800/30 px-2.5 py-1 rounded-full font-medium">Freelance</span>
+                                <span class="text-xs text-zinc-400">Jan 14, 2025</span>
+                            </div>
+                            <a href="blog-article.html">
+                                <h3 class="font-bold text-lg text-zinc-900 dark:text-white mb-2 group-hover:text-accent transition-colors">5 lessons from my first year freelancing</h3>
+                            </a>
+                            <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">Contracts, pricing, scope creep — the things nobody tells you before you go solo.</p>
+                            <a href="blog-article.html" class="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:gap-3 transition-all">
+                                Read more →
+                            </a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ CONTACT ═══ -->
+        <section id="contact" class="py-24 bg-zinc-50/80 dark:bg-zinc-900/30">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="bg-zinc-900 dark:bg-zinc-800 rounded-3xl p-10 md:p-16 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-accent/20 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+                    <div class="absolute bottom-0 left-0 w-40 h-40 bg-accent/10 rounded-full blur-2xl pointer-events-none" aria-hidden="true"></div>
+
+                    <div class="relative z-10 grid lg:grid-cols-2 gap-12 items-start">
+                        <div>
+                            <p class="reveal text-xs font-semibold text-accent tracking-widest uppercase mb-3">Get in touch</p>
+                            <h2 class="reveal d1 font-bold text-4xl md:text-5xl text-white leading-tight mb-5">Let's work<br>together</h2>
+                            <p class="reveal d2 text-zinc-400 leading-relaxed mb-10 max-w-sm">I'm open to UI/UX, web, and graphic design projects — short or long-term. Let's create something amazing together.</p>
+                            <div class="reveal d3 flex flex-col gap-5">
+                                <a href="mailto:adershcsengandiyur@gmail.com" class="group flex items-center gap-4 text-zinc-400 hover:text-white transition-colors">
+                                    <span class="w-11 h-11 flex items-center justify-center bg-zinc-800 rounded-xl group-hover:bg-accent/20 transition-colors shrink-0">
+                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                    </span>
+                                    <span class="text-sm">adershcsengandiyur@gmail.com</span>
+                                </a>
+                                <a href="#" class="group flex items-center gap-4 text-zinc-400 hover:text-white transition-colors">
+                                    <span class="w-11 h-11 flex items-center justify-center bg-zinc-800 rounded-xl group-hover:bg-accent/20 transition-colors shrink-0">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                                    </span>
+                                    <span class="text-sm">linkedin.com/in/adersh-c-s</span>
+                                </a>
+                                <a href="#" class="group flex items-center gap-4 text-zinc-400 hover:text-white transition-colors">
+                                    <span class="w-11 h-11 flex items-center justify-center bg-zinc-800 rounded-xl group-hover:bg-accent/20 transition-colors shrink-0">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22 7.043c-.9.399-1.865.668-2.879.789 1.035-.62 1.831-1.602 2.205-2.772-.969.574-2.042.992-3.184 1.217-.914-.975-2.219-1.584-3.662-1.584-2.772 0-5.019 2.247-5.019 5.019 0 .394.044.777.13 1.145-4.171-.209-7.87-2.207-10.344-5.244-.432.742-.68 1.604-.68 2.523 0 1.741.886 3.278 2.233 4.178-.823-.027-1.597-.252-2.273-.627v.063c0 2.432 1.731 4.46 4.027 4.922-.421.115-.865.176-1.323.176-.324 0-.639-.031-.946-.09.639 1.998 2.496 3.452 4.697 3.493-1.72 1.348-3.887 2.151-6.242 2.151-.406 0-.807-.024-1.201-.071 2.229 1.43 4.876 2.265 7.719 2.265 9.263 0 14.328-7.673 14.328-14.327 0-.219-.005-.436-.015-.653.985-.71 1.839-1.598 2.515-2.609z"/></svg>
+                                    </span>
+                                    <span class="text-sm">behance.net/adershcsuiux</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="reveal d2">
+                            <form action="#" method="POST" novalidate>
+                                <div class="flex flex-col gap-4">
+                                    <div class="grid sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <label for="fname" class="block text-xs font-medium text-zinc-400 mb-1.5">Name <span aria-hidden="true">*</span></label>
+                                            <input type="text" id="fname" name="name" placeholder="Jane Smith" required autocomplete="name"
+                                            class="w-full bg-zinc-800 border border-zinc-700 text-white text-sm rounded-xl px-4 py-3 placeholder-zinc-600 focus:outline-none focus:border-accent transition-colors">
+                                        </div>
+                                        <div>
+                                            <label for="femail" class="block text-xs font-medium text-zinc-400 mb-1.5">Email <span aria-hidden="true">*</span></label>
+                                            <input type="email" id="femail" name="email" placeholder="jane@company.com" required autocomplete="email"
+                                            class="w-full bg-zinc-800 border border-zinc-700 text-white text-sm rounded-xl px-4 py-3 placeholder-zinc-600 focus:outline-none focus:border-accent transition-colors">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="fsubject" class="block text-xs font-medium text-zinc-400 mb-1.5">Subject</label>
+                                        <input type="text" id="fsubject" name="subject" placeholder="Project inquiry"
+                                        class="w-full bg-zinc-800 border border-zinc-700 text-white text-sm rounded-xl px-4 py-3 placeholder-zinc-600 focus:outline-none focus:border-accent transition-colors">
+                                    </div>
+                                    <div>
+                                        <label for="fmessage" class="block text-xs font-medium text-zinc-400 mb-1.5">Message <span aria-hidden="true">*</span></label>
+                                        <textarea id="fmessage" name="message" rows="4" placeholder="Tell me about your project..." required
+                                        class="w-full bg-zinc-800 border border-zinc-700 text-white text-sm rounded-xl px-4 py-3 placeholder-zinc-600 focus:outline-none focus:border-accent transition-colors resize-none"></textarea>
+                                    </div>
+                                    <button type="submit" class="shimmer w-full bg-accent text-white font-semibold text-sm py-3.5 rounded-xl hover:bg-accent-light transition-colors">
+                                        Send message →
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="border-t border-zinc-100 dark:border-zinc-800 bg-white dark:bg-[#0a0a0a]">
+        <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p class="text-sm text-zinc-400">© <span id="yr"></span> . All rights reserved. <br class="sm:hidden"> Developed by <a href="https://linkedin.com/in/adersh-c-s" target="_blank" class="font-medium hover:text-accent transition-colors">Adersh c.s</a> • Distributed by <a href="#" target="_blank" class="font-medium hover:text-accent transition-colors">Codex Gigas</a></p>
+            <p class="text-xs text-zinc-500">Built with <a href="https://tailwindcss.com" class="hover:text-accent transition-colors" rel="noopener noreferrer" target="_blank">Tailwind CSS</a> &amp; <a href="https://alpinejs.dev" class="hover:text-accent transition-colors" rel="noopener noreferrer" target="_blank">Alpine.js</a></p>
         </div>
-    </section>
+    </footer>
 
-</main>
+    <script>
+        document.getElementById('yr').textContent = new Date().getFullYear();
 
-<!-- ═══ FOOTER ═══ -->
-<footer class="border-t border-zinc-100 dark:border-zinc-800 bg-white dark:bg-[#0a0a0a]">
-    <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p class="text-sm text-zinc-400">© <span id="yr"></span> Eliott. All rights reserved. <br class="sm:hidden"> Developed by <a href="https://lbegey78.gumroad.com/" target="_blank" class="font-medium hover:text-accent transition-colors">Laurent Begey</a> • Distributed by <a href="https://themewagon.com/" target="_blank" class="font-medium hover:text-accent transition-colors">ThemeWagon</a></p>
-        <p class="text-xs text-zinc-500">Built with
-            <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors">Tailwind CSS</a>
-            &amp;
-            <a href="https://alpinejs.dev" target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors">Alpine.js</a>
-        </p>
-    </div>
-</footer>
+        // ── Reveal on scroll ──
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) { e.target.classList.add('visible');
+                    obs.unobserve(e.target); }
+            });
+        }, { threshold: .08, rootMargin: '0px 0px -30px 0px' });
+        document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => obs.observe(el));
 
-<script>
-    function app() {
-        return {
-            dark: false,
-            mobileOpen: false,
-            scrolled: false,
-            section: 'hero',
+        // ── Custom Cursor ──
+        const dot = document.getElementById('cursorDot');
+        const ring = document.getElementById('cursorRing');
+        let mouseX = 0, mouseY = 0;
+        let ringX = 0, ringY = 0;
+        let dotX = 0, dotY = 0;
+        const ringEase = 0.12;
+        const dotEase = 0.18;
 
-            init() {
-                this.dark = localStorage.getItem('theme') === 'dark' ||
-                    (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
-                this.$watch('dark', v => localStorage.setItem('theme', v ? 'dark' : 'light'));
+        const onMouseMove = (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        };
 
-                window.addEventListener('scroll', () => {
-                    this.scrolled = window.scrollY > 20;
-                    this.updateSection();
-                }, { passive: true });
+        const animateCursor = () => {
+            ringX += (mouseX - ringX) * ringEase;
+            ringY += (mouseY - ringY) * ringEase;
+            dotX += (mouseX - dotX) * dotEase;
+            dotY += (mouseY - dotY) * dotEase;
 
-                const io = new IntersectionObserver((entries) => {
-                    entries.forEach(e => {
-                        if (e.isIntersecting) {
-                            e.target.classList.add('visible');
-                            io.unobserve(e.target);
-                        }
-                    });
-                }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-                document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => io.observe(el));
+            ring.style.transform = `translate(${ringX - 20}px, ${ringY - 20}px)`;
+            dot.style.transform = `translate(${dotX - 4}px, ${dotY - 4}px)`;
 
-                document.getElementById('yr').textContent = new Date().getFullYear();
+            requestAnimationFrame(animateCursor);
+        };
 
-                const dot = document.getElementById('cursorDot');
-                const ring = document.getElementById('cursorRing');
-                let mouseX = 0,
-                    mouseY = 0;
-                let ringX = 0,
-                    ringY = 0;
-                let dotX = 0,
-                    dotY = 0;
-                const ringEase = 0.12;
-                const dotEase = 0.18;
+        if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
+            document.addEventListener('mousemove', onMouseMove);
+            animateCursor();
 
-                const onMouseMove = (e) => {
-                    mouseX = e.clientX;
-                    mouseY = e.clientY;
-                };
-
-                const animateCursor = () => {
-                    ringX += (mouseX - ringX) * ringEase;
-                    ringY += (mouseY - ringY) * ringEase;
-                    dotX += (mouseX - dotX) * dotEase;
-                    dotY += (mouseY - dotY) * dotEase;
-
-                    ring.style.transform = `translate(${ringX - 20}px, ${ringY - 20}px)`;
-                    dot.style.transform = `translate(${dotX - 4}px, ${dotY - 4}px)`;
-
-                    requestAnimationFrame(animateCursor);
-                };
-
-                if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
-                    document.addEventListener('mousemove', onMouseMove);
-                    animateCursor();
-
-                    const hoverElements = document.querySelectorAll(
-                        'a, button, .card-hover, .skill-tag, .nav-link, .shimmer, [role="button"], .photo-frame'
-                    );
-                    hoverElements.forEach(el => {
-                        el.addEventListener('mouseenter', () => {
-                            ring.classList.add('hover');
-                            dot.classList.add('hover');
-                        });
-                        el.addEventListener('mouseleave', () => {
-                            ring.classList.remove('hover');
-                            dot.classList.remove('hover');
-                        });
-                        el.addEventListener('mousedown', () => {
-                            ring.classList.add('click');
-                        });
-                        el.addEventListener('mouseup', () => {
-                            ring.classList.remove('click');
-                        });
-                    });
-
-                    document.querySelectorAll('input, textarea').forEach(el => {
-                        el.addEventListener('mouseenter', () => {
-                            ring.classList.add('hover');
-                            dot.classList.add('hover');
-                        });
-                        el.addEventListener('mouseleave', () => {
-                            ring.classList.remove('hover');
-                            dot.classList.remove('hover');
-                        });
-                    });
-                }
-            },
-
-            updateSection() {
-                const atBottom = (window.innerHeight + window.scrollY) >= document.body.scrollHeight - 80;
-                if (atBottom) { this.section = 'contact'; return; }
-                const ids = ['contact', 'blog', 'testimonials', 'about', 'work', 'services', 'hero'];
-                for (const id of ids) {
-                    const el = document.getElementById(id);
-                    if (el && window.scrollY >= el.offsetTop - 140) {
-                        this.section = id;
-                        return;
-                    }
-                }
-            }
+            const hoverElements = document.querySelectorAll(
+                'a, button, .card-hover, .nav-link, .shimmer, .photo-frame, .skill-tag'
+            );
+            hoverElements.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    ring.classList.add('hover');
+                    dot.classList.add('hover');
+                });
+                el.addEventListener('mouseleave', () => {
+                    ring.classList.remove('hover');
+                    dot.classList.remove('hover');
+                });
+                el.addEventListener('mousedown', () => {
+                    ring.classList.add('click');
+                });
+                el.addEventListener('mouseup', () => {
+                    ring.classList.remove('click');
+                });
+            });
         }
-    }
-</script>
+    </script>
 
 </body>
 </html>
