@@ -17,7 +17,7 @@
     // Web Design Projects
     { id: 4, title: 'Orea — Creative Agency', category: 'Web Design', categoryLink: 'projects-web.html', description: 'Bold editorial website with scroll-driven animations and custom interactions. Built with Tailwind CSS and Alpine.js.', image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&q=80' },
     { id: 5, title: 'Finlo — Fintech Landing Page', category: 'Web Design', categoryLink: 'projects-web.html', description: 'High-converting marketing site with seamless onboarding flow. Built with Tailwind CSS and Alpine.js for optimal performance.', image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=80' },
-    { id: 6, title: 'Bloom — Admin Dashboard', category: 'Web Design', categoryLink: 'projects-web.html', description: 'Analytics dashboard with real-time data visualization, inventory management, and order tracking for an e-commerce brand.', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=80' },
+    { id: 6, title: 'Thrissur Tourisum - Web Design', category: 'Web Design', categoryLink: '/Thrissur.html', description: 'Thrissur Tourisum - Web Design.', image: '/images/Thrissur Tourisum website.png' },
     // Graphic Design Projects
     { id: 7, title: 'Bloom — Brand Identity', category: 'Graphic Design', categoryLink: 'projects-graphic.html', description: 'Complete brand identity redesign for a premium skincare startup. Logo, color palette, typography, and packaging across 6 product lines.', image: 'https://images.unsplash.com/photo-1572188866181-3c6c5e96f6e9?w=400&q=80' },
     { id: 8, title: 'Summer — Poster Campaign', category: 'Graphic Design', categoryLink: 'projects-graphic.html', description: 'Vibrant poster series for a summer music festival. Custom illustrations, bold typography, and a striking color palette.', image: 'https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=400&q=80' },
@@ -837,8 +837,82 @@
             border-radius: 9999px !important;
             display: block;
         }
+
+
+        /* Animated border glow for "More about me" button */
+@keyframes borderGlow {
+    0%, 100% {
+        border-color: rgba(255, 107, 43, 0.3);
+        box-shadow: 0 0 5px rgba(255, 107, 43, 0.1);
+    }
+    50% {
+        border-color: rgba(255, 107, 43, 0.8);
+        box-shadow: 0 0 15px rgba(255, 107, 43, 0.095), 0 0 30px rgba(255, 107, 43, 0.1);
+    }
+}
+
+@keyframes pingBorder {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.1);
+        opacity: 0;
+    }
+}
+
+.animate-border-glow {
+    animation: borderGlow 2s ease-in-out infinite;
+}
+
+.animate-ping-border {
+    animation: pingBorder 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Jumping effect on hover */
+@keyframes gentleJump {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    25% {
+        transform: translateY(-4px);
+    }
+    50% {
+        transform: translateY(-2px);
+    }
+    75% {
+        transform: translateY(-6px);
+    }
+}
+
+.animate-border-glow:hover {
+    animation: borderGlow 0.8s ease-in-out infinite, gentleJump 0.6s ease-in-out;
+}
+
+/* Bouncing arrow animation */
+@keyframes bounceRight {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(4px);
+    }
+}
+
+.animate-bounce-right {
+    animation: bounceRight 1s ease-in-out infinite;
+}
+
+.group:hover .animate-bounce-right {
+    animation: bounceRight 0.4s ease-in-out infinite;
+}
+
+
     </style>
 </head>
+
+
 
 <body class="bg-white dark:bg-[#0a0a0a] text-zinc-800 dark:text-zinc-100 antialiased">
 
@@ -871,19 +945,6 @@
             <a href="#" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
                 <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
             </a>
-            <!-- <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Behance">
-                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M22 7.043c-.9.399-1.865.668-2.879.789 1.035-.62 1.831-1.602 2.205-2.772-.969.574-2.042.992-3.184 1.217-.914-.975-2.219-1.584-3.662-1.584-2.772 0-5.019 2.247-5.019 5.019 0 .394.044.777.13 1.145-4.171-.209-7.87-2.207-10.344-5.244-.432.742-.68 1.604-.68 2.523 0 1.741.886 3.278 2.233 4.178-.823-.027-1.597-.252-2.273-.627v.063c0 2.432 1.731 4.46 4.027 4.922-.421.115-.865.176-1.323.176-.324 0-.639-.031-.946-.09.639 1.998 2.496 3.452 4.697 3.493-1.72 1.348-3.887 2.151-6.242 2.151-.406 0-.807-.024-1.201-.071 2.229 1.43 4.876 2.265 7.719 2.265 9.263 0 14.328-7.673 14.328-14.327 0-.219-.005-.436-.015-.653.985-.71 1.839-1.598 2.515-2.609z"/></svg>
-            </a>
-            -->
-            <!-- <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Twitter/X">
-                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            </a> -->
-            <!-- <a href="#" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
-                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-            </a> -->
-            <!-- <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Dribbble">
-                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm9.43 9.603c-2.602-.195-4.793-.26-7.142-.303.247-1.088.442-1.989.637-2.702 1.236.52 2.912 1.195 4.375 1.585.732.195 1.43.364 2.13.496v.924zm-9.954 2.122c.13.26.26.52.39.78-.026.013-.052.026-.078.039-1.118.468-2.353.936-3.665 1.313-.286.078-.572.156-.858.234-1.026 2.418-2.106 5.018-3.015 7.59-1.638-1.612-2.678-3.874-2.678-6.383 0-.91.143-1.79.403-2.625 1.248.273 2.482.52 3.716.78 1.248.26 2.508.52 3.925.793.208.026.416.039.624.052.078.026.156.026.234.039.338.052.676.078 1.014.104.091.013.182.026.273.026.234.026.468.039.702.052.13.013.26.013.39.026.078 0 .156.013.234.013.338.026.676.039 1.014.052.104 0 .208.013.312.013.13 0 .26.013.39.013.156.013.312.013.468.013.104 0 .208-.013.312-.013.156 0 .312-.013.468-.013.078 0 .156-.013.234-.013.13 0 .26-.013.39-.013.104 0 .208-.013.312-.013.078 0 .156-.013.234-.013.26-.013.52-.026.78-.052.13 0 .26-.013.39-.026.078 0 .156-.013.234-.013.26-.026.52-.039.78-.065.078 0 .156-.013.234-.013.156-.013.312-.026.468-.039.078 0 .156-.013.234-.013.104-.013.208-.026.312-.026h.026c.338-.039.676-.078 1.014-.13 1.118-.156 2.223-.312 3.263-.443 1.105.637 2.313 1.014 3.614 1.014 1.248 0 2.431-.364 3.431-.988-.52 5.408-4.016 9.932-8.657 11.232.91-2.599 1.807-4.979 2.704-7.189 1.262-.378 2.457-.858 3.641-1.378.013.026.026.052.039.078-.39 1.456-.819 2.847-1.209 4.057-.104.338-.208.676-.312 1.014-.104.338-.208.676-.312 1.014-.026.078-.052.156-.078.234-.026.078-.052.156-.078.234-.026.078-.052.156-.078.234-.026.078-.052.156-.078.234-.013.039-.026.078-.039.117-.026.078-.052.156-.078.234-.026.078-.052.156-.078.234-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117-.013.039-.026.078-.039.117z"/></svg>
-            </a> -->
         </div>
         <button class="social-toggle auto-hover" :class="socialOpen ? 'rotated' : ''" @click="socialOpen = !socialOpen" aria-label="Toggle social sidebar">
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1100,7 +1161,8 @@
                                 View my work
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                             </a>
-                            <a href="#" class="inline-flex items-center gap-2 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 font-medium px-7 py-3.5 rounded-full hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors text-sm">
+                            <!-- DOWNLOAD CV BUTTON: uses the resume PDF from the uploaded file -->
+                            <a href="#" download="E.V.SaiGanesh_Resume.pdf" class="inline-flex items-center gap-2 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 font-medium px-7 py-3.5 rounded-full hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors text-sm">
                                 Download CV
                             </a>
                         </div>
@@ -1195,7 +1257,7 @@
                         <div class="p-6">
                             <div class="flex flex-wrap gap-2 mb-3">
                                 <span class="text-xs bg-orange-50 dark:bg-orange-950/30 text-accent border border-orange-200/50 dark:border-orange-800/30 px-3 py-1 rounded-full font-medium">UX Research</span>
-                                <span class="text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-3 py-1 rounded-full">Product Design</span>
+                                <!-- <span class="text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-3 py-1 rounded-full">Product Design</span> -->
                                 <span class="text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-3 py-1 rounded-full">Prototyping</span>
                             </div>
                             <a href="projects-uiux.html">
@@ -1289,15 +1351,16 @@
                         <p class="reveal d3 text-zinc-500 dark:text-zinc-400 leading-relaxed mb-8">
                             I believe great interfaces are invisible — they get out of the user's way. My work is fast, accessible, and built to last. When I'm not designing, you'll find me exploring new creative techniques or hunting for a good espresso.
                         </p>
-
-                        <div class="reveal d4">
-                            <a href="moreaboutme.html" class="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:gap-3 transition-all">
-                                More about me
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                                </svg>
-                            </a>
-                        </div><br>
+<div class="reveal d4">
+    <a href="moreaboutme.html" class="inline-flex items-center gap-2 text-sm font-medium text-accent hover:gap-3 transition-all group relative px-5 py-3.5 rounded-xl border-2 border-accent/30 hover:border-accent bg-accent/5 hover:bg-accent/10 animate-border-glow overflow-hidden">
+        <span class="absolute inset-0 bg-gradient-to-r from-accent/0 via-accent/10 to-accent/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></span>
+        <span class="relative z-10">More about me</span>
+        <svg class="w-4 h-4 relative z-10 animate-bounce-right" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+        <span class="absolute inset-0 rounded-xl border-2 border-accent animate-ping-border opacity-0 group-hover:opacity-100"></span>
+    </a>
+</div><br>
 
                         <div class="reveal d4">
                             <p class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-3">Stack &amp; tools</p>
@@ -1314,6 +1377,7 @@
                     </div>
 
                 </div>
+            </div>
             </div>
         </section>
 
