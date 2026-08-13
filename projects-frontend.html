@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{
+  dark: localStorage.getItem('theme')==='dark'||(!localStorage.getItem('theme')&&window.matchMedia('(prefers-color-scheme: dark)').matches),
+  scrolled: false,
+  mobileMenu: false,
+  progress: 0,
+  filter: 'all',
+  lightboxOpen: false,
+  lightboxIndex: 0,
+  galleryImages: [],
+  projects: [
+ 
+    // ── LANDING PAGES ──
+   
+    { id: 8, title: 'Thrissur Tourisum Website', category: 'landing', categoryLabel: 'Landing Page', image: '/images/Thrissur Tourisum website.png', description: 'Thrissur tourism website showcasing local attractions and services.', link: '/Thrissur.html', year: '2026' },
+   
+    
+   
+    
+    
+    // ── CORPORATE WEBSITES ──
+    { id: 7, title: 'Mother Dental Clinic', category: 'corporate', categoryLabel: 'Corporate Website', image: '/images/Mother-Dental.png', description: 'Modern dental clinic website with online appointment booking.', link: '/mother-dental.html', year: '2026' },
+    
+     
+    // ── E-COMMERCE ──
+     
+    
+    // ── SaaS DASHBOARDS ──
+   
+
+    // ── WEB APPLICATIONS ──
+    
+    // ── PORTFOLIO SITES ──
+    
+  ],
+  get filteredProjects() {
+    if (this.filter === 'all') return this.projects;
+    return this.projects.filter(p => p.category === this.filter);
+  },
+  get visibleCount() {
+    return this.filteredProjects.length;
+  },
+  openLightbox(index) {
+    const images = this.filteredProjects.map(p => p.image);
+    this.galleryImages = images;
+    this.lightboxIndex = index;
+    this.lightboxOpen = true;
+  },
+  closeLightbox() { this.lightboxOpen = false; },
+  prevImage() { this.lightboxIndex = (this.lightboxIndex - 1 + this.galleryImages.length) % this.galleryImages.length; },
+  nextImage() { this.lightboxIndex = (this.lightboxIndex + 1) % this.galleryImages.length; }
+}" :class="{'dark':dark}" x-init="
+  $watch('dark', v => localStorage.setItem('theme', v ? 'dark' : 'light'));
+  window.addEventListener('scroll', () => {
+    scrolled = window.scrollY > 20;
+    progress = Math.min(100, Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100));
+  }, { passive: true });
+" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Frontend portfolio — SaaS, Landing Pages, E-commerce, Corporate Websites, and Web Applications." />
+    <meta name="author" content="Adersh c.s" />
+    <meta property="og:title" content="Frontend Portfolio — Adersh c.s" />
+    <meta property="og:type" content="website" />
+    <title>Frontend  Portfolio — Adersh c.s</title>
+        <!-- ═══ FAVICON ═══ -->
+
+<!-- Desktop (SVG) — Works everywhere, no file needed -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='white'/%3E%3Ccircle cx='50' cy='50' r='45' fill='none' stroke='%23FF6B2B' stroke-width='2'/%3E%3Ctext x='50' y='72' font-family='Arial' font-size='60' font-weight='bold' fill='%23FF6B2B' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E" />
+    
+    <!-- iPhone Home Screen (requires PNG file in root) -->
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+    
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js">
+    </script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        accent: '#FF6B2B',
+                        'accent-light': '#FF8F5C',
+                        'accent-dark': '#E0551A',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color .3s, color .3s;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            /* Removed cursor: none to allow default cursor */
+        }
+
+        .cursor-dot {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: #FF6B2B;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.2s;
+            will-change: transform;
+            mix-blend-mode: difference;
+        }
+        .cursor-ring {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 1.5px solid rgba(255, 107, 43, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, border-color 0.3s, background 0.3s;
+            will-change: transform;
+        }
+        .cursor-ring.hover {
+            width: 64px;
+            height: 64px;
+            border-color: rgba(255, 107, 43, 0.9);
+            background: rgba(255, 107, 43, 0.08);
+        }
+        .cursor-ring.click {
+            width: 28px;
+            height: 28px;
+            border-color: #FF6B2B;
+            background: rgba(255, 107, 43, 0.2);
+        }
+        .cursor-dot.hover {
+            width: 12px;
+            height: 12px;
+            background: #FF8F5C;
+        }
+
+        @media (hover: none) and (pointer: coarse) {
+            .cursor-dot, .cursor-ring { display: none !important; }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FF6B2B;
+            border-radius: 99px;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: .03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        [x-cloak] {
+            display: none !important;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity .7s cubic-bezier(.22, 1, .36, 1), transform .7s cubic-bezier(.22, 1, .36, 1);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .d1 { transition-delay: .05s; }
+        .d2 { transition-delay: .12s; }
+        .d3 { transition-delay: .19s; }
+        .d4 { transition-delay: .26s; }
+        .d5 { transition-delay: .33s; }
+
+        .nav-link {
+            position: relative;
+            font-weight: 500;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #FF6B2B;
+            transition: width .3s cubic-bezier(.22, 1, .36, 1);
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        .nav-link.active {
+            color: #FF6B2B;
+        }
+
+        .shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        .shimmer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 60%;
+            height: 100%;
+            background: rgba(255, 255, 255, .25);
+            transform: skewX(-20deg);
+            transition: left .5s cubic-bezier(.22, 1, .36, 1);
+        }
+        .shimmer:hover::after {
+            left: 160%;
+        }
+
+        .photo-frame {
+            overflow: hidden;
+            background: #e4e4e7;
+        }
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform .5s cubic-bezier(.22, 1, .36, 1);
+        }
+        .photo-frame:hover img {
+            transform: scale(1.03);
+        }
+
+        .card-hover {
+            transition: transform .35s cubic-bezier(.22, 1, .36, 1), box-shadow .35s cubic-bezier(.22, 1, .36, 1), border-color .25s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, .12);
+        }
+        .dark .card-hover:hover {
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, .4);
+        }
+
+        .glow-orbe {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            opacity: .4;
+        }
+        .dark .glow-orbe {
+            opacity: .2;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #FF6B2B 0%, #FF8F5C 50%, #FF6B2B 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease-in-out infinite;
+        }
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: #FF6B2B;
+            z-index: 100;
+            transition: width .1s linear;
+        }
+
+        .filter-btn {
+            transition: all .25s ease;
+            padding: 0.5rem 1.25rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1.5px solid transparent;
+            background: transparent;
+            color: #71717a;
+            cursor: pointer !important;
+        }
+        .filter-btn:hover {
+            color: #18181b;
+            border-color: #e4e4e7;
+        }
+        .dark .filter-btn:hover {
+            color: #fafafa;
+            border-color: #3f3f46;
+        }
+        .filter-btn.active {
+            background: #FF6B2B;
+            color: white;
+            border-color: #FF6B2B;
+        }
+        .dark .filter-btn.active {
+            background: #FF8F5C;
+            border-color: #FF8F5C;
+            color: #0a0a0a;
+        }
+        .filter-btn.active:hover {
+            background: #E0551A;
+            border-color: #E0551A;
+        }
+        .dark .filter-btn.active:hover {
+            background: #FF6B2B;
+            border-color: #FF6B2B;
+            color: white;
+        }
+
+        .project-overlay {
+            background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity .35s ease;
+        }
+        .group:hover .project-overlay {
+            opacity: 1;
+        }
+        .project-overlay .project-title {
+            transform: translateY(10px);
+            transition: transform .35s ease, opacity .35s ease;
+        }
+        .group:hover .project-overlay .project-title {
+            transform: translateY(0);
+        }
+
+        .category-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255,107,43,0.9);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.3rem 0.8rem;
+            border-radius: 9999px;
+            letter-spacing: 0.02em;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .dark .category-badge {
+            background: rgba(255,107,43,0.85);
+        }
+
+        .lightbox-overlay {
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(12px);
+        }
+        .lightbox-btn {
+            transition: all .2s ease;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer !important;
+        }
+        .lightbox-btn:hover {
+            background: rgba(255,255,255,0.16);
+            color: white;
+        }
+
+        /* Ensure cursor is pointer on all interactive elements */
+        a, button, .card-hover, .nav-link, .shimmer, .photo-frame, .filter-btn, .lightbox-btn,
+        [role="button"], input[type="submit"], input[type="button"], .skill-tag,
+        .view-project-btn, .lightbox-close-btn {
+            cursor: pointer !important;
+        }
+
+        /* Keep cursor default for non-interactive elements */
+        .cursor-default {
+            cursor: default !important;
+        }
+
+        .skill-tag {
+            transition: all .2s ease;
+            cursor: pointer !important;
+        }
+        .skill-tag:hover {
+            border-color: #FF6B2B;
+            color: #FF6B2B;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 43, 0.15);
+        }
+        .dark .skill-tag:hover {
+            box-shadow: 0 4px 12px rgba(255, 107, 43, 0.25);
+        }
+
+        .reveal-project {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .reveal-project.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ── Gradient Text Hover Effect ── */
+        .gradient-text-hover {
+            background: linear-gradient(135deg, #FF6B2B 0%, #FF8F5C 50%, #FF6B2B 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease-in-out infinite;
+            transition: all 0.4s ease;
+        }
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        .gradient-text-hover:hover {
+            background-size: 300% 300%;
+            animation-duration: 1.5s;
+        }
+
+        /* ── Title Hover Underline Animation ── */
+        .title-hover {
+            position: relative;
+            display: inline-block;
+        }
+        .title-hover::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #FF6B2B, #FF8F5C);
+            transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .title-hover:hover::after {
+            width: 100%;
+        }
+
+        /* ── Project Card Image Overlay ── */
+        .card-image-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(255,107,43,0.2) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .group:hover .card-image-overlay {
+            opacity: 1;
+        }
+
+        /* ── View Project Button Hover ── */
+        .view-project-btn {
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            cursor: pointer !important;
+        }
+        .view-project-btn:hover {
+            gap: 0.75rem;
+        }
+        .view-project-btn svg {
+            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .view-project-btn:hover svg {
+            transform: translateX(4px);
+        }
+
+        /* ── Close Lightbox Button ── */
+        .lightbox-close-btn {
+            cursor: pointer !important;
+            transition: all 0.2s ease;
+        }
+        .lightbox-close-btn:hover {
+            color: white !important;
+            transform: rotate(90deg);
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-[#0a0a0a] text-zinc-800 dark:text-zinc-100 antialiased">
+
+    <!-- CUSTOM CURSOR -->
+    <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+    <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+    <!-- Reading progress -->
+    <div class="progress-bar" :style="`width:${progress}%`" role="progressbar" :aria-valuenow="progress" aria-valuemin="0" aria-valuemax="100" aria-label="Reading progress"></div>
+
+    <!-- ═══ NAV ═══ -->
+    <header class="fixed inset-x-0 top-0 z-50 transition-all duration-300"
+        :class="scrolled ? 'bg-white/85 dark:bg-[#0a0a0a]/85 backdrop-blur-xl border-b border-zinc-200/50 dark:border-zinc-800/50 shadow-sm' : 'bg-transparent border-b border-transparent'">
+        <nav class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between" aria-label="Main navigation">
+
+            <a href="index.html" class="font-bold text-xl tracking-tight relative z-10 flex items-center gap-1">
+                <span class="text-zinc-900 dark:text-white">Ade</span>
+                <span class="text-accent">rsh</span>
+                <span class="relative w-1.5 h-1.5 ml-0.5">
+                    <span class="absolute inset-0 rounded-full bg-accent animate-ping"></span>
+                    <span class="absolute inset-0 rounded-full bg-accent"></span>
+                </span>
+            </a>
+
+            <ul class="hidden md:flex items-center gap-7 text-sm" role="list">
+                <li><a href="projects-uiux.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">UX Work</a></li>
+                <li><a href="projects-frontend.html" class="nav-link active text-accent">Frontend Work</a></li>
+                <li><a href="projects-graphic.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">Graphic Work</a></li>
+            </ul>
+
+            <div class="flex items-center gap-3">
+                <button @click="dark=!dark" class="w-9 h-9 flex items-center justify-center rounded-full border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors" :aria-label="dark ? 'Light mode' : 'Dark mode'">
+                    <svg x-show="!dark" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                    <svg x-show="dark" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
+                </button>
+                <a href="index.html#contact" class="hidden md:inline-flex items-center gap-2 shimmer bg-accent text-white text-sm font-medium px-5 py-2 rounded-full hover:bg-accent-light transition-colors">
+                    Hire me
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </a>
+                <button @click="mobileMenu=!mobileMenu" class="md:hidden w-9 h-9 flex items-center justify-center rounded-full border border-zinc-200 dark:border-zinc-800" aria-label="Toggle menu">
+                    <svg x-show="!mobileMenu" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    <svg x-show="mobileMenu" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+        </nav>
+        <div x-show="mobileMenu" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" class="md:hidden bg-white dark:bg-[#0a0a0a] border-t border-zinc-100 dark:border-zinc-800">
+            <ul class="flex flex-col px-6 py-6 gap-3 text-sm" role="list">
+                <li><a href="projects-uiux.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">UX Work</a></li>
+                <li><a href="projects-frontend.html" @click="mobileMenu=false" class="block text-accent font-medium py-1">Frontend Work</a></li>
+                <li><a href="projects-graphic.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Graphic Work</a></li>
+                <li class="pt-3 border-t border-zinc-100 dark:border-zinc-800">
+                    <a href="index.html#contact" @click="mobileMenu=false" class="inline-flex shimmer bg-accent text-white font-medium text-sm px-6 py-2.5 rounded-full">Hire me →</a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- ═══ HERO SECTION ═══ -->
+        <section class="relative pt-32 pb-12 max-w-4xl mx-auto px-6 overflow-hidden">
+            <a href="index.html#work" class="inline-flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400 hover:text-accent transition-colors mb-8">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" /></svg>
+                Back to Works
+            </a>
+
+            <div class="glow-orbe w-[500px] h-[500px] -top-40 -right-40 bg-accent/30" style="filter:blur(140px)"></div>
+            <div class="glow-orbe w-[300px] h-[300px] -bottom-20 -left-20 bg-accent/20" style="filter:blur(100px)"></div>
+
+            <div class="relative z-10">
+                <span class="inline-block px-3 py-1 text-xs font-semibold text-accent bg-accent/10 border border-accent/20 rounded-full mb-4">
+                    📁 Portfolio
+                </span>
+                <h1 class="font-extrabold text-4xl md:text-5xl lg:text-6xl text-zinc-900 dark:text-white leading-[1.1] mb-5">
+                    Frontend<br>
+                    <span class="gradient-text-hover">Development</span>
+                </h1>
+                <p class="text-lg text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-2xl">
+                    A showcase of my Frontend work — from SaaS dashboards and landing pages to e-commerce and corporate websites. Each project combines clean design with thoughtful user experience.
+                </p>
+                <div class="flex flex-wrap gap-3 mt-6">
+                    <span class="inline-flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                        <span x-text="`${projects.length} Projects`"></span>
+                    </span>
+                    <span class="text-zinc-300 dark:text-zinc-700">|</span>
+                   <span class="inline-flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+    <span class="w-2 h-2 rounded-full bg-accent"></span>
+    <span x-text="[...new Set(projects.map(p => p.category))].length + ' Categories'"></span>
+</span>
+                </div>
+            </div>
+        </section>
+        <br>
+
+           <!-- ═══ FILTERS + GALLERY ═══ -->
+        <section class="max-w-6xl mx-auto px-6 pb-24">
+
+            <!-- Filter Buttons -->
+            <div class="flex flex-wrap items-center gap-2 mb-8 border-b border-zinc-100 dark:border-zinc-800 pb-5">
+                <button @click="filter='all'" class="filter-btn" :class="filter==='all'?'active':''">
+                    <span class="flex items-center gap-2">
+                        All Projects
+                        <span class="text-xs opacity-60" x-text="projects.length"></span>
+                    </span>
+                </button>
+                <button @click="filter='landing'" class="filter-btn" :class="filter==='landing'?'active':''">
+                    <span class="flex items-center gap-2">
+                        🚀 Landing Pages
+                        <span class="text-xs opacity-60" x-text="projects.filter(p => p.category === 'landing').length"></span>
+                    </span>
+                </button>
+                <button @click="filter='corporate'" class="filter-btn" :class="filter==='corporate'?'active':''">
+                    <span class="flex items-center gap-2">
+                        🏢 Corporate
+                        <span class="text-xs opacity-60" x-text="projects.filter(p => p.category === 'corporate').length"></span>
+                    </span>
+                </button>
+                <button @click="filter='ecommerce'" class="filter-btn" :class="filter==='ecommerce'?'active':''">
+                    <span class="flex items-center gap-2">
+                        🛒 E-commerce
+                        <span class="text-xs opacity-60" x-text="projects.filter(p => p.category === 'ecommerce').length"></span>
+                    </span>
+                </button>
+            </div>
+
+            <!-- Project Grid -->
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <template x-for="(project, index) in filteredProjects" :key="project.id">
+                    <div class="reveal-project" :style="`transition-delay:${(index % 3) * 0.08}s`">
+                        <article class="group relative bg-white dark:bg-zinc-900/80 rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 hover:border-accent/50 transition-all card-hover h-full">
+                            
+                            <!-- Image -->
+                            <div class="relative">
+                                <div class="photo-frame w-full aspect-[4/3]">
+                                    <img :src="project.image" :alt="project.title" loading="lazy" class="w-full h-full object-cover" />
+                                </div>
+                                <div class="card-image-overlay"></div>
+                            </div>
+
+                            <!-- Category Badge -->
+                            <span class="category-badge" x-text="project.categoryLabel"></span>
+
+                            <!-- Content -->
+                            <div class="p-5">
+                                <a :href="project.link" class="block">
+                                    <h3 class="font-bold text-base text-zinc-900 dark:text-white mb-1.5 group-hover:text-accent transition-colors" x-text="project.title"></h3>
+                                </a>
+                                <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-3 line-clamp-2" x-text="project.description"></p>
+                                <div class="flex items-center justify-between">
+                                    <a :href="project.link" class="view-project-btn inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:gap-3 transition-all">
+                                        View project
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                                    </a>
+                                    <span class="text-xs text-zinc-400" x-text="project.year"></span>
+                                </div>
+                            </div>
+
+                        </article>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Empty state -->
+            <div x-show="filteredProjects.length === 0" class="text-center py-16">
+                <p class="text-zinc-500 dark:text-zinc-400">No web projects found in this category.</p>
+            </div>
+
+            <!-- Counter -->
+            <p class="text-sm text-zinc-400 dark:text-zinc-500 mt-8 text-center" x-text="`${filteredProjects.length} project${filteredProjects.length !== 1 ? 's' : ''} — ${filter === 'all' ? 'all categories' : filter}`"></p>
+
+        </section>
+        
+
+        <!-- ═══ SKILLS / TECH STACK ═══ -->
+        <section class="py-16 bg-zinc-50/80 dark:bg-zinc-900/30">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                     <span class="inline-block px-3 py-1 text-xs font-semibold text-accent bg-accent/10 border border-accent/20 rounded-full mb-4">
+                        🛠️ Toolkit
+                    </span>
+                    <h2 class="font-bold text-3xl md:text-4xl text-zinc-900 dark:text-white">My Frontend Stack</h2>
+                    <p class="text-zinc-500 dark:text-zinc-400 mt-4">The tools and technologies I use to bring web projects to life.</p>
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-3">
+                    <!-- REMOVED cursor-default class - now they'll have pointer cursor and hover effects -->
+                    <span class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-full">Html</span>
+                    <span class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-full">Tailwind CSS</span>
+                    <span class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-full">Alpine.js</span>
+                    <span class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-full">React</span>
+                    <span class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-full">Vue.js</span>
+                    <span class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-full">Deepseek</span>
+                    <span class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-full">Claude</span>
+                    <span class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-full">JavaScript</span>
+                    <span class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-full">Css</span>
+                    <span class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-full">Lovable</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ CTA ═══ -->
+        <section class="py-24">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="bg-zinc-900 dark:bg-zinc-800 rounded-3xl p-10 md:p-14 text-center relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-accent/20 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+                    <div class="absolute bottom-0 left-0 w-40 h-40 bg-accent/10 rounded-full blur-2xl pointer-events-none" aria-hidden="true"></div>
+                    <div class="relative z-10">
+                        <p class="text-xs font-semibold text-accent tracking-widest uppercase mb-4">Need a website?</p>
+                        <h2 class="font-bold text-3xl md:text-4xl text-white mb-4">Let's build something<br class="sm:hidden"> remarkable</h2>
+                        <p class="text-zinc-400 max-w-md mx-auto mb-8">From landing pages to full web applications — I'd love to hear about your project and help bring it to life.</p>
+                        <a href="index.html#contact" class="inline-flex items-center gap-2 shimmer bg-accent text-white font-medium px-8 py-3.5 rounded-full hover:bg-accent-light transition-colors">
+                            Start a project →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ═══ LIGHTBOX ═══ -->
+    <div x-show="lightboxOpen" x-cloak class="fixed inset-0 z-[999] lightbox-overlay flex items-center justify-center p-4" @click.self="closeLightbox()">
+        <button @click="closeLightbox()" class="absolute top-6 right-6 text-white/60 hover:text-white transition-colors text-3xl lightbox-close-btn" aria-label="Close lightbox">✕</button>
+        <button @click="prevImage()" class="absolute left-6 lightbox-btn" aria-label="Previous image">‹</button>
+        <button @click="nextImage()" class="absolute right-6 lightbox-btn" aria-label="Next image">›</button>
+        <div class="max-w-5xl max-h-[85vh] rounded-2xl overflow-hidden shadow-2xl">
+            <img :src="galleryImages[lightboxIndex]" alt="Gallery image" class="w-full h-full object-contain" />
+        </div>
+        <p class="absolute bottom-8 text-white/40 text-sm" x-text="`${lightboxIndex + 1} / ${galleryImages.length}`"></p>
+    </div>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="border-t border-zinc-100 dark:border-zinc-800 bg-white dark:bg-[#0a0a0a]">
+        <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p class="text-sm text-zinc-400">© <span id="yr"></span> . All rights reserved. <br class="sm:hidden"> Developed by <a href="https://linkedin.com/in/adersh-c-s" target="_blank" class="font-medium hover:text-accent transition-colors">Adersh c.s</a></p>
+            <p class="text-xs text-zinc-500">Built with <a href="https://tailwindcss.com" class="hover:text-accent transition-colors" rel="noopener noreferrer" target="_blank">Tailwind CSS</a> &amp; <a href="https://alpinejs.dev" class="hover:text-accent transition-colors" rel="noopener noreferrer" target="_blank">Alpine.js</a></p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('yr').textContent = new Date().getFullYear();
+
+        // ── Reveal on scroll ──
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) { e.target.classList.add('visible'); }
+            });
+        }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.reveal-project').forEach(el => obs.observe(el));
+        });
+
+        // ── Custom Cursor ──
+        const dot = document.getElementById('cursorDot');
+        const ring = document.getElementById('cursorRing');
+        let mouseX = 0, mouseY = 0;
+        let ringX = 0, ringY = 0;
+        let dotX = 0, dotY = 0;
+        const ringEase = 0.12;
+        const dotEase = 0.18;
+
+        const onMouseMove = (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        };
+
+        const animateCursor = () => {
+            ringX += (mouseX - ringX) * ringEase;
+            ringY += (mouseY - ringY) * ringEase;
+            dotX += (mouseX - dotX) * dotEase;
+            dotY += (mouseY - dotY) * dotEase;
+
+            ring.style.transform = `translate(${ringX - 20}px, ${ringY - 20}px)`;
+            dot.style.transform = `translate(${dotX - 4}px, ${dotY - 4}px)`;
+
+            requestAnimationFrame(animateCursor);
+        };
+
+        // Check if device supports hover (not touch)
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+        if (!isTouchDevice) {
+            document.addEventListener('mousemove', onMouseMove);
+            animateCursor();
+
+            const hoverElements = document.querySelectorAll(
+                'a, button, .card-hover, .nav-link, .shimmer, .photo-frame, .filter-btn, .lightbox-btn, .skill-tag, .view-project-btn, .lightbox-close-btn'
+            );
+            hoverElements.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    ring.classList.add('hover');
+                    dot.classList.add('hover');
+                });
+                el.addEventListener('mouseleave', () => {
+                    ring.classList.remove('hover');
+                    dot.classList.remove('hover');
+                });
+                el.addEventListener('mousedown', () => {
+                    ring.classList.add('click');
+                });
+                el.addEventListener('mouseup', () => {
+                    ring.classList.remove('click');
+                });
+            });
+        }
+    </script>
+
+</body>
+</html>
