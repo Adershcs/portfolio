@@ -57,30 +57,86 @@
   }, { passive: true });
 " class="scroll-smooth">
 <head>
+    <!-- ═══ BASIC META TAGS ═══ -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Frontend portfolio — SaaS, Landing Pages, E-commerce, Corporate Websites, and Web Applications." />
-    <meta name="author" content="Adersh c.s" />
-    <meta property="og:title" content="Frontend Portfolio — Adersh c.s" />
-    <meta property="og:type" content="website" />
-    <title>Frontend  Portfolio — Adersh c.s</title>
-        <!-- ═══ FAVICON ═══ -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-<!-- Desktop (SVG) — Works everywhere, no file needed -->
+    <!-- ═══ PRIMARY SEO META TAGS ═══ -->
+    <title>Frontend Development Projects — Adersh C.S Portfolio</title>
+    <meta name="title" content="Frontend Development Projects — Adersh C.S Portfolio" />
+    <meta name="description" content="Explore frontend development projects by Adersh C.S. Responsive websites, web applications, landing pages, and corporate sites built with HTML, CSS, JavaScript, Tailwind CSS, and Alpine.js." />
+    <meta name="keywords" content="Frontend Developer, Web Development, HTML, CSS, JavaScript, Tailwind CSS, Alpine.js, Responsive Design, Landing Pages, Corporate Websites, E-commerce, Adersh C.S, Thrissur, Kerala" />
+    <meta name="author" content="Adersh C.S" />
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="language" content="English" />
+    <link rel="canonical" href="https://adershcs.github.io/portfolio/projects-frontend.html" />
+
+    <!-- ═══ THEME COLOR ═══ -->
+    <meta name="theme-color" content="#FF6B2B" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <!-- ═══ OPEN GRAPH (Social Sharing - Facebook, LinkedIn, WhatsApp) ═══ -->
+    <meta property="og:title" content="Frontend Development Projects — Adersh C.S" />
+    <meta property="og:description" content="Explore frontend development projects by Adersh C.S. Responsive websites, web applications, landing pages, and corporate sites." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://adershcs.github.io/portfolio/projects-frontend.html" />
+    <meta property="og:image" content="https://adershcs.github.io/portfolio/images/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:site_name" content="Adersh C.S — Designer Portfolio" />
+    <meta property="og:locale" content="en_IN" />
+
+    <!-- ═══ TWITTER CARD ═══ -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Frontend Development Projects — Adersh C.S" />
+    <meta name="twitter:description" content="Explore frontend development projects by Adersh C.S. Responsive websites, web applications, landing pages, and corporate sites." />
+    <meta name="twitter:image" content="https://adershcs.github.io/portfolio/images/og-image.jpg" />
+    <meta name="twitter:site" content="@adershcs" />
+    <meta name="twitter:creator" content="@adershcs" />
+
+    <!-- ═══ VERIFICATION ═══ -->
+    <meta name="google-site-verification" content="google1205c50f18b38cb5" />
+
+    <!-- ═══ REFERRAL POLICY ═══ -->
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+
+    <!-- ═══ JSON-LD STRUCTURED DATA ═══ -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": "Frontend Development Projects — Adersh C.S",
+            "description": "Explore frontend development projects by Adersh C.S. Responsive websites, web applications, landing pages, and corporate sites.",
+            "url": "https://adershcs.github.io/portfolio/projects-frontend.html",
+            "about": {
+                "@type": "Thing",
+                "name": "Frontend Development Portfolio"
+            },
+            "author": {
+                "@type": "Person",
+                "name": "Adersh C.S"
+            }
+        }
+    </script>
+
+    <!-- ═══ FAVICON ═══ -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='white'/%3E%3Ccircle cx='50' cy='50' r='45' fill='none' stroke='%23FF6B2B' stroke-width='2'/%3E%3Ctext x='50' y='72' font-family='Arial' font-size='60' font-weight='bold' fill='%23FF6B2B' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E" />
-    
-    <!-- iPhone Home Screen (requires PNG file in root) -->
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-    
-    <script src="https://cdn.tailwindcss.com">
-    </script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js">
-    </script>
-    
+
+    <!-- ═══ PRELOAD RESOURCES ═══ -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
 
+    <!-- ═══ SCRIPTS ═══ -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- ═══ TAILWIND CONFIG ═══ -->
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -111,7 +167,6 @@
             transition: background-color .3s, color .3s;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            /* Removed cursor: none to allow default cursor */
         }
 
         .cursor-dot {
@@ -398,14 +453,12 @@
             color: white;
         }
 
-        /* Ensure cursor is pointer on all interactive elements */
         a, button, .card-hover, .nav-link, .shimmer, .photo-frame, .filter-btn, .lightbox-btn,
         [role="button"], input[type="submit"], input[type="button"], .skill-tag,
         .view-project-btn, .lightbox-close-btn {
             cursor: pointer !important;
         }
 
-        /* Keep cursor default for non-interactive elements */
         .cursor-default {
             cursor: default !important;
         }
@@ -434,7 +487,6 @@
             transform: translateY(0);
         }
 
-        /* ── Gradient Text Hover Effect ── */
         .gradient-text-hover {
             background: linear-gradient(135deg, #FF6B2B 0%, #FF8F5C 50%, #FF6B2B 100%);
             background-size: 200% 200%;
@@ -453,7 +505,6 @@
             animation-duration: 1.5s;
         }
 
-        /* ── Title Hover Underline Animation ── */
         .title-hover {
             position: relative;
             display: inline-block;
@@ -472,7 +523,6 @@
             width: 100%;
         }
 
-        /* ── Project Card Image Overlay ── */
         .card-image-overlay {
             position: absolute;
             inset: 0;
@@ -484,7 +534,6 @@
             opacity: 1;
         }
 
-        /* ── View Project Button Hover ── */
         .view-project-btn {
             transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
             cursor: pointer !important;
@@ -499,7 +548,6 @@
             transform: translateX(4px);
         }
 
-        /* ── Close Lightbox Button ── */
         .lightbox-close-btn {
             cursor: pointer !important;
             transition: all 0.2s ease;
@@ -696,7 +744,6 @@
                 </div>
 
                 <div class="flex flex-wrap justify-center gap-3">
-                    <!-- REMOVED cursor-default class - now they'll have pointer cursor and hover effects -->
                     <span class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-full">Html</span>
                     <span class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-full">Tailwind CSS</span>
                     <span class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-full">Alpine.js</span>
@@ -790,7 +837,6 @@
             requestAnimationFrame(animateCursor);
         };
 
-        // Check if device supports hover (not touch)
         const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
         if (!isTouchDevice) {
