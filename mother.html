@@ -19,7 +19,7 @@
       category: 'Frontend',
       image: 'images/COMMINGSOON.png',
       description: 'Responsive corporate website with 96/100 Lighthouse score, 100% accessibility, and mobile-first design.',
-      link: 'https://adershcs.github.io/Mother-Dental-Clinic/'
+      link: '#'
     },
     {
       id: 2,
@@ -27,7 +27,7 @@
       category: 'Frontend',
       image: 'images/COMMINGSOON.png',
       description: 'Landing page with Tailwind CSS, smooth scroll animations, and fully responsive layout.',
-      link: 'https://adershcs.github.io/Thrissur-Tourism/'
+      link: '#'
     },
     {
       id: 3,
@@ -189,12 +189,19 @@
   },
   prevImage() { this.lightboxIndex = (this.lightboxIndex - 1 + this.galleryImages.length) % this.galleryImages.length; },
   nextImage() { this.lightboxIndex = (this.lightboxIndex + 1) % this.galleryImages.length; },
-  shareProject() {
+  sharePage() {
     if (navigator.share) {
       navigator.share({
         title: this.project.title,
         text: `Check out ${this.project.title} by Adersh c.s`,
         url: window.location.href
+      });
+    } else {
+      // fallback: copy link
+      navigator.clipboard?.writeText(window.location.href).then(() => {
+        alert('Link copied to clipboard!');
+      }).catch(() => {
+        // ignore
       });
     }
   },
