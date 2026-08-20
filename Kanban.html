@@ -18,12 +18,12 @@
   galleryTouchStartX: 0,
   galleryTouchEndX: 0,
   carouselItems: [
-    { id: 1, title: 'Task Analytics Dashboard', category: 'Web App', image: '/images/COMMINGSOON.png', description: 'Real-time analytics dashboard with custom widgets, data visualization, and team performance metrics.', link: '#' },
-    { id: 2, title: 'Project Management Suite', category: 'Full-Stack', image: '/images/COMMINGSOON.png', description: 'Complete project management platform with Gantt charts, resource allocation, and team collaboration.', link: '#' },
-    { id: 3, title: 'Team Collaboration Hub', category: 'Web App', image: '/images/COMMINGSOON.png', description: 'Real-time team collaboration tool with chat, file sharing, and integrated task management.', link: '#' },
-    { id: 4, title: 'Sprint Planner Pro', category: 'Front-End', image: '/images/COMMINGSOON.png', description: 'Agile sprint planning tool with drag-drop backlog, velocity tracking, and sprint retrospectives.', link: '#' },
-    { id: 5, title: 'Workflow Automation Engine', category: 'Full-Stack', image: '/images/COMMINGSOON.png', description: 'Automated workflow engine with conditional logic, webhook integrations, and real-time monitoring.', link: '#' },
-    { id: 6, title: 'Design System Pro', category: 'Design System', image: '/images/COMMINGSOON.png', description: 'Enterprise design system with component library, theming, accessibility, and developer documentation.', link: '#' }
+    { id: 1, title: 'Task Analytics Dashboard', category: 'Web App', image: 'images/COMMINGSOON.png', description: 'Real-time analytics dashboard with custom widgets, data visualization, and team performance metrics.', link: '#' },
+    { id: 2, title: 'Project Management Suite', category: 'Full-Stack', image: 'images/COMMINGSOON.png', description: 'Complete project management platform with Gantt charts, resource allocation, and team collaboration.', link: '#' },
+    { id: 3, title: 'Team Collaboration Hub', category: 'Web App', image: 'images/COMMINGSOON.png', description: 'Real-time team collaboration tool with chat, file sharing, and integrated task management.', link: '#' },
+    { id: 4, title: 'Sprint Planner Pro', category: 'Front-End', image: 'images/COMMINGSOON.png', description: 'Agile sprint planning tool with drag-drop backlog, velocity tracking, and sprint retrospectives.', link: '#' },
+    { id: 5, title: 'Workflow Automation Engine', category: 'Full-Stack', image: 'images/COMMINGSOON.png', description: 'Automated workflow engine with conditional logic, webhook integrations, and real-time monitoring.', link: '#' },
+    { id: 6, title: 'Design System Pro', category: 'Design System', image: 'images/COMMINGSOON.png', description: 'Enterprise design system with component library, theming, accessibility, and developer documentation.', link: '#' }
   ],
   get totalPages() { return Math.ceil(this.carouselItems.length / 3); },
   get currentPage() { return Math.floor(this.carouselIndex / 3) + 1; },
@@ -73,16 +73,16 @@
   },
   project: {
     id: 1, title: 'Kanban Board Pro', category: 'Web App', categoryLabel: 'Web Application',
-    heroImage: '/images/kanban.png',
+    heroImage: 'images/kanban.png',
     gallery: [
-      '/images/kanban01.png',
-      '/images/kanban02.png',
-      '/images/kanban04.png',
-      '/images/kanban05.png',
-      '/images/kanban06.png',
-      '/images/kanban07.png',
-      '/images/kanban08.png',
-      '/images/kanban09.png'
+      'images/kanban01.png',
+      'images/kanban02.png',
+      'images/kanban04.png',
+      'images/kanban05.png',
+      'images/kanban06.png',
+      'images/kanban07.png',
+      'images/kanban08.png',
+      'images/kanban09.png'
     ],
     overview: 'Full-featured Kanban board with drag & drop, real-time updates, team collaboration, and advanced filtering — built with React, Tailwind CSS, and Firebase.',
     challenge: 'Managing complex workflows across distributed teams required a scalable, real-time task management solution with drag-drop functionality, role-based access control, and sub-200ms update latency while maintaining 99.9% uptime.',
