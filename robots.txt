@@ -1,1 +1,7 @@
 
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://adershcs.github.io/portfolio/sitemap.xml
