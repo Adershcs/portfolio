@@ -7,11 +7,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="format-detection" content="telephone=no" />
 
-         <!-- ═══ FAVICON ═══ -->
-<link rel="icon" href="images/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="images/favicon-48.png" sizes="48x48">
-<link rel="icon" href="images/favicon-32.png" sizes="32x32">
-<link rel="apple-touch-icon" href="images/favicon-180.png" sizes="180x180">
+    <!-- ═══ FAVICON ═══ -->
+    <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="images/favicon-48.png" sizes="48x48">
+    <link rel="icon" href="images/favicon-32.png" sizes="32x32">
+    <link rel="apple-touch-icon" href="images/favicon-180.png" sizes="180x180">
 
     <!-- ═══ PRIMARY SEO META TAGS ═══ -->
     <title>Adersh C.S — UI/UX Designer &amp; Frontend Developer Portfolio</title>
@@ -96,19 +96,6 @@
             }
         }
     </script>
-
-    <!-- ═══ FAVICON ═══ -->
- <link rel="icon" href="images/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
-
-<!-- ↓ This one is NOT a favicon — it's for iOS home screen only -->
-<link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
-
-<link rel="icon" type="image/png" sizes="192x192" href="images/android-chrome-192x192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="images/android-chrome-512x512.png">
-<link rel="manifest" href="images/site.webmanifest">
-<meta name="theme-color" content="#ffffff">
 
     <!-- ═══ PRELOAD ═══ -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -527,11 +514,11 @@
                                     <span class="text-xs text-zinc-400 dark:text-zinc-500">Press <kbd class="px-1.5 py-0.5 bg-zinc-100 dark:bg-zinc-800 rounded text-[10px]">esc</kbd> to close</span>
                                 </div>
                                 <template x-for="(result, index) in searchResults" :key="result.id">
-                                    <a :href="result.categoryLink" class="search-result-item" :class="selectedIndex === index ? 'active' : ''" @mouseenter="selectedIndex = index">
+                                    <a :href="result.link" @click="searchOpen = false" class="search-result-item" :class="selectedIndex === index ? 'active' : ''" @mouseenter="selectedIndex = index">
                                         <img :src="result.image" :alt="result.title" class="result-image" loading="lazy">
                                         <div class="result-info">
                                             <div class="result-title" x-text="result.title"></div>
-                                            <div class="result-category" x-text="result.category"></div>
+                                            <div class="result-category" x-text="result.categoryLabel"></div>
                                         </div>
                                         <svg class="w-4 h-4 text-zinc-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                     </a>
@@ -543,7 +530,7 @@
                         </template>
                         <div x-show="searchResults.length === 0" class="search-empty">
                             <svg class="w-10 h-10 mx-auto text-zinc-300 dark:text-zinc-600 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <p>No projects found for <span class="search-query-highlight" x-text="`\"${searchQuery}\"`"></span></p>
+                            <p>No projects found for <span class="search-query-highlight" x-text="`&quot;${searchQuery}&quot;`"></span></p>
                             <p class="text-xs text-zinc-400 mt-1">Try a different keyword</p>
                         </div>
                     </div>
@@ -599,18 +586,18 @@
             </div>
             <div class="relative">
                 <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                <input type="text" x-model="searchQuery" placeholder="Search projects..." @keydown.enter="if(searchResults.length) window.location.href = searchResults[0].categoryLink" autofocus class="w-full pl-10 pr-4 py-3 border border-zinc-200 dark:border-zinc-700 rounded-xl bg-transparent text-zinc-900 dark:text-white focus:outline-none focus:border-accent transition" aria-label="Search projects">
+                <input type="text" x-model="searchQuery" placeholder="Search projects..." @keydown.enter="if(searchResults.length) window.location.href = searchResults[0].link" autofocus class="w-full pl-10 pr-4 py-3 border border-zinc-200 dark:border-zinc-700 rounded-xl bg-transparent text-zinc-900 dark:text-white focus:outline-none focus:border-accent transition" aria-label="Search projects">
             </div>
             <div class="mt-4 max-h-80 overflow-y-auto">
                 <template x-if="searchResults.length > 0">
                     <div>
                         <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-2" x-text="`${searchResults.length} result${searchResults.length !== 1 ? 's' : ''} found`"></p>
                         <template x-for="result in searchResults" :key="result.id">
-                            <a :href="result.categoryLink" class="flex items-center gap-3 p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition" @click="mobileSearchOpen = false">
+                            <a :href="result.link" class="flex items-center gap-3 p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition" @click="mobileSearchOpen = false">
                                 <img :src="result.image" :alt="result.title" class="w-10 h-10 rounded-lg object-cover" loading="lazy">
                                 <div>
                                     <div class="font-medium text-sm text-zinc-900 dark:text-white" x-text="result.title"></div>
-                                    <div class="text-xs text-zinc-500 dark:text-zinc-400" x-text="result.category"></div>
+                                    <div class="text-xs text-zinc-500 dark:text-zinc-400" x-text="result.categoryLabel"></div>
                                 </div>
                             </a>
                         </template>
@@ -926,9 +913,9 @@
                                 <span class="text-xs bg-accent/10 text-accent border border-accent/20 px-2.5 py-1 rounded-full font-medium">Design</span>
                                 <span class="text-xs text-zinc-400">Mar 8, 2025</span>
                             </div>
-                            <a href="blog-article.html"><h3 class="font-bold text-lg sm:text-xl text-zinc-900 dark:text-white mb-2 group-hover:text-accent transition-colors">Why I ditched heavy CSS frameworks for Tailwind</h3></a>
+                            <a href="#id-blog"><h3 class="font-bold text-lg sm:text-xl text-zinc-900 dark:text-white mb-2 group-hover:text-accent transition-colors">Why I ditched heavy CSS frameworks for Tailwind</h3></a>
                             <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">After years of fighting specificity wars, here's what finally convinced me to make the switch.</p>
-                            <a href="blog-article.html" class="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:gap-3 transition-all" aria-label="Read full article: Why I ditched heavy CSS frameworks">
+                            <a href="#id-blog" class="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:gap-3 transition-all" aria-label="Read full article: Why I ditched heavy CSS frameworks">
                                 Read more
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                             </a>
@@ -944,9 +931,9 @@
                                 <span class="text-xs bg-accent/10 text-accent border border-accent/20 px-2.5 py-1 rounded-full font-medium">Dev</span>
                                 <span class="text-xs text-zinc-400">Feb 21, 2025</span>
                             </div>
-                            <a href="blog-article-2.html"><h3 class="font-bold text-lg sm:text-xl text-zinc-900 dark:text-white mb-2 group-hover:text-accent transition-colors">Building a design system in a weekend</h3></a>
+                            <a href="#id-blog"><h3 class="font-bold text-lg sm:text-xl text-zinc-900 dark:text-white mb-2 group-hover:text-accent transition-colors">Building a design system in a weekend</h3></a>
                             <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">Tokens, components, docs — the process I follow to spin up a coherent system in 48 hours.</p>
-                            <a href="blog-article-2.html" class="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:gap-3 transition-all" aria-label="Read full article: Building a design system">
+                            <a href="#id-blog" class="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:gap-3 transition-all" aria-label="Read full article: Building a design system">
                                 Read more
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                             </a>
@@ -962,9 +949,9 @@
                                 <span class="text-xs bg-accent/10 text-accent border border-accent/20 px-2.5 py-1 rounded-full font-medium">Freelance</span>
                                 <span class="text-xs text-zinc-400">Jan 14, 2025</span>
                             </div>
-                            <a href="blog-article-3.html"><h3 class="font-bold text-lg sm:text-xl text-zinc-900 dark:text-white mb-2 group-hover:text-accent transition-colors">5 lessons from my first year freelancing</h3></a>
+                            <a href="#id-blog"><h3 class="font-bold text-lg sm:text-xl text-zinc-900 dark:text-white mb-2 group-hover:text-accent transition-colors">5 lessons from my first year freelancing</h3></a>
                             <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">Contracts, pricing, scope creep — the things nobody tells you before you go solo.</p>
-                            <a href="blog-article-3.html" class="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:gap-3 transition-all" aria-label="Read full article: 5 lessons from freelancing">
+                            <a href="#id-blog" class="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:gap-3 transition-all" aria-label="Read full article: 5 lessons from freelancing">
                                 Read more
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                             </a>
@@ -1006,30 +993,16 @@
                             </div>
                         </div>
 
-                        <!-- ═══ CONTACT FORM (ALL FIXES APPLIED) ═══ -->
+                        <!-- ═══ CONTACT FORM ═══ -->
                         <div class="reveal d2">
                             <form id="contactForm" action="https://api.web3forms.com/submit" method="POST" novalidate>
 
-                                <!-- Web3Forms configuration -->
                                 <input type="hidden" name="access_key" value="482f2fd4-7e21-4d35-a548-e799299e4037">
                                 <input type="hidden" name="subject" value="New Portfolio Contact Form Submission">
                                 <input type="hidden" name="from_name" value="Adersh C.S Portfolio">
 
-                                <!-- Auto-reply (correct Web3Forms field) -->
-                                <input type="hidden" name="autoresponse" value="Hi,
+                                <input type="hidden" name="autoresponse" value="Hi,&#10;&#10;Thanks for reaching out through my portfolio! I really appreciate you taking the time to connect.&#10;&#10;I've received your message and will review it carefully. I typically respond within 24-48 hours during business days.&#10;&#10;In the meantime, feel free to check out my latest work: https://adershcs.design/#work&#10;&#10;Best regards,&#10;Adersh C.S&#10;UI/UX Designer &amp; Frontend Developer&#10;https://adershcs.design">
 
-Thanks for reaching out through my portfolio! I really appreciate you taking the time to connect.
-
-I've received your message and will review it carefully. I typically respond within 24-48 hours during business days.
-
-In the meantime, feel free to check out my latest work: https://adershcs.design/#work
-
-Best regards,
-Adersh C.S
-UI/UX Designer & Frontend Developer
-https://adershcs.design">
-
-                                <!-- Honeypot -->
                                 <input type="checkbox" name="botcheck" style="display:none !important" tabindex="-1" autocomplete="off">
 
                                 <div class="flex flex-col gap-3 sm:gap-4">
@@ -1097,15 +1070,17 @@ https://adershcs.design">
                 showScrollTop: false,
                 scrollProgress: 144.51,
                 projects: [
-                    { id: 1, title: 'Novu — SaaS Dashboard', category: 'UI/UX Design', categoryLink: 'projects-uiux.html', description: 'Complete UX overhaul of a B2B notification platform.', image: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&q=80&auto=format&fit=crop' },
-                    { id: 2, title: 'Finlo — Onboarding Flow', category: 'UI/UX Design', categoryLink: 'projects-uiux.html', description: 'Redesigned the entire onboarding experience for a personal finance app.', image: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=400&q=80&auto=format&fit=crop' },
-                    { id: 3, title: 'Bloom — Mobile App Design', category: 'UI/UX Design', categoryLink: 'projects-uiux.html', description: 'End-to-end mobile app design for a premium skincare brand.', image: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=400&q=80&auto=format&fit=crop' },
-                    { id: 4, title: 'Orea — Frontend', category: 'Frontend', categoryLink: 'projects-frontend.html', description: 'Bold editorial website with scroll-driven animations.', image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&q=80&auto=format&fit=crop' },
-                    { id: 5, title: 'Mother Dental Clinic', category: 'Frontend', categoryLink: 'mother-dental.html', description: 'Responsive website for a dental clinic with online appointment booking.', image: 'images/Mother-Dental.png' },
-                    { id: 6, title: 'Thrissur Tourism', category: 'Frontend', categoryLink: 'thrissur.html', description: 'Tourism website for Thrissur, showcasing local attractions.', image: 'images/Thrissur-Tourisum-website.png' },
-                    { id: 7, title: 'Bloom — Brand Identity', category: 'Graphic Design', categoryLink: 'projects-graphic.html', description: 'Complete brand identity redesign for a premium skincare startup.', image: 'https://images.unsplash.com/photo-1572188866181-3c6c5e96f6e9?w=400&q=80&auto=format&fit=crop' },
-                    { id: 8, title: 'Summer — Poster Campaign', category: 'Graphic Design', categoryLink: 'projects-graphic.html', description: 'Vibrant poster series for a summer music festival.', image: 'https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=400&q=80&auto=format&fit=crop' },
-                    { id: 9, title: 'Herbal Tea — Social Media Design', category: 'Graphic Design', categoryLink: 'projects-graphic.html', description: 'Eco-friendly packaging design for an organic tea brand.', image: 'https://images.unsplash.com/photo-1594751543129-6701ad444259?w=400&q=80&auto=format&fit=crop' }
+                    { id: 1, title: 'Ksrtc - Public Transport App', category: 'mobile', categoryLabel: 'Mobile App', image: 'images/ksrtc-main1.png', description: 'A modern public transport app designed for seamless navigation and real-time updates.', link: 'ksrtcapp.html', year: '2025' },
+                    { id: 2, title: 'Sunrise Solar — Single-page website', category: 'singlepage', categoryLabel: 'Single Page', image: 'images/SunriseSolar.png', description: 'Power your home or business with next-generation solar panels engineered for peak efficiency, weather resilience, and maximum financial savings.', link: 'SunriseWebsite.html', year: '2026' },
+                    { id: 3, title: 'Vows — Wedding Planning Platform', category: 'multipage', categoryLabel: 'Multi-Page', image: 'images/vowsmain.png', description: 'Wedding planning platform with customizable templates and seamless booking integration.', link: 'vowswedd.html', year: '2024' },
+                    { id: 4, title: 'Kanban Board Pro — Web Application', category: 'webapp', categoryLabel: 'Web Application', image: 'images/kanban.png', description: 'Interactive Kanban board with drag-and-drop task management, real-time updates, and team collaboration features.', link: 'Kanban.html', year: '2026' },
+                    { id: 5, title: 'Thrissur Tourism Website', category: 'landing', categoryLabel: 'Landing Page', image: 'images/thrissurthumb.png', description: 'Thrissur tourism website showcasing local attractions, culture, and services with 98/100 Lighthouse score.', link: 'Thrissur.html', year: '2026' },
+                    { id: 6, title: 'Mother Dental Clinic', category: 'corporate', categoryLabel: 'Corporate Website', image: 'images/motherthumb.png', description: 'Modern dental clinic website with online appointment booking, 100% accessibility, and responsive design.', link: 'mother.html', year: '2026' },
+                    { id: 7, title: 'Kattan — Brand Identity', category: 'Brand Identity', categoryLabel: 'Brand Identity', image: 'images/kattanbranding.png', description: 'A complete brand identity for Kattan, a premium Kerala-inspired beverage brand, featuring logo design, visual language, typography, color palette, packaging, and brand applications.', link: 'Kattan-branding.html', year: '2026' },
+                    { id: 8, title: 'The Kitchen Treasures — Poster', category: 'Poster Design', categoryLabel: 'Poster Design', image: 'images/Mainpage.png', description: 'A premium food advertising poster designed for The Kitchen Treasures, combining appetizing food photography, elegant typography, and a refined visual composition to showcase signature dishes.', link: 'Kitchen-poster.html', year: '2026' },
+                    { id: 9, title: 'Cadbury — Social Assets', category: 'Social Media Design', categoryLabel: 'Social Media Design', image: 'images/cadbury.png', description: 'A collection of engaging social media designs for Cadbury, featuring product-focused visuals, creative compositions, bold typography, and campaign-ready content designed for digital platforms.', link: 'Cadbury-socialmedia.html', year: '2026' },
+                    { id: 10, title: 'Logofolio', category: 'Logofolio', categoryLabel: 'Logofolio', image: 'images/LOGOFOLIO.png', description: 'A curated collection of original logo concepts exploring diverse visual styles, typography, symbolism, and creative approaches across different brands and industries.', link: 'Logofolio1.html', year: '2026' },
+                    { id: 11, title: 'BKU — Package Design', category: 'Package Design', categoryLabel: 'Package Design', image: 'images/bkumain.png', description: 'A distinctive package design project for BKU, combining bold visual elements, thoughtful typography, structured layouts, and a cohesive packaging system designed to strengthen product identity.', link: 'Bku-package.html', year: '2026' }
                 ],
                 get searchResults() {
                     if (this.searchQuery.trim() === '') return [];
@@ -1113,12 +1088,16 @@ https://adershcs.design">
                     return this.projects.filter(p =>
                         p.title.toLowerCase().includes(query) ||
                         p.description.toLowerCase().includes(query) ||
-                        p.category.toLowerCase().includes(query)
+                        p.category.toLowerCase().includes(query) ||
+                        (p.categoryLabel && p.categoryLabel.toLowerCase().includes(query)) ||
+                        (p.year && p.year.includes(query))
                     );
                 },
                 get searchResultCount() { return this.searchResults.length; },
                 clearSearch() { this.searchQuery = ''; this.searchOpen = false; this.selectedIndex = -1; },
-                selectResult(index) { if (this.searchResults[index]) window.location.href = this.searchResults[index].categoryLink; },
+                selectResult(index) {
+                    if (this.searchResults[index]) window.location.href = this.searchResults[index].link;
+                },
                 handleKeydown(e) {
                     if (e.key === 'ArrowDown') { e.preventDefault(); this.selectedIndex = Math.min(this.selectedIndex + 1, this.searchResults.length - 1); }
                     else if (e.key === 'ArrowUp') { e.preventDefault(); this.selectedIndex = Math.max(this.selectedIndex - 1, -1); }
@@ -1213,7 +1192,7 @@ https://adershcs.design">
             }
         })();
 
-        // ═══ CONTACT FORM (Web3Forms — validated, accessible, auto-clearing status) ═══
+        // ═══ CONTACT FORM ═══
         document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('contactForm');
             if (!form) return;
@@ -1248,13 +1227,11 @@ https://adershcs.design">
             form.addEventListener('submit', async function (e) {
                 e.preventDefault();
 
-                // Anti-spam: min fill time
                 if (Date.now() - formOpenedAt < MIN_FILL_TIME) {
                     setStatus('❌ Please take a moment before submitting.', 'error');
                     return;
                 }
 
-                // Safely grab field values (avoid form.name collision)
                 const nameEl    = form.querySelector('input[name="name"]');
                 const emailEl   = form.querySelector('input[name="email"]');
                 const messageEl = form.querySelector('textarea[name="message"]');
@@ -1263,7 +1240,6 @@ https://adershcs.design">
                 const email   = emailEl.value.trim();
                 const message = messageEl.value.trim();
 
-                // Validation
                 if (name.length < 2) {
                     setStatus('❌ Please enter your name.', 'error');
                     nameEl.focus();
@@ -1280,7 +1256,6 @@ https://adershcs.design">
                     return;
                 }
 
-                // Submit
                 btn.textContent = 'Sending...';
                 btn.disabled = true;
                 setStatus('');
