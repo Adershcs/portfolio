@@ -11,18 +11,9 @@
   loading: true,
   imageErrors: {},
   projects: [
-
-  // ── WEB APPLICATIONS ──
-{ id: 5, title: 'Kanban Board Pro  — Web Application', category: 'webapp', categoryLabel: 'Web Application', image: 'images/kanban.png', description: 'Interactive Kanban board with drag-and-drop task management, real-time updates, and team collaboration features.', link: 'Kanban.html', year: '2026' },
-
-    // ── LANDING PAGES ──
-    { id: 1, title: 'Thrissur Tourism Website', category: 'landing', categoryLabel: 'Landing Page', image: 'images/Thrissur%20Tourisum%20website.png', description: 'Thrissur tourism website showcasing local attractions, culture, and services with 98/100 Lighthouse score.', link: 'Thrissur.html', year: '2026' },
-    
-    // ── CORPORATE WEBSITES ──
-    { id: 2, title: 'Mother Dental Clinic', category: 'corporate', categoryLabel: 'Corporate Website', image: 'images/Mother-Dental.png', description: 'Modern dental clinic website with online appointment booking, 100% accessibility, and responsive design.', link: 'mother.html', year: '2026' },
-    
- 
-  
+    { id: 4, title: 'Kanban Board Pro  — Web Application', category: 'webapp', categoryLabel: 'Web Application', image: 'images/kanban.png', description: 'Interactive Kanban board with drag-and-drop task management, real-time updates, and team collaboration features.', link: 'Kanban.html', year: '2026' },
+    { id: 5, title: 'Thrissur Tourism Website', category: 'landing', categoryLabel: 'Landing Page', image: 'images/thrissurthumb.png', description: 'Thrissur tourism website showcasing local attractions, culture, and services with 98/100 Lighthouse score.', link: 'Thrissur.html', year: '2026' },
+    { id: 6, title: 'Mother Dental Clinic', category: 'corporate', categoryLabel: 'Corporate Website', image: 'images/motherthumb.png', description: 'Modern dental clinic website with online appointment booking, 100% accessibility, and responsive design.', link: 'mother.html', year: '2026' }
   ],
   get categories() {
     const cats = [...new Set(this.projects.map(p => p.category))];
@@ -151,8 +142,22 @@
         }
     </script>
 
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='white'/%3E%3Ccircle cx='50' cy='50' r='45' fill='none' stroke='%23FF6B2B' stroke-width='2'/%3E%3Ctext x='50' y='72' font-family='Arial' font-size='60' font-weight='bold' fill='%23FF6B2B' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E" />
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+<!-- ═══ FAVICON ═══ -->
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="images/favicon-48.png">
+<link rel="icon" type="image/png" sizes="512x512" href="images/favicon-512.png">
+<link rel="apple-touch-icon" sizes="180x180" href="images/favicon-180.png">
+<meta name="theme-color" content="#FF6B2B">
+
+<!-- ↓ This one is NOT a favicon — it's for iOS home screen only -->
+<link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+
+<link rel="icon" type="image/png" sizes="192x192" href="images/android-chrome-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="images/android-chrome-512x512.png">
+<link rel="manifest" href="images/site.webmanifest">
+<meta name="theme-color" content="#ffffff">
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -302,43 +307,43 @@
         .d5 { transition-delay: .33s; }
       
         /* ═══ GLASSMORPHISM ═══ */
-.glass {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-.dark .glass {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.08);
-}
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .glass {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
 
-/* ═══ NAV LINKS ═══ */
-.nav-link {
-    position: relative;
-    font-weight: 500;
-    transition: color 0.3s ease;
-}
-.nav-link::after {
-    content: '';
-    position: absolute;
-    bottom: -3px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: linear-gradient(135deg, #FF4D1C 0%, #FF8C42 50%, #FFB347 100%);
-    transition: width .3s cubic-bezier(.22, 1, .36, 1);
-}
-.nav-link:hover::after,
-.nav-link.active::after {
-    width: 100%;
-}
-.nav-link.active {
-    color: #FF4D1C !important;
-}
-.dark .nav-link.active {
-    color: #FF6B3D !important;
-}
+        /* ═══ NAV LINKS ═══ */
+        .nav-link {
+            position: relative;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #FF4D1C 0%, #FF8C42 50%, #FFB347 100%);
+            transition: width .3s cubic-bezier(.22, 1, .36, 1);
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        .nav-link.active {
+            color: #FF4D1C !important;
+        }
+        .dark .nav-link.active {
+            color: #FF6B3D !important;
+        }
         .shimmer {
             position: relative;
             overflow: hidden;
@@ -546,14 +551,19 @@
             box-shadow: 0 4px 12px rgba(255, 107, 43, 0.25);
         }
 
-        .reveal-project {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        /* ═══ FILTER CARD ANIMATION (NEW) ═══ */
+        .filter-card {
+            animation: filterFadeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
-        .reveal-project.visible {
-            opacity: 1;
-            transform: translateY(0);
+        @keyframes filterFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .gradient-text-hover {
@@ -693,9 +703,10 @@
                 transform: none !important;
                 box-shadow: none !important;
             }
-            .reveal-project {
+            .filter-card {
                 opacity: 1 !important;
                 transform: none !important;
+                animation: none !important;
             }
             .gradient-text-hover {
                 background: none !important;
@@ -734,70 +745,59 @@
 
 <body class="bg-white dark:bg-[#0a0a0a] text-zinc-800 dark:text-zinc-100 antialiased">
 
-    <!-- Skip link -->
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
-    <!-- CUSTOM CURSOR -->
     <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
     <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
 
-    
     <!-- ═══ NAV ═══ -->
-   <header class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[96%] max-w-7xl rounded-2xl glass shadow-lg shadow-black/5 dark:shadow-black/30 transition-all duration-300" :class="scrolled ? 'py-1' : 'py-2'" role="banner">
-    <nav class="px-5 md:px-6 flex items-center justify-between h-14 md:h-14" aria-label="Main navigation">
-        <!-- Logo -->
-        <a href="index.html" class="font-bold text-xl tracking-tight flex items-center gap-1 shrink-0" aria-label="Adersh C.S Home">
-            <span class="text-zinc-900 dark:text-white">Ade</span>
-            <span class="text-accent">rsh</span>
-            <span class="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-accent to-accent-light animate-pulse ml-0.5" aria-hidden="true"></span>
-        </a>
-
-        <!-- Desktop Navigation - 3 items -->
-        <ul class="hidden md:flex items-center gap-7 text-sm font-medium" role="list">
-            <li><a href="projects-uiux.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors" :class="{'active': activeSection === 'ux'}">UX Work</a></li>
-          <li><a href="#" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors active">Frontend Work</a></li>
-            <li><a href="projects-graphic.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors" :class="{'active': activeSection === 'graphic'}">Graphic Work</a></li>
-        </ul>
-
-        <!-- Right side -->
-        <div class="flex items-center gap-1 md:gap-2">
-            <!-- Theme Toggle -->
-            <button @click="dark=!dark" class="w-9 h-9 flex items-center justify-center rounded-full bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-white/70 dark:hover:bg-white/10 transition-colors shrink-0" :aria-label="dark ? 'Switch to light mode' : 'Switch to dark mode'">
-                <svg x-show="!dark" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-                <svg x-show="dark" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
-            </button>
-
-            <!-- Hire Me (Styled like index) -->
-            <a href="index.html#contact" class="hidden md:inline-flex items-center gap-1.5 px-5 py-2 rounded-full text-white text-sm font-semibold shadow-lg shadow-accent/30 hover:shadow-accent/50 transition-all hover:scale-105 shrink-0" style="background: linear-gradient(135deg, #FF4D1C 0%, #FF8C42 50%, #FFB347 100%);">
-                Hire Me
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                </svg>
+    <header class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[96%] max-w-7xl rounded-2xl glass shadow-lg shadow-black/5 dark:shadow-black/30 transition-all duration-300" :class="scrolled ? 'py-1' : 'py-2'" role="banner">
+        <nav class="px-5 md:px-6 flex items-center justify-between h-14 md:h-14" aria-label="Main navigation">
+            <a href="index.html" class="font-bold text-xl tracking-tight flex items-center gap-1 shrink-0" aria-label="Adersh C.S Home">
+                <span class="text-zinc-900 dark:text-white">Ade</span>
+                <span class="text-accent">rsh</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-accent to-accent-light animate-pulse ml-0.5" aria-hidden="true"></span>
             </a>
 
-            <!-- Mobile Menu Toggle (Styled like index) -->
-            <button @click="mobileMenu=!mobileMenu" class="md:hidden w-9 h-9 flex items-center justify-center rounded-full bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-white/70 dark:hover:bg-white/10 transition-colors" aria-label="Toggle menu">
-                <svg x-show="!mobileMenu" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-                <svg x-show="mobileMenu" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
-        </div>
-    </nav>
+            <ul class="hidden md:flex items-center gap-7 text-sm font-medium" role="list">
+                <li><a href="projects-uiux.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">UX Work</a></li>
+                <li><a href="projects-frontend.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors active">Frontend Work</a></li>
+                <li><a href="projects-graphic.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">Graphic Work</a></li>
+            </ul>
 
-    <!-- Mobile Menu - 3 items (Styled like index) -->
-    <div x-show="mobileMenu" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" class="md:hidden bg-white/80 dark:bg-black/80 backdrop-blur-xl border-t border-zinc-200/30 dark:border-zinc-700/30 rounded-b-2xl overflow-hidden">
-        <ul class="flex flex-col px-6 py-6 gap-3 text-sm" role="list">
-            <li><a href="projects-uiux.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">UX Work</a></li>
-            <li><a href="projects-frontend.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Frontend Work</a></li>
-            <li><a href="projects-graphic.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Graphic Work</a></li>
-            <li class="pt-3 border-t border-zinc-200/30 dark:border-zinc-700/30">
-                <a href="index.html#contact" @click="mobileMenu=false" class="inline-flex shimmer bg-accent text-white font-medium text-sm px-6 py-2.5 rounded-full hover:bg-accent-dark transition-colors">
-                    Hire me →
+            <div class="flex items-center gap-1 md:gap-2">
+                <button @click="dark=!dark" class="w-9 h-9 flex items-center justify-center rounded-full bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-white/70 dark:hover:bg-white/10 transition-colors shrink-0" :aria-label="dark ? 'Switch to light mode' : 'Switch to dark mode'">
+                    <svg x-show="!dark" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                    <svg x-show="dark" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
+                </button>
+
+                <a href="index.html#contact" class="hidden md:inline-flex items-center gap-1.5 px-5 py-2 rounded-full text-white text-sm font-semibold shadow-lg shadow-accent/30 hover:shadow-accent/50 transition-all hover:scale-105 shrink-0" style="background: linear-gradient(135deg, #FF4D1C 0%, #FF8C42 50%, #FFB347 100%);">
+                    Hire Me
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
                 </a>
-            </li>
-        </ul>
-    </div>
-</header>
 
+                <button @click="mobileMenu=!mobileMenu" class="md:hidden w-9 h-9 flex items-center justify-center rounded-full bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-white/70 dark:hover:bg-white/10 transition-colors" aria-label="Toggle menu">
+                    <svg x-show="!mobileMenu" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    <svg x-show="mobileMenu" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+        </nav>
+
+        <div x-show="mobileMenu" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" class="md:hidden bg-white/80 dark:bg-black/80 backdrop-blur-xl border-t border-zinc-200/30 dark:border-zinc-700/30 rounded-b-2xl overflow-hidden">
+            <ul class="flex flex-col px-6 py-6 gap-3 text-sm" role="list">
+                <li><a href="projects-uiux.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">UX Work</a></li>
+                <li><a href="projects-frontend.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Frontend Work</a></li>
+                <li><a href="projects-graphic.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Graphic Work</a></li>
+                <li class="pt-3 border-t border-zinc-200/30 dark:border-zinc-700/30">
+                    <a href="index.html#contact" @click="mobileMenu=false" class="inline-flex shimmer bg-accent text-white font-medium text-sm px-6 py-2.5 rounded-full hover:bg-accent-dark transition-colors">
+                        Hire me →
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </header>
 
     <main id="main-content">
 
@@ -878,17 +878,16 @@
 
             <!-- Project Grid -->
             <div x-show="!loading" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <template x-for="(project, index) in filteredProjects" :key="project.id">
-                    <div class="reveal-project" :style="`transition-delay:${(index % 3) * 0.08}s`">
+                <template x-for="(project, index) in filteredProjects" :key="filter + '-' + project.id">
+                    <div class="filter-card" :style="`animation-delay:${(index % 3) * 0.08}s`">
                         <article class="group relative bg-white dark:bg-zinc-900/80 rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 hover:border-accent/50 transition-all card-hover h-full">
 
                             <!-- Image -->
                             <div class="relative">
-                                <div class="photo-frame w-full aspect-[4/3]">
+                                <div class="photo-frame w-full aspect-[4/2]">
                                     <img :src="project.image" :alt="project.title" loading="lazy" decoding="async" @error="handleImageError(project.id)" />
                                 </div>
                                 <div class="card-image-overlay"></div>
-                                <!-- Image error fallback -->
                                 <template x-if="imageErrors[project.id]">
                                     <div class="absolute inset-0 flex items-center justify-center bg-zinc-100 dark:bg-zinc-800">
                                         <span class="text-zinc-400 dark:text-zinc-500 text-sm flex items-center gap-2">
@@ -933,7 +932,6 @@
             <p x-show="!loading" class="text-sm text-zinc-400 dark:text-zinc-500 mt-8 text-center" x-text="`${filteredProjects.length} project${filteredProjects.length !== 1 ? 's' : ''} — ${filter === 'all' ? 'all categories' : getCategoryLabel(filter)}`"></p>
 
         </section>
-
 
         <!-- ═══ SKILLS / TECH STACK ═══ -->
         <section class="py-16 bg-zinc-50/80 dark:bg-zinc-900/30">
@@ -994,14 +992,11 @@
 
     <!-- ═══ FLOATING ACTION BUTTONS ═══ -->
     <div class="fixed right-6 bottom-24 z-40 flex flex-col gap-3">
-        <!-- Share Button -->
         <button @click="sharePage()" class="fab w-12 h-12 rounded-full bg-white dark:bg-zinc-800 shadow-lg border border-zinc-200 dark:border-zinc-700 hover:bg-accent hover:text-white hover:border-accent hover:scale-110 transition-all duration-300 flex items-center justify-center text-zinc-600 dark:text-zinc-300" aria-label="Share page">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
         </button>
 
-        <!-- Scroll to Top with Progress Ring -->
         <button @click="window.scrollTo({top:0,behavior:'smooth'})" x-show="scrolled" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90" class="relative w-12 h-12 rounded-full bg-white dark:bg-zinc-800 shadow-lg border border-zinc-200 dark:border-zinc-700 hover:bg-accent hover:text-white hover:border-accent hover:scale-110 transition-all duration-300 flex items-center justify-center text-zinc-600 dark:text-zinc-300 group" aria-label="Scroll to top">
-            <!-- SVG ring showing scroll progress -->
             <svg class="absolute inset-0 w-full h-full -rotate-90">
                 <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="2" class="text-zinc-200 dark:text-zinc-700"/>
                 <circle cx="24" cy="24" r="20" fill="none" stroke="#FF6B2B" stroke-width="2.5" :stroke-dasharray="`${progress * 125.6 / 100} 125.6`" class="transition-all duration-300"/>
@@ -1010,34 +1005,19 @@
         </button>
     </div>
 
-  <!-- ═══ FOOTER ═══ -->
-    <footer class="border-t border-zinc-100 dark:border-zinc-800 bg-white dark:bg-[#0a0a0a] transition-colors">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 text-center">
-            <p class="text-xs sm:text-sm text-zinc-400">
-                © <span id="yr"></span> . All rights reserved.
-                <br class="sm:hidden">
-                Developed by <a href="https://linkedin.com/in/adersh-c-s" target="_blank" rel="noopener noreferrer" class="font-medium hover:text-accent transition-colors">Adersh c.s</a>
+     <!-- ═══ FOOTER ═══ -->
+    <footer class="border-t border-zinc-200/30 dark:border-zinc-800/30 bg-white/40 dark:bg-black/20 backdrop-blur-sm transition-colors" role="contentinfo">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-5 sm:py-8 text-center">
+            <p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">
+                © <span id="yr"></span>
+                <a href="https://linkedin.com/in/adersh-c-s" target="_blank" rel="noopener noreferrer" class="font-medium hover:text-accent transition-colors">Adersh c.s</a>
+                | All rights reserved.
             </p>
         </div>
     </footer>
-
+    
     <script>
         document.getElementById('yr').textContent = new Date().getFullYear();
-
-        // ── Reveal on scroll ──
-        const obs = new IntersectionObserver(entries => {
-            entries.forEach(e => {
-                if (e.isIntersecting) {
-                    e.target.classList.add('visible');
-                    // Unobserve after animation for better performance
-                    obs.unobserve(e.target);
-                }
-            });
-        }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.reveal-project').forEach(el => obs.observe(el));
-        });
 
         // ── Custom Cursor ──
         const dot = document.getElementById('cursorDot');
@@ -1059,22 +1039,28 @@
             dotX += (mouseX - dotX) * dotEase;
             dotY += (mouseY - dotY) * dotEase;
 
-            ring.style.transform = `translate(${ringX - 20}px, ${ringY - 20}px)`;
-            dot.style.transform = `translate(${dotX - 4}px, ${dotY - 4}px)`;
+            if (ring) ring.style.transform = `translate(${ringX - 20}px, ${ringY - 20}px)`;
+            if (dot) dot.style.transform = `translate(${dotX - 4}px, ${dotY - 4}px)`;
 
             requestAnimationFrame(animateCursor);
         };
 
         const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-        if (!isTouchDevice) {
+        if (!isTouchDevice && dot && ring) {
             document.addEventListener('mousemove', onMouseMove);
             animateCursor();
+        }
 
+        // Re-attach hover listeners (also after filter changes)
+        function attachHoverListeners() {
+            if (isTouchDevice || !ring || !dot) return;
             const hoverElements = document.querySelectorAll(
-                'a, button, .card-hover, .nav-link, .shimmer, .photo-frame, .filter-btn, .lightbox-btn, .skill-tag, .view-project-btn, .lightbox-close-btn, .fab'
+                'a, button, .card-hover, .nav-link, .shimmer, .photo-frame, .filter-btn, .lightbox-btn, .skill-tag, .view-project-btn, .lightbox-close-btn, .fab, .filter-card'
             );
             hoverElements.forEach(el => {
+                if (el.dataset.cursorBound === '1') return;
+                el.dataset.cursorBound = '1';
                 el.addEventListener('mouseenter', () => {
                     ring.classList.add('hover');
                     dot.classList.add('hover');
@@ -1092,7 +1078,20 @@
             });
         }
 
-        // ── Image error handling (fallback for inline images) ──
+        document.addEventListener('DOMContentLoaded', attachHoverListeners);
+
+        // Re-bind after Alpine updates DOM (filters, etc.)
+        const gridMutationObserver = new MutationObserver(() => {
+            attachHoverListeners();
+        });
+        document.addEventListener('DOMContentLoaded', () => {
+            const grid = document.querySelector('.grid');
+            if (grid) {
+                gridMutationObserver.observe(grid, { childList: true, subtree: true });
+            }
+        });
+
+        // ── Image error handling (fallback) ──
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.photo-frame img').forEach(img => {
                 img.addEventListener('error', function() {
