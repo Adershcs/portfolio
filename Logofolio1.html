@@ -1,0 +1,2132 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{
+  dark: localStorage.getItem('theme')==='dark'||(!localStorage.getItem('theme')&&window.matchMedia('(prefers-color-scheme: dark)').matches),
+  scrolled: false,
+  mobileMenu: false,
+  progress: 0,
+  activeTab: 'overview',
+  lightboxOpen: false,
+  lightboxIndex: 0,
+  galleryImages: [],
+  showToast: false,
+  toastMessage: '',
+  toastType: 'success',
+  carouselIndex: 0,
+  carouselItems: [
+    {
+      id: 1,
+      title: 'Bloom — Wordmark Design',
+      category: 'Wordmark',
+      image: 'images/COMMINGSOON.png',
+      description: 'Custom typographic wordmark for a premium floral brand.',
+      link: '#'
+    },
+    {
+      id: 2,
+      title: 'Apex — Lettermark',
+      category: 'Lettermark',
+      image: 'images/COMMINGSOON.png',
+      description: 'Bold monogram logo for a tech consulting firm.',
+      link: '#'
+    },
+    {
+      id: 3,
+      title: 'Nova — Pictorial Mark',
+      category: 'Pictorial Mark',
+      image: 'images/COMMINGSOON.png',
+      description: 'Iconic visual symbol for a space exploration brand.',
+      link: '#'
+    },
+    {
+      id: 4,
+      title: 'Verve — Abstract Mark',
+      category: 'Abstract Mark',
+      image: 'images/COMMINGSOON.png',
+      description: 'Geometric abstract logo for a creative agency.',
+      link: '#'
+    },
+    {
+      id: 5,
+      title: 'Nomad — Combination Mark',
+      category: 'Combination Mark',
+      image: '/images/COMMINGSOON.png',
+      description: 'Icon + wordmark system for a travel brand.',
+      link: '#'
+    },
+    {
+      id: 6,
+      title: 'Heritage — Emblem',
+      category: 'Emblem',
+        image: 'images/COMMINGSOON.png',
+      description: 'Classic badge-style logo for a heritage brand.',
+      link: '#'
+    }
+  ],
+  get totalPages() {
+    return Math.ceil(this.carouselItems.length / 3);
+  },
+  get currentPage() {
+    return Math.floor(this.carouselIndex / 3) + 1;
+  },
+  get paginationPages() {
+    const total = this.totalPages;
+    const current = this.currentPage;
+    if (total <= 1) return [1];
+    if (total <= 5) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+    const pages = [];
+    pages.push(1);
+    if (current > 3) pages.push(-1);
+    const start = Math.max(2, current - 1);
+    const end = Math.min(total - 1, current + 1);
+    for (let i = start; i <= end; i++) {
+      if (i > 1 && i < total) pages.push(i);
+    }
+    if (current < total - 2) pages.push(-1);
+    pages.push(total);
+    return pages;
+  },
+  goToPage(page) {
+    const idx = (page - 1) * 3;
+    if (idx >= 0 && idx < this.carouselItems.length) {
+      this.carouselIndex = idx;
+    } else {
+      this.carouselIndex = 0;
+    }
+  },
+  prevSlide() {
+    const newIndex = this.carouselIndex - 3;
+    if (newIndex >= 0) {
+      this.carouselIndex = newIndex;
+    } else {
+      const total = this.carouselItems.length;
+      const remainder = total % 3;
+      const lastPageStart = remainder === 0 ? total - 3 : total - remainder;
+      this.carouselIndex = Math.max(0, lastPageStart);
+    }
+  },
+  nextSlide() {
+    const newIndex = this.carouselIndex + 3;
+    if (newIndex < this.carouselItems.length) {
+      this.carouselIndex = newIndex;
+    } else {
+      this.carouselIndex = 0;
+    }
+  },
+  touchStartX: 0,
+  touchEndX: 0,
+  handleTouchStart(e) {
+    this.touchStartX = e.changedTouches[0].screenX;
+  },
+  handleTouchEnd(e) {
+    this.touchEndX = e.changedTouches[0].screenX;
+    const diff = this.touchStartX - this.touchEndX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        this.nextSlide();
+      } else {
+        this.prevSlide();
+      }
+    }
+  },
+  selectedVariation: null,
+  showScaleTest: false,
+  sliderPos: 50,
+  lightboxImages: [],
+  lightboxTitle: '',
+  openVariationLightbox(index, event) {
+    if (event) event.stopPropagation();
+    this.lightboxImages = [this.project.logoVariations[index].image];
+    this.lightboxTitle = this.project.logoVariations[index].name;
+    this.lightboxIndex = 0;
+    this.lightboxOpen = true;
+    document.body.style.overflow = 'hidden';
+  },
+  openContextLightbox(image, title, event) {
+    if (event) event.stopPropagation();
+    this.lightboxImages = [image];
+    this.lightboxTitle = title;
+    this.lightboxIndex = 0;
+    this.lightboxOpen = true;
+    document.body.style.overflow = 'hidden';
+  },
+  project: {
+    id: 1,
+    title: 'Logofolio',
+    category: 'branding',
+    categoryLabel: 'Logo Collection',
+    heroImage: 'images/LOGOFOLIO.png',
+    overview: 'A curated collection of the 7 core logo types — Wordmarks, Lettermarks, Pictorial Marks, Abstract Marks, Combination Marks, Emblems, and Dynamic Marks. Each type serves a distinct strategic purpose, from typographic simplicity to flexible, adaptive identities. This collection demonstrates how the right logo type — combined with thoughtful typography, color, and form — creates a lasting brand identity that performs beautifully across packaging, digital, print, and retail.',
+    challenge: 'Clients often don\'t know which logo type best suits their brand, industry, or application needs. The wrong choice can limit a brand\'s scalability, reduce recognition, or fail across different touchpoints. The challenge lies in matching the right logo type to the right brand strategy — and executing it flawlessly so the brand stands out, not blends in.',
+    solution: 'I approach every logo project by first understanding the brand\'s industry, audience, and application needs. This ensures the chosen logo type is purpose-driven, not just visually appealing. This collection showcases how each type solves specific branding challenges — proving that great logos aren\'t just beautiful marks; they\'re functional systems that work everywhere.',
+    metrics: [
+      { value: '7', label: 'Logo Types' },
+      { value: '7+', label: 'Variations' }
+    ],
+    logoVariations: [
+      { 
+        name: 'Wordmark(Logotype)',
+        description: 'Custom typographic logo that spells out the brand name. Clean, versatile, and timeless — ideal for brands with unique names or strong typographic identities.',
+        image: 'images/MOKSHA-LOGO.png',
+        palette: ['#4F6F52', '#FFFFFF'],
+        typography: 'Posterama2001-semibld',
+        usage: [ '🌐 Websites', '📋 Documents'],
+        formats: ['AI', 'EPS', 'PNG', 'SVG'],
+        fileSize: '2.4 MB',
+        scaleTest: 'images/MOKSHA-LOGO.png'
+      },
+      { 
+        name: 'Lettermark (Monogram)',
+        description: 'Initials or single letters representing the brand. Ideal for long or complex names, creating a memorable and compact identity. Examples: IBM, CNN, HP.',
+        image: 'images/MJ-MASTERSJUNCTION-LOG0.png',
+        palette: ['#1A1A1A', '#D4AF37', '#888888'],
+        typography: 'Inter, Open Sans',
+        usage: ['🏛️ Club Merchandise'],
+        formats: ['AI', 'EPS', 'PNG', 'SVG'],
+        fileSize: '1.8 MB',
+        scaleTest: 'images/MJ-MASTERSJUNCTION-LOG0.png'
+      },
+      { 
+        name: 'Pictorial Mark',
+        description: 'Literal, recognizable icons that become visual shortcuts for the brand. Requires heavy advertising to build recognition. Examples: Apple, Twitter, Target.',
+        image: 'images/GOATSTUDIOS.png',
+        palette: ['#FFFFFF', '#0A0A0A'],
+        typography: 'N/A — Icon Only',
+        usage: ['🏪 Studio', '🪧 Signage'],
+        formats: ['AI', 'EPS', 'PNG', 'SVG'],
+        fileSize: '2.1 MB',
+        scaleTest: 'images/GOATSTUDIOS.png'
+      },
+      { 
+        name: 'Abstract Mark',
+        description: 'Geometric shapes that evoke emotion without literal representation. Creates unique, ownable visual identities. Examples: Nike Swoosh, Adidas Three Stripes, Airbnb Bélo.',
+        image: 'images/HERTZIX.png',
+        palette: ['#FF6B2B', '#2D2D2D', '#F5F5F5'],
+        typography: 'N/A — Abstract Form',
+        usage: ['🎵 Music', ' Production'],
+        formats: ['AI', 'EPS', 'SVG'],
+        fileSize: '1.5 MB',
+        scaleTest: 'images/HERTZIX.png'
+      },
+      { 
+        name: 'Combination Mark',
+        description: 'Icon + text working together for maximum flexibility. The most versatile and widely used logo type. Examples: Burger King, Mastercard, Dove.',
+        image: 'images/BIGBURGER.png',
+        palette: ['#49152C', '#F58021', '#C32E30'],
+        typography: 'Montserrat Bold, sans-serif',
+        usage: ['🍔 Food & Beverage', '📦 Packaging'],
+        formats: ['AI', 'EPS', 'PNG', 'SVG'],
+        fileSize: '1.9 MB',
+        scaleTest: 'images/BIGBURGER.png'
+      },
+      { 
+        name: 'Emblem (Badge)',
+        description: 'Text and symbol fused inside a contained shape. Evokes heritage, tradition, and authority. Examples: Starbucks (historically), Harley-Davidson, BMW, college sports teams.',
+        image: 'images/THUNDERMALABARFC.png',
+        palette: ['#FFD700', '#1A1A1A','#F5F5F5'],
+        typography: 'Serif + Sans-Serif',
+        usage: ['🏫 Schools', '🏆 Sports'],
+        formats: ['AI', 'EPS', 'PNG', 'SVG'],
+        fileSize: '1.6 MB',
+        scaleTest: 'images/THUNDERMALABARFC.png'
+      },
+       {
+  name: 'Mascot',
+  description: 'Illustrated characters or brand ambassadors that personify the brand. Creates strong emotional connections and storytelling opportunities. Examples: KFC\'s Colonel Sanders, Michelin\'s Bibendum, Pringles\' Mr. Pringle.',
+  image: 'images/APEXSHARK.png',
+  palette: ['#0C1424', '#3064A0', '#FF0000'],
+  typography: 'N/A — Illustrated Character',
+  usage: [ '🎮 Gaming', '🛡️ Sports Teams'],
+  formats: ['AI', 'EPS', 'PNG', 'SVG'],
+  fileSize: '2.8 MB',
+  scaleTest: 'images/APEXSHARK.png'
+}
+    ],
+    designProcess: [
+      { phase: 'Research & Discovery', description: 'Analyze the brand\'s industry, competitors, target audience, and application needs to determine the right logo type.', duration: '1-2 weeks' },
+      { phase: 'Concept Sketches', description: 'Generate 40-60 hand-drawn sketches exploring different logo types, forms, and typographic directions.', duration: '1-2 weeks' },
+      { phase: 'Digital Refinement', description: 'Vectorize selected concepts and refine typography, spacing, and proportions for readability at all sizes.', duration: '1-2 weeks' },
+      { phase: 'Logo System', description: 'Develop the full logo system with variations and test across packaging, digital, print, and retail applications.', duration: '1-2 weeks' }
+    ],
+    year: '2026',
+    client: 'Various Clients',
+    role: 'Lead Logo Designer',
+    deliverables: ['7 Logo Types', 'Logo Usage Guidelines', 'Color & Mono Versions', 'Application Mockups', 'Brand Guidelines'],
+    tools: ['Adobe Illustrator', 'Adobe Photoshop', 'Figma', 'Procreate'],
+    link: '#',
+    prevProject: { title: 'Bloom — Brand Identity', url: '#' },
+    nextProject: { title: 'Nomad — Travel Brand', url: '#' }
+  },
+  setTab(tab) {
+    this.activeTab = tab;
+  },
+  closeLightbox() { 
+    this.lightboxOpen = false;
+    document.body.style.overflow = '';
+  },
+prevImage() {
+  if (!this.lightboxImages || this.lightboxImages.length === 0) return;
+  this.lightboxIndex = (this.lightboxIndex - 1 + this.lightboxImages.length) % this.lightboxImages.length;
+},
+nextImage() {
+  if (!this.lightboxImages || this.lightboxImages.length === 0) return;
+  this.lightboxIndex = (this.lightboxIndex + 1) % this.lightboxImages.length;
+},
+  shareProject() {
+    if (navigator.share) {
+      navigator.share({
+        title: this.project.title,
+        text: `Check out ${this.project.title} by Adersh c.s`,
+        url: window.location.href
+      });
+    } else {
+      navigator.clipboard?.writeText(window.location.href);
+      this.showToast = true;
+      this.toastMessage = 'Link copied to clipboard!';
+      this.toastType = 'success';
+      setTimeout(() => this.showToast = false, 3000);
+    }
+  },
+  downloadVariation(index) {
+    this.showToast = true;
+    this.toastMessage = `Downloading ${this.project.logoVariations[index].name}...`;
+    this.toastType = 'success';
+    setTimeout(() => this.showToast = false, 3000);
+  },
+  downloadAll() {
+    this.showToast = true;
+    this.toastMessage = 'Downloading all logo variations (ZIP)...';
+    this.toastType = 'success';
+    setTimeout(() => this.showToast = false, 3000);
+  },
+  getToolIcon(tool) {
+    const icons = {
+      'Illustrator': '🎨',
+      'Photoshop': '🖼️',
+      'InDesign': '📐',
+      'Figma': '✏️',
+      'Procreate': '🖌️'
+    };
+    for (const [key, icon] of Object.entries(icons)) {
+      if (tool.includes(key)) return icon;
+    }
+    return '🛠️';
+  }
+}" :class="{'dark':dark}" x-init="
+  $watch('dark', v => localStorage.setItem('theme', v ? 'dark' : 'light'));
+  window.addEventListener('scroll', () => {
+    scrolled = window.scrollY > 20;
+    progress = Math.min(100, Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100));
+  }, { passive: true });
+  document.querySelectorAll('.reveal').forEach(el => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    observer.observe(el);
+  });
+" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <meta name="description" content="Logofolio — A curated collection of 7 types of logos: Wordmarks, Lettermarks, Pictorial Marks, Abstract Marks, Combination Marks, Emblems, and Dynamic Marks. Brand identity by Adersh c.s." />
+    <meta name="author" content="Adersh c.s" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#FF6B2B" />
+    <meta property="og:title" content="Logofolio — 7 Types of Logos | Adersh c.s" />
+    <meta property="og:description" content="A curated collection of the 7 core logo types — Wordmarks, Lettermarks, Pictorial Marks, Abstract Marks, Combination Marks, Emblems, and Dynamic Marks. Brand identity by Adersh c.s." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1611162616475-46b635cb6868?w=1200&q=80" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Logofolio — 7 Types of Logos | Adersh c.s" />
+    <meta name="twitter:description" content="A curated collection of the 7 core logo types — Wordmarks, Lettermarks, Pictorial Marks, Abstract Marks, Combination Marks, Emblems, and Dynamic Marks." />
+    <link rel="canonical" href="https://adershcs.github.io/portfolio/logofolio.html" />
+    <title>Logofolio — 7 Types of Logos | Adersh c.s</title>
+    
+
+    <!-- ═══ FAVICON ═══ -->
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="images/favicon-48.png">
+<link rel="icon" type="image/png" sizes="192x192" href="images/favicon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="images/favicon-180.png">
+<meta name="theme-color" content="#FF4D1C">
+
+<meta name="theme-color" content="#ffffff">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Playfair Display', 'serif']
+                    },
+                    colors: {
+                        accent: '#FF6B2B',
+                        'accent-light': '#FF8F5C',
+                        'accent-dark': '#E0551A',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color .3s, color .3s;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        .skip-link {
+            position: absolute;
+            top: -100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #FF6B2B;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0 0 0.5rem 0.5rem;
+            z-index: 10000;
+            font-weight: 600;
+            transition: top 0.2s ease;
+        }
+        .skip-link:focus { top: 0; }
+
+        /* ═══ CURSOR STYLES ═══ */
+        .cursor-dot {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: #FF6B2B;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.2s, opacity 0.2s;
+            will-change: transform;
+            mix-blend-mode: difference;
+            opacity: 0;
+        }
+        .cursor-dot.visible {
+            opacity: 1;
+        }
+        .cursor-ring {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 1.5px solid rgba(255, 107, 43, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, border-color 0.3s, background 0.3s, opacity 0.3s;
+            will-change: transform;
+            opacity: 0;
+        }
+        .cursor-ring.visible {
+            opacity: 1;
+        }
+        .cursor-ring.hover { width: 64px; height: 64px; border-color: rgba(255, 107, 43, 0.9); background: rgba(255, 107, 43, 0.08); }
+        .cursor-ring.click { width: 28px; height: 28px; border-color: #FF6B2B; background: rgba(255, 107, 43, 0.2); }
+        .cursor-dot.hover { width: 12px; height: 12px; background: #FF8F5C; }
+
+        @media (hover: none) and (pointer: coarse) {
+            .cursor-dot, .cursor-ring { display: none !important; }
+        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #FF6B2B; border-radius: 99px; }
+
+        [x-cloak] { display: none !important; }
+
+        .reveal {
+            opacity: 0; transform: translateY(30px);
+            transition: opacity .7s cubic-bezier(.22, 1, .36, 1), transform .7s cubic-bezier(.22, 1, .36, 1);
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .d1 { transition-delay: .05s; } .d2 { transition-delay: .12s; } 
+        .d3 { transition-delay: .19s; } .d4 { transition-delay: .26s; } 
+        .d5 { transition-delay: .33s; }
+
+        /* ═══ GLASSMORPHISM ═══ */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .glass {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        /* ═══ NAV LINKS ═══ */
+        .nav-link {
+            position: relative;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #FF4D1C 0%, #FF8C42 50%, #FFB347 100%);
+            transition: width .3s cubic-bezier(.22, 1, .36, 1);
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        .nav-link.active {
+            color: #FF4D1C !important;
+        }
+        .dark .nav-link.active {
+            color: #FF6B3D !important;
+        }
+
+        .shimmer { position: relative; overflow: hidden; }
+        .shimmer::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
+            background: rgba(255,255,255,.25); transform: skewX(-20deg); transition: left .5s cubic-bezier(.22, 1, .36, 1);
+        }
+        .shimmer:hover::after { left: 160%; }
+
+        .photo-frame { overflow: hidden; background: #e4e4e7; transition: background-color 0.3s; }
+        .dark .photo-frame { background: #27272a; }
+        .photo-frame img {
+            width: 100%; height: 100%; object-fit: cover; display: block;
+            transition: transform .5s cubic-bezier(.22, 1, .36, 1);
+        }
+        .photo-frame:hover img { transform: scale(1.03); }
+
+        .progress-bar {
+            position: fixed; top: 0; left: 0; height: 3px; 
+            background: linear-gradient(90deg, #FF6B2B, #FF8F5C, #FF6B2B);
+            background-size: 200% 100%;
+            z-index: 100; transition: width .1s linear;
+        }
+
+        .lightbox-overlay { background: rgba(0,0,0,0.92); backdrop-filter: blur(20px); }
+        .lightbox-btn {
+            transition: all .2s ease; width: 44px; height: 44px; border-radius: 50%;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.6); display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; cursor: pointer !important;
+        }
+        .lightbox-btn:hover { background: rgba(255,255,255,0.16); color: white; transform: scale(1.1); }
+        .lightbox-close-btn { cursor: pointer !important; transition: all 0.3s ease; }
+        .lightbox-close-btn:hover { color: white !important; transform: rotate(90deg) scale(1.1); }
+
+        @media (max-width: 640px) {
+            .lightbox-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 1.2rem;
+            }
+            .lightbox-overlay .absolute.top-6.right-6 {
+                top: 1rem;
+                right: 1rem;
+                font-size: 1.5rem;
+            }
+            .lightbox-overlay .absolute.left-6 {
+                left: 0.5rem;
+            }
+            .lightbox-overlay .absolute.right-6 {
+                right: 0.5rem;
+            }
+            .lightbox-overlay .bottom-8 {
+                bottom: 1rem;
+                font-size: 0.7rem;
+                max-width: 80%;
+                text-align: center;
+            }
+        }
+
+        .gradient-text-hover {
+            background: linear-gradient(135deg, #FF6B2B 0%, #FF8F5C 50%, #FF6B2B 100%);
+            background-size: 200% 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; animation: gradientShift 4s ease-in-out infinite; transition: all 0.4s ease;
+        }
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; }
+        }
+        .gradient-text-hover:hover { background-size: 300% 300%; animation-duration: 1.5s; }
+
+        .tab-btn {
+            cursor: pointer !important;
+            transition: all 0.25s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            font-size: 0.85rem;
+            border: 2px solid transparent;
+            background: transparent;
+            color: #71717a;
+            position: relative;
+            white-space: nowrap;
+        }
+        @media (max-width: 480px) {
+            .tab-btn {
+                padding: 0.35rem 0.7rem;
+                font-size: 0.7rem;
+                border-radius: 0.5rem;
+            }
+        }
+        .tab-btn:hover { color: #18181b; background: #f4f4f5; }
+        .dark .tab-btn:hover { color: #fafafa; background: #27272a; }
+        .tab-btn.active { background: #FF6B2B; color: white; border-color: #FF6B2B; }
+        .dark .tab-btn.active { background: #FF8F5C; border-color: #FF8F5C; color: #0a0a0a; }
+
+        .process-step {
+            transition: all 0.3s ease; cursor: default !important;
+            border-left: 4px solid transparent;
+        }
+        .process-step:hover {
+            transform: translateX(6px);
+            border-left-color: #FF6B2B;
+        }
+        .dark .process-step:hover { border-left-color: #FF8F5C; }
+
+        .variation-card {
+            transition: all 0.4s cubic-bezier(.22,1,.36,1);
+            cursor: pointer !important;
+        }
+        .variation-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(255, 107, 43, 0.12);
+            border-color: #FF6B2B;
+        }
+        .dark .variation-card:hover {
+            box-shadow: 0 8px 24px rgba(255, 107, 43, 0.18);
+            border-color: #FF8F5C;
+        }
+
+        .metric-card {
+            transition: all 0.3s cubic-bezier(.22,1,.36,1);
+            position: relative;
+            overflow: hidden;
+        }
+        .metric-card:hover {
+            transform: translateY(-3px);
+            border-color: #FF6B2B;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+        }
+        .dark .metric-card:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+
+        .fab {
+            transition: all 0.3s cubic-bezier(.22,1,.36,1);
+        }
+        .fab:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 24px rgba(255, 107, 43, 0.25);
+        }
+
+        .hero-diagonal-accent {
+            position: absolute;
+            top: 0; right: 0;
+            width: 33.333%;
+            height: 100%;
+            background: linear-gradient(to left, rgba(255, 107, 43, 0.15), transparent);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        .scroll-indicator .animate-bounce {
+            animation: scrollBounce 1.8s ease-in-out infinite;
+        }
+        @keyframes scrollBounce {
+            0%, 100% { transform: translateY(0); opacity: 0.6; }
+            50% { transform: translateY(6px); opacity: 1; }
+        }
+
+        .carousel-item {
+            flex: 0 0 100%;
+            padding: 0 0.5rem;
+        }
+        @media (min-width: 640px) {
+            .carousel-item {
+                flex: 0 0 50%;
+            }
+        }
+        @media (min-width: 1024px) {
+            .carousel-item {
+                flex: 0 0 33.333%;
+            }
+        }
+
+        .carousel-btn {
+            cursor: pointer !important;
+            transition: all 0.2s ease;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+        @media (max-width: 480px) {
+            .carousel-btn {
+                width: 34px;
+                height: 34px;
+                font-size: 0.9rem;
+            }
+        }
+        .carousel-btn:hover {
+            background: rgba(255, 107, 43, 0.2);
+            border-color: #FF6B2B;
+            color: white;
+        }
+        .dark .carousel-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+        .dark .carousel-btn:hover {
+            background: rgba(255, 107, 43, 0.25);
+            border-color: #FF8F5C;
+        }
+
+        .carousel-card {
+            transition: all 0.4s ease;
+        }
+        .carousel-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(255, 107, 43, 0.12);
+        }
+        .dark .carousel-card:hover {
+            box-shadow: 0 8px 32px rgba(255, 107, 43, 0.18);
+        }
+
+        .carousel-card .photo-frame img {
+            transition: transform 0.6s ease;
+        }
+        .carousel-card:hover .photo-frame img { transform: scale(1.08); }
+
+        .pagination-link {
+            cursor: pointer !important;
+            transition: all 0.2s ease;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            border: 1px solid #e4e4e7;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #52525b;
+            background: transparent;
+        }
+        @media (max-width: 480px) {
+            .pagination-link {
+                width: 1.75rem;
+                height: 1.75rem;
+                font-size: 0.65rem;
+            }
+        }
+        .dark .pagination-link {
+            border-color: #27272a;
+            color: #a1a1aa;
+        }
+        .pagination-link:hover {
+            border-color: #FF6B2B;
+            color: #FF6B2B;
+        }
+        .dark .pagination-link:hover {
+            border-color: #FF8F5C;
+            color: #FF8F5C;
+        }
+        .pagination-link.active-page {
+            background: #FF6B2B !important;
+            color: white !important;
+            border-color: #FF6B2B !important;
+        }
+        .dark .pagination-link.active-page {
+            background: #FF8F5C !important;
+            border-color: #FF8F5C !important;
+            color: #0a0a0a !important;
+        }
+
+        .pagination-ellipsis {
+            color: #a1a1aa;
+            font-size: 0.75rem;
+            padding: 0 0.2rem;
+        }
+        .dark .pagination-ellipsis { color: #52525b; }
+
+        a, button, .photo-frame, .tab-btn, .fab, .variation-card, .carousel-btn, .pagination-link, .context-item {
+            cursor: pointer !important;
+        }
+
+        *:focus-visible {
+            outline: 2px solid #FF6B2B;
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            padding: 0.6rem 1.5rem;
+            border-radius: 9999px;
+            background: #1a1a1a;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 500;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+            max-width: 90%;
+            text-align: center;
+        }
+        @media (max-width: 480px) {
+            .toast {
+                font-size: 0.7rem;
+                padding: 0.5rem 1rem;
+                bottom: 1rem;
+            }
+        }
+        .dark .toast {
+            background: #fafafa;
+            color: #1a1a1a;
+            border-color: rgba(0,0,0,0.05);
+        }
+        .toast.success { border-left: 4px solid #FF6B2B; }
+        .toast.error { border-left: 4px solid #ef4444; }
+
+        .usage-badge {
+            font-size: 0.55rem;
+            padding: 0.1rem 0.4rem;
+            border-radius: 9999px;
+            background: rgba(255, 107, 43, 0.1);
+            color: #FF6B2B;
+            border: 1px solid rgba(255, 107, 43, 0.15);
+        }
+        .dark .usage-badge {
+            background: rgba(255, 107, 43, 0.15);
+            border-color: rgba(255, 107, 43, 0.2);
+        }
+
+        .format-badge {
+            font-size: 0.5rem;
+            padding: 0.05rem 0.35rem;
+            border-radius: 4px;
+            background: #f4f4f5;
+            color: #71717a;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+        .dark .format-badge {
+            background: #27272a;
+            color: #a1a1aa;
+        }
+
+        .context-item {
+            transition: all 0.4s ease;
+            cursor: pointer !important;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+        }
+        .context-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(255, 107, 43, 0.12);
+            border-color: #FF6B2B;
+        }
+        .context-item img {
+            width: 100%;
+            aspect-ratio: 16/10;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .context-item:hover img { transform: scale(1.05); }
+        .context-item .label {
+            padding: 0.3rem 0.4rem;
+            font-size: 0.55rem;
+            font-weight: 500;
+            color: #71717a;
+            text-align: center;
+            background: rgba(255,255,255,0.02);
+        }
+        .dark .context-item .label { color: #a1a1aa; }
+        .context-item .zoom-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(255,107,43,0.2);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 2;
+        }
+        .context-item:hover .zoom-overlay { opacity: 1; }
+        .context-item .zoom-overlay .zoom-btn {
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(8px);
+            padding: 0.3rem 0.8rem;
+            border-radius: 9999px;
+            font-size: 0.55rem;
+            font-weight: 600;
+            color: #FF6B2B;
+            transform: scale(0.8);
+            transition: transform 0.4s cubic-bezier(.22,1,.36,1);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .context-item:hover .zoom-overlay .zoom-btn { transform: scale(1); }
+        .dark .context-item .zoom-overlay .zoom-btn {
+            background: rgba(30,30,30,0.92);
+            color: #FF8F5C;
+        }
+
+        .variation-card .photo-frame {
+            position: relative;
+        }
+        .variation-card .zoom-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(255,107,43,0.2);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto;
+            z-index: 2;
+            border-radius: 0.75rem;
+            cursor: pointer !important;
+        }
+        .variation-card:hover .zoom-overlay { opacity: 1; }
+        .variation-card .zoom-overlay .zoom-btn {
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(8px);
+            padding: 0.3rem 0.8rem;
+            border-radius: 9999px;
+            font-size: 0.55rem;
+            font-weight: 600;
+            color: #FF6B2B;
+            transform: scale(0.8);
+            transition: transform 0.4s cubic-bezier(.22,1,.36,1);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            pointer-events: none;
+        }
+        .variation-card:hover .zoom-overlay .zoom-btn { transform: scale(1); }
+        .dark .variation-card .zoom-overlay .zoom-btn {
+            background: rgba(30,30,30,0.92);
+            color: #FF8F5C;
+        }
+        .variation-card .zoom-overlay:hover {
+            background: rgba(255,107,43,0.35);
+        }
+
+        /* ═══ RESPONSIVE FIXES ═══ */
+        .container-padding {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        @media (min-width: 640px) {
+            .container-padding {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+        }
+        @media (min-width: 1024px) {
+            .container-padding {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+        }
+
+        .hero-title {
+            font-size: 1.5rem;
+        }
+        @media (min-width: 640px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+        }
+        @media (min-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+        }
+        @media (min-width: 1024px) {
+            .hero-title {
+                font-size: 3.5rem;
+            }
+        }
+
+        .hero-subtitle {
+            font-size: 0.8rem;
+        }
+        @media (min-width: 640px) {
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+        }
+
+        .grid-2-col {
+            grid-template-columns: 1fr 1fr;
+        }
+        @media (max-width: 480px) {
+            .grid-2-col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .grid-3-col {
+            grid-template-columns: 1fr 1fr;
+        }
+        @media (min-width: 640px) {
+            .grid-3-col {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+        @media (max-width: 480px) {
+            .grid-3-col {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 380px) {
+            .grid-3-col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .metrics-grid {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+        @media (max-width: 480px) {
+            .metrics-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 380px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .tab-container {
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .tab-container::-webkit-scrollbar {
+            display: none;
+        }
+        @media (max-width: 480px) {
+            .tab-container {
+                gap: 0.25rem;
+            }
+        }
+
+        /* ═══ 7 TYPES RESPONSIVE GRID ═══ */
+        .variations-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        @media (min-width: 480px) {
+            .variations-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 1.25rem;
+            }
+        }
+        @media (min-width: 768px) {
+            .variations-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 1.5rem;
+            }
+        }
+        @media (min-width: 1024px) {
+            .variations-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        /* ═══ CONTEXT RESPONSIVE GRID ═══ */
+        .context-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+        @media (min-width: 640px) {
+            .context-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 1rem;
+            }
+        }
+        @media (min-width: 1024px) {
+            .context-grid {
+                gap: 1.25rem;
+            }
+        }
+        @media (max-width: 380px) {
+            .context-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .pack-wrapper {
+            position: absolute;
+            bottom: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            transition: all 0.4s ease;
+            filter: drop-shadow(0 8px 20px rgba(0,0,0,0.2));
+        }
+        .pack-1 { left: 1.5rem; }
+        .pack-2 { right: 1.5rem; }
+        .pack-img {
+            width: 72px;
+            height: 72px;
+            object-fit: contain;
+            border-radius: 0.75rem;
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(4px);
+            padding: 4px;
+            border: 1px solid rgba(255,255,255,0.25);
+            transition: transform 0.3s;
+        }
+        .dark .pack-img {
+            background: rgba(20,20,20,0.6);
+            border-color: rgba(255,255,255,0.06);
+        }
+        .pack-wrapper:hover .pack-img { transform: scale(1.06) rotate(-2deg); }
+        .pack-wrapper:hover .pack-name {
+            background: #ff6b2b;
+            color: white;
+            border-color: #ff6b2b;
+        }
+        .pack-name {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            padding: 0.2rem 0.7rem;
+            border-radius: 999px;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .dark .pack-name {
+            background: rgba(20,20,20,0.7);
+            border-color: rgba(255,255,255,0.08);
+        }
+        @media (max-width: 480px) {
+            .pack-img { width: 56px; height: 56px; }
+            .pack-name { font-size: 0.5rem; padding: 0.1rem 0.5rem; }
+            .pack-1 { left: 0.75rem; bottom: 0.75rem; }
+            .pack-2 { right: 0.75rem; bottom: 0.75rem; }
+        }
+
+        /* ═══ FADE IN ANIMATIONS ═══ */
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* ═══ ENHANCED HERO STYLES ═══ */
+
+        /* Hero Container - with shadow and hover effects */
+        .hero-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transition: box-shadow 0.5s ease, transform 0.5s ease;
+        }
+        @media (min-width: 768px) {
+            .hero-container {
+                border-radius: 2rem;
+            }
+        }
+        .hero-container:hover {
+            box-shadow: 0 24px 80px rgba(255, 107, 43, 0.12);
+        }
+
+        /* Hero Image - with hover scale */
+        .hero-img {
+            width: 100%;
+            max-height: 460px;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        @media (min-width: 768px) {
+            .hero-img {
+                max-height: 560px;
+            }
+        }
+        .hero-container:hover .hero-img {
+            transform: scale(1.03);
+        }
+
+        /* Gradient Overlay - soft brand gradient */
+        .hero-gradient-overlay {
+            background: linear-gradient(135deg, rgba(255, 107, 43, 0.08) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .dark .hero-gradient-overlay {
+            background: linear-gradient(135deg, rgba(255, 107, 43, 0.15) 0%, transparent 60%);
+        }
+
+        /* Shine Effect - radial glow */
+        .hero-shine {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 70% 30%, rgba(255,255,240,0.12) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        /* Blur Glow - pulsing accent glow */
+        .hero-blur-glow {
+            position: absolute;
+            bottom: -60px;
+            right: -60px;
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, rgba(255, 107, 43, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            animation: glowPulse 4s ease-in-out infinite;
+        }
+        @media (max-width: 768px) {
+            .hero-blur-glow {
+                width: 150px;
+                height: 150px;
+                bottom: -30px;
+                right: -30px;
+                filter: blur(60px);
+            }
+        }
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        /* Accent Bar - animated brand color bar at bottom */
+        .hero-accent-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #FF6B2B, #FF8F5C, #FFB347, #FF8F5C, #FF6B2B);
+            background-size: 200% 100%;
+            animation: accentSlide 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes accentSlide {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Badge Pulse Animation */
+        .badge-pulse {
+            animation: pulse-soft 2.4s ease-in-out infinite;
+        }
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 0.85; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.02); }
+        }
+
+        /* Scroll Indicator - enhanced with glow */
+        .scroll-indicator .animate-bounce {
+            animation: scrollBounce 1.8s ease-in-out infinite;
+        }
+        @keyframes scrollBounce {
+            0%, 100% { transform: translateY(0); opacity: 0.6; }
+            50% { transform: translateY(6px); opacity: 1; }
+        }
+
+        /* Bottom badges - glass effect */
+        .hero-container .absolute.bottom-4 .inline-flex {
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+             /* ═══ HERO SECTION ═══ */
+        .hero-container {
+            position: relative;
+            width: 100%;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            background: #0a0a0a;
+            transition: box-shadow 0.5s ease;
+        }
+        .hero-container:hover {
+            box-shadow: 0 24px 80px rgba(255, 107, 43, 0.12);
+        }
+
+        .hero-image-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            overflow: hidden;
+        }
+        @media (min-width: 768px) {
+            .hero-image-wrapper {
+                aspect-ratio: 16/7;
+            }
+        }
+        @media (min-width: 1024px) {
+            .hero-image-wrapper {
+                aspect-ratio: 16/6;
+            }
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .hero-container:hover .hero-image {
+            transform: scale(1.05);
+        }
+
+        .hero-overlay-gradient {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.2) 40%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-overlay-gradient-right {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.5) 0%, transparent 50%, rgba(0, 0, 0, 0.3) 100%);
+            pointer-events: none;
+        }
+
+        /* ═══ SHINE EFFECT - AUTO ═══ */
+        .hero-shine {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.04) 40%, rgba(255, 255, 255, 0.08) 45%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.08) 55%, rgba(255, 255, 255, 0.04) 60%, transparent 65%);
+            pointer-events: none;
+            z-index: 5;
+            animation: autoShine 5s ease-in-out infinite;
+        }
+        @keyframes autoShine {
+            0% { transform: translateX(-150%) skewX(-10deg); opacity: 0; }
+            15% { opacity: 1; }
+            40% { transform: translateX(150%) skewX(-10deg); opacity: 1; }
+            55% { opacity: 0; }
+            100% { opacity: 0; transform: translateX(150%) skewX(-10deg); }
+        }
+
+        /* ═══ BLUR GLOW ═══ */
+        .hero-blur-glow {
+            position: absolute;
+            bottom: -60px;
+            right: -60px;
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, rgba(255, 107, 43, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 1;
+            animation: glowPulse 4s ease-in-out infinite;
+        }
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        /* ═══ HERO BADGE - UP/DOWN ═══ */
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 6px 14px 6px 10px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 500;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            animation: upDown 2s ease-in-out infinite;
+            z-index: 10;
+        }
+        @keyframes upDown {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* ═══ PULSE DOT ═══ */
+        .pulse-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulseDot 1.5s ease-in-out infinite;
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
+        }
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.4); }
+        }
+
+        /* ═══ SCROLL BOUNCE ═══ */
+        @keyframes scrollBounce {
+            0%, 100% { transform: translateY(0); opacity: 1; }
+            50% { transform: translateY(8px); opacity: 0.4; }
+        }
+        .scroll-bounce {
+            animation: scrollBounce 1.8s ease-in-out infinite;
+        }
+
+        /* ═══ RESPONSIVE ═══ */
+        @media (max-width: 768px) {
+            .hero-blur-glow {
+                width: 150px;
+                height: 150px;
+                bottom: -30px;
+                right: -30px;
+                filter: blur(60px);
+            }
+            .hero-badge {
+                font-size: 10px;
+                padding: 4px 10px 4px 8px;
+            }
+        }
+        @media (max-width: 480px) {
+            .tab-btn {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.9rem;
+            }
+            .pagination-link {
+                width: 2rem !important;
+                height: 2rem !important;
+                font-size: 0.7rem !important;
+            }
+            .pagination-link svg {
+                width: 0.875rem !important;
+                height: 0.875rem !important;
+            }
+            .pagination-ellipsis {
+                font-size: 0.75rem !important;
+            }
+            .hero-badge {
+                font-size: 9px;
+                padding: 3px 8px 3px 6px;
+                gap: 5px;
+            }
+            .pulse-dot {
+                width: 6px;
+                height: 6px;
+            }
+        }
+
+        /* ═══ DARK MODE OVERRIDES ═══ */
+        .dark .hero-container {
+            background: #0a0a0a;
+        }
+        .dark .hero-badge {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+        .dark .hero-badge:hover {
+            background: rgba(255, 107, 43, 0.2);
+            border-color: #FF8F5C;
+        }
+
+        /* ═══ PRINT STYLES ═══ */
+        @media print {
+            .cursor-dot, .cursor-ring, .progress-bar, .fab, .fixed, .sticky,
+            .shimmer, .carousel-btn, .pagination-link {
+                display: none !important;
+            }
+            .dark\:bg-\[\#0a0a0a\] { background: white !important; }
+            body { background: white !important; color: black !important; }
+            .photo-frame img { break-inside: avoid; max-height: 400px; }
+            .reveal { opacity: 1 !important; transform: none !important; }
+            .gradient-text-hover {
+                background: none !important;
+                -webkit-text-fill-color: #FF6B2B !important;
+                color: #FF6B2B !important;
+                animation: none !important;
+            }
+            .dark\:text-zinc-100 { color: black !important; }
+            .dark\:bg-zinc-800 { background: #f3f4f6 !important; }
+            .backdrop-blur-xl { backdrop-filter: none !important; }
+            [x-cloak] { display: block !important; }
+            .timeline-vertical::before { display: none !important; }
+            .timeline-dot {
+                position: static !important;
+                display: inline-flex !important;
+                margin-right: 0.5rem !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-[#0a0a0a] text-zinc-800 dark:text-zinc-100 antialiased">
+
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- ═══ CURSOR ELEMENTS ═══ -->
+    <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+    <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+    <!-- Toast -->
+    <div x-show="showToast" x-cloak x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-4" class="toast" :class="toastType">
+        <span x-text="toastMessage"></span>
+    </div>
+
+    <!-- ═══ NAV ═══ -->
+    <header class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[96%] max-w-7xl rounded-2xl glass shadow-lg shadow-black/5 dark:shadow-black/30 transition-all duration-300" :class="scrolled ? 'py-1' : 'py-2'" role="banner">
+        <nav class="px-5 md:px-6 flex items-center justify-between h-14 md:h-14" aria-label="Main navigation">
+            <a href="index.html" class="font-bold text-xl tracking-tight flex items-center gap-1 shrink-0" aria-label="Adersh C.S Home">
+                <span class="text-zinc-900 dark:text-white">Ade</span>
+                <span class="text-accent">rsh</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-accent to-accent-light animate-pulse ml-0.5" aria-hidden="true"></span>
+            </a>
+            <ul class="hidden md:flex items-center gap-7 text-sm font-medium" role="list">
+                <li><a href="projects-uiux.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">UX Work</a></li>
+                <li><a href="projects-frontend.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">Frontend Work</a></li>
+                <li><a href="projects-graphic.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors active">Graphic Work</a></li>
+            </ul>
+            <div class="flex items-center gap-1 md:gap-2">
+                <button @click="dark=!dark" class="w-9 h-9 flex items-center justify-center rounded-full bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-white/70 dark:hover:bg-white/10 transition-colors shrink-0" :aria-label="dark ? 'Switch to light mode' : 'Switch to dark mode'">
+                    <svg x-show="!dark" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                    <svg x-show="dark" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
+                </button>
+                <a href="index.html#contact" class="hidden md:inline-flex items-center gap-1.5 px-5 py-2 rounded-full text-white text-sm font-semibold shadow-lg shadow-accent/30 hover:shadow-accent/50 transition-all hover:scale-105 shrink-0" style="background: linear-gradient(135deg, #FF4D1C 0%, #FF8C42 50%, #FFB347 100%);">
+                    Hire Me
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                </a>
+                <button @click="mobileMenu=!mobileMenu" class="md:hidden w-9 h-9 flex items-center justify-center rounded-full bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-white/70 dark:hover:bg-white/10 transition-colors" aria-label="Toggle menu">
+                    <svg x-show="!mobileMenu" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                    <svg x-show="mobileMenu" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+        </nav>
+        <div x-show="mobileMenu" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" class="md:hidden bg-white/80 dark:bg-black/80 backdrop-blur-xl border-t border-zinc-200/30 dark:border-zinc-700/30 rounded-b-2xl overflow-hidden">
+            <ul class="flex flex-col px-6 py-6 gap-3 text-sm" role="list">
+                <li><a href="projects-uiux.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">UX Work</a></li>
+                <li><a href="projects-frontend.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Frontend Work</a></li>
+                <li><a href="projects-graphic.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Graphic Work</a></li>
+                <li class="pt-3 border-t border-zinc-200/30 dark:border-zinc-700/30">
+                    <a href="index.html#contact" @click="mobileMenu=false" class="inline-flex shimmer bg-accent text-white font-medium text-sm px-6 py-2.5 rounded-full hover:bg-accent-dark transition-colors">Hire me →</a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <main id="main-content">
+
+        <!-- ═══ HERO SECTION ═══ -->
+        <section class="relative pt-24 pb-6 max-w-6xl mx-auto px-4 sm:px-6" aria-label="Project hero">
+            <!-- Breadcrumb -->
+            <nav class="flex items-center gap-2 text-sm text-zinc-400 mb-4 mt-2 opacity-0 animate-[fadeIn_0.6s_ease_0.2s_forwards]">
+                <a href="projects-graphic.html" class="hover:text-accent transition-colors">Package Design</a>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                <span class="text-zinc-600 dark:text-zinc-300 font-medium truncate max-w-[200px]" x-text="project.title"></span>
+            </nav>
+
+            <!-- Hero Container -->
+            <div class="hero-container opacity-0 animate-[fadeIn_0.8s_ease_0.1s_forwards]">
+                <img :src="project.heroImage" 
+                     :alt="project.title" 
+                     class="hero-img" 
+                     fetchpriority="high" 
+                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%221200%22 height=%22600%22%3E%3Crect width=%221200%22 height=%22600%22 fill=%22%23121212%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-family=%22sans-serif%22 font-size=%2236%22 fill=%22%23FF6B2B%22 text-anchor=%22middle%22 dy=%22.3em%22%3EPackage Design%3C/text%3E%3C/svg%3E'" />
+                
+                <div class="hero-gradient-overlay absolute inset-0 pointer-events-none z-[2]"></div>
+                <div class="hero-shine absolute inset-0 pointer-events-none z-[3]"></div>
+                <div class="hero-blur-glow z-[1]"></div>
+                
+                <div class="absolute top-4 right-4 flex flex-wrap items-center gap-2 z-10">
+                    <span class="hero-badge">
+                        <span class="pulse-dot"></span>
+                        Live Demo
+                    </span>
+                </div>
+            </div>
+
+            <!-- Scroll Indicator -->
+            <div class="flex justify-center mt-6 opacity-0 animate-[fadeIn_0.6s_ease_1.4s_forwards]">
+                <div class="scroll-indicator text-zinc-400 dark:text-zinc-500 text-xs flex flex-col items-center gap-1.5 opacity-70 hover:opacity-100 transition-opacity">
+                    <span class="tracking-wider uppercase text-[10px] font-medium">Scroll to explore</span>
+                    <div class="w-5 h-8 rounded-full border-2 border-zinc-400 dark:border-zinc-500 flex justify-center pt-2 relative overflow-hidden">
+                        <div class="absolute inset-0 flex justify-center pt-2">
+                            <div class="w-1 h-2 bg-accent rounded-full animate-bounce"></div>
+                        </div>
+                        <div class="absolute inset-0 flex justify-center pt-2 opacity-30">
+                            <div class="w-4 h-4 rounded-full bg-accent/20 blur-sm"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ PROJECT DETAILS ═══ -->
+        <section class="max-w-6xl mx-auto px-4 sm:px-6 pb-10 sm:pb-16" aria-label="Project details">
+            <div class="grid lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
+                
+                <div class="lg:col-span-2 space-y-6 sm:space-y-8 lg:space-y-10 reveal d1">
+                    <div>
+                        <span class="text-[10px] sm:text-xs font-semibold text-accent tracking-widest uppercase" x-text="project.categoryLabel"></span>
+                        <h2 class="font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-zinc-900 dark:text-white mt-1 sm:mt-2 mb-2 sm:mb-4 gradient-text-hover" x-text="project.title"></h2>
+                        <p class="text-sm sm:text-base md:text-lg text-zinc-600 dark:text-zinc-300 leading-relaxed" x-text="project.overview"></p>
+                    </div>
+
+                    <div class="grid metrics-grid gap-3 sm:gap-4">
+                        <template x-for="metric in project.metrics" :key="metric.label">
+                            <div class="metric-card bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-3 sm:p-4 md:p-5 text-center border border-zinc-100 dark:border-zinc-800 hover:border-accent/50 hover:shadow-lg transition-all duration-300 cursor-default">
+                                <p class="text-xl sm:text-2xl md:text-3xl font-bold text-accent" x-text="metric.value"></p>
+                                <p class="text-[10px] sm:text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 sm:mt-1" x-text="metric.label"></p>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div>
+                        <div class="flex flex-wrap gap-1 sm:gap-2 border-b border-zinc-100 dark:border-zinc-800 pb-3 sm:pb-4 tab-container" role="tablist" aria-label="Project details">
+                            <button @click="setTab('overview')" class="tab-btn" :class="activeTab==='overview'?'active':''" role="tab" :aria-selected="activeTab==='overview'">Overview</button>
+                            <button @click="setTab('process')" class="tab-btn" :class="activeTab==='process'?'active':''" role="tab" :aria-selected="activeTab==='process'">Process</button>
+                            <button @click="setTab('variations')" class="tab-btn" :class="activeTab==='variations'?'active':''" role="tab" :aria-selected="activeTab==='variations'">The 7 Types</button>
+                            <button @click="setTab('context')" class="tab-btn" :class="activeTab==='context'?'active':''" role="tab" :aria-selected="activeTab==='context'">In Context</button>
+                        </div>
+
+                        <div x-show="activeTab==='overview'" class="space-y-4 sm:space-y-6 md:space-y-8 pt-4 sm:pt-6">
+                            <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-zinc-100 dark:border-zinc-800 hover:border-accent/30 transition-all duration-300">
+                                <h3 class="font-semibold text-lg sm:text-xl text-zinc-900 dark:text-white mb-2 sm:mb-3 flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-accent animate-pulse" aria-hidden="true"></span>
+                                    The Challenge
+                                </h3>
+                                <p class="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed" x-text="project.challenge"></p>
+                            </div>
+                            <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-zinc-100 dark:border-zinc-800 hover:border-accent/30 transition-all duration-300">
+                                <h3 class="font-semibold text-lg sm:text-xl text-zinc-900 dark:text-white mb-2 sm:mb-3 flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-accent animate-pulse" aria-hidden="true"></span>
+                                    The Solution
+                                </h3>
+                                <p class="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed" x-text="project.solution"></p>
+                            </div>
+                        </div>
+
+                        <div x-show="activeTab==='process'" class="space-y-3 sm:space-y-4 pt-4 sm:pt-6">
+                            <template x-for="(step, i) in project.designProcess" :key="step.phase">
+                                <div class="process-step bg-zinc-50 dark:bg-zinc-900/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-zinc-100 dark:border-zinc-800 flex gap-3 sm:gap-4 transition-all hover:border-accent/50">
+                                    <div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-accent/10 text-accent flex items-center justify-center font-bold text-sm sm:text-base md:text-lg transition-all" x-text="i+1"></div>
+                                    <div>
+                                        <h4 class="font-semibold text-sm sm:text-base md:text-lg text-zinc-900 dark:text-white mb-0.5 sm:mb-1" x-text="step.phase"></h4>
+                                        <p class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed" x-text="step.description"></p>
+                                        <span class="text-[10px] sm:text-xs text-zinc-400 mt-1 sm:mt-2 inline-flex items-center gap-1">
+                                            <svg class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                            <span x-text="step.duration"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- ═══ 7 TYPES TAB ═══ -->
+                        <div x-show="activeTab==='variations'" class="space-y-4 sm:space-y-6 pt-4 sm:pt-6">
+                            <p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mb-1 sm:mb-2">Click any logo type to view details and download assets</p>
+                            
+                            <div class="variations-grid">
+                                <template x-for="(variation, index) in project.logoVariations" :key="variation.name">
+                                    <div class="variation-card bg-zinc-50 dark:bg-zinc-900/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 border border-zinc-100 dark:border-zinc-800 hover:border-accent/50 transition-all group relative" 
+                                         @click="selectedVariation = index; $el.scrollIntoView({behavior:'smooth', block:'center'})"
+                                         role="button"
+                                         :aria-label="'View ' + variation.name + ' details'"
+                                         tabindex="0"
+                                         @keydown.enter="selectedVariation = index">
+                                        <div class="photo-frame w-full aspect-[3/2] rounded-lg sm:rounded-xl mb-2 sm:mb-3 overflow-hidden relative">
+                                            <img :src="variation.image" :alt="variation.name" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                                            <div class="zoom-overlay" @click.stop="openVariationLightbox(index, $event)">
+                                                <div class="zoom-btn">
+                                                    <svg class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                                    Zoom
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h4 class="font-semibold text-zinc-900 dark:text-white text-xs sm:text-sm mb-0.5" x-text="variation.name"></h4>
+                                        <p class="text-[10px] sm:text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed mb-1.5 sm:mb-2 line-clamp-2" x-text="variation.description"></p>
+                                        
+                                        <div class="flex flex-wrap gap-0.5 sm:gap-1 mb-1.5 sm:mb-2">
+                                            <template x-for="use in variation.usage" :key="use">
+                                                <span class="usage-badge text-[8px] sm:text-[9px]" x-text="use"></span>
+                                            </template>
+                                        </div>
+
+                                        <div class="flex items-center gap-1 sm:gap-1.5 mb-1.5 sm:mb-2">
+                                            <span class="text-[8px] sm:text-[9px] font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider hidden xs:inline">Palette</span>
+                                            <template x-for="color in variation.palette" :key="color">
+                                                <span class="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 rounded-full border border-zinc-300 dark:border-zinc-600 shadow-sm" :style="`background: ${color};`" :title="color"></span>
+                                            </template>
+                                        </div>
+
+                                        <div class="flex flex-wrap items-center gap-0.5 sm:gap-1">
+                                            <div class="flex gap-0.5">
+                                                <template x-for="fmt in variation.formats" :key="fmt">
+                                                    <span class="format-badge text-[8px] sm:text-[9px]" x-text="fmt"></span>
+                                                </template>
+                                            </div>
+                                            <span class="text-[8px] sm:text-[9px] text-zinc-400">·</span>
+                                            <span class="text-[8px] sm:text-[9px] text-zinc-500 dark:text-zinc-400 font-mono truncate max-w-[60px] sm:max-w-[100px]" x-text="variation.typography"></span>
+                                        </div>
+                                        
+                                        <button @click.stop="downloadVariation(index)" class="mt-2 sm:mt-3 w-full text-[8px] sm:text-[10px] font-medium bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full hover:bg-accent hover:text-white transition-all duration-300 flex items-center justify-center gap-1 sm:gap-1.5">
+                                            <svg class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                            Download <span class="text-[7px] sm:text-[8px] opacity-60" x-text="variation.fileSize"></span>
+                                        </button>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <!-- Selected variation detail view -->
+                            <div x-show="selectedVariation !== null" x-cloak x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" class="mt-4 sm:mt-6 md:mt-8 bg-zinc-50 dark:bg-zinc-900/60 rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 border border-zinc-200 dark:border-zinc-700">
+                                <div class="flex items-center justify-between mb-3 sm:mb-4">
+                                    <h4 class="font-bold text-lg sm:text-xl text-zinc-900 dark:text-white" x-text="project.logoVariations[selectedVariation].name"></h4>
+                                    <button @click="selectedVariation = null" class="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors text-sm sm:text-base">✕</button>
+                                </div>
+                                <div class="grid sm:grid-cols-2 gap-4 sm:gap-6">
+                                    <div class="photo-frame rounded-lg sm:rounded-xl overflow-hidden relative group cursor-pointer" @click="openVariationLightbox(selectedVariation, $event)">
+                                        <img :src="project.logoVariations[selectedVariation].image" :alt="project.logoVariations[selectedVariation].name" class="w-full aspect-[4/3] object-cover" />
+                                        <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <span class="bg-white/90 dark:bg-zinc-800/90 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-medium text-accent">🔍 Click to zoom</span>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-2 sm:space-y-3">
+                                        <p class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300" x-text="project.logoVariations[selectedVariation].description"></p>
+                                        <div>
+                                            <span class="text-[10px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider">Typography</span>
+                                            <p class="text-xs sm:text-sm font-medium" x-text="project.logoVariations[selectedVariation].typography"></p>
+                                        </div>
+                                        <div>
+                                            <span class="text-[10px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider">Color Palette</span>
+                                            <div class="flex gap-1.5 sm:gap-2 mt-0.5 sm:mt-1">
+                                                <template x-for="color in project.logoVariations[selectedVariation].palette" :key="color">
+                                                    <span class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full border border-zinc-300 dark:border-zinc-600" :style="`background: ${color};`" :title="color"></span>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <span class="text-[10px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider">Available Formats</span>
+                                            <div class="flex flex-wrap gap-1 sm:gap-1.5 mt-0.5 sm:mt-1">
+                                                <template x-for="fmt in project.logoVariations[selectedVariation].formats" :key="fmt">
+                                                    <span class="format-badge text-[10px] sm:text-xs" x-text="fmt"></span>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        <div class="flex flex-wrap gap-1.5 sm:gap-2">
+                                            <button @click="openVariationLightbox(selectedVariation, $event)" class="inline-flex items-center gap-1 sm:gap-2 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 text-[10px] sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full hover:border-accent hover:text-accent transition-colors">
+                                                🔍 View Full Size
+                                            </button>
+                                            <button @click="downloadVariation(selectedVariation)" class="inline-flex items-center gap-1 sm:gap-2 bg-accent text-white text-[10px] sm:text-sm px-3 sm:px-5 py-1.5 sm:py-2 rounded-full hover:bg-accent-light transition-colors">
+                                                <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                                Download <span x-text="project.logoVariations[selectedVariation].fileSize"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ═══ IN CONTEXT TAB ═══ -->
+                        <div x-show="activeTab==='context'" class="pt-4 sm:pt-6">
+                            <p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mb-2 sm:mb-4">Click any image to view in full screen — see how different logo types perform across real-world applications</p>
+                            <div class="context-grid">
+                                <div class="context-item" @click="openContextLightbox('/images/MOCKUP1.png', 'Wordmark on Packaging', $event)">
+                                    <img src="/images/MOCKUP1.png" alt="Wordmark on packaging" loading="lazy" />
+                                    <div class="zoom-overlay">
+                                        <div class="zoom-btn"><svg class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg> View</div>
+                                    </div>
+                                    <div class="label text-[8px] sm:text-[10px] md:text-xs">📦 Wordmark on Yoga Camp</div>
+                                </div>
+                                <div class="context-item" @click="openContextLightbox('/images/MOCKUP2.png', 'Lettermark on App', $event)">
+                                    <img src="/images/MOCKUP2.png" alt="Lettermark on app" loading="lazy" />
+                                    <div class="zoom-overlay">
+                                        <div class="zoom-btn"><svg class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg> View</div>
+                                    </div>
+                                    <div class="label text-[8px] sm:text-[10px] md:text-xs">📱 Lettermark on Mens Club</div>
+                                </div>
+                                <div class="context-item" @click="openContextLightbox('/images/MOCKUP3.png', 'Pictorial Mark in Retail', $event)">
+                                    <img src="/images/MOCKUP3.png" alt="Pictorial mark in retail" loading="lazy" />
+                                    <div class="zoom-overlay">
+                                        <div class="zoom-btn"><svg class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg> View</div>
+                                    </div>
+                                    <div class="label text-[8px] sm:text-[10px] md:text-xs">🏪 Pictorial Mark in Entertainment Studios</div>
+                                </div>
+                                <div class="context-item" @click="openContextLightbox('/images/MOCKUP4.png', 'Abstract Mark on Website', $event)">
+                                    <img src="/images/MOCKUP4.png" alt="Abstract mark on website" loading="lazy" />
+                                    <div class="zoom-overlay">
+                                        <div class="zoom-btn"><svg class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg> View</div>
+                                    </div>
+                                    <div class="label text-[8px] sm:text-[10px] md:text-xs">🌐 Abstract Mark on Audio & Music Production House</div>
+                                </div>
+                                <div class="context-item" @click="openContextLightbox('/images/MOCKUP5.png', 'Combination Mark on Mobile', $event)">
+                                    <img src="/images/MOCKUP5.png" alt="Combination mark on mobile" loading="lazy" />
+                                    <div class="zoom-overlay">
+                                        <div class="zoom-btn"><svg class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg> View</div>
+                                    </div>
+                                    <div class="label text-[8px] sm:text-[10px] md:text-xs">📱 Combination Mark on Food & Beverage</div>
+                                </div>
+                                <div class="context-item" @click="openContextLightbox('/images/MOCKUP6.png', 'Mascot on Merchandise', $event)">
+                                    <img src="/images/MOCKUP6.png" alt="Mascot on merchandise" loading="lazy" />
+                                    <div class="zoom-overlay">
+                                        <div class="zoom-btn"><svg class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg> View</div>
+                                    </div>
+                                    <div class="label text-[8px] sm:text-[10px] md:text-xs">🧸 Mascot on Gaming Hub</div>
+                                </div>
+                                 <div class="context-item" @click="openContextLightbox('/images/MOCKUP7.png', 'Emblem Logo', $event)">
+                                    <img src="/images/MOCKUP7.png" alt="Emblem logo" loading="lazy" />
+                                    <div class="zoom-overlay">
+                                        <div class="zoom-btn"><svg class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg> View</div>
+                                    </div>
+                                    <div class="label text-[8px] sm:text-[10px] md:text-xs">🛡️ Emblem Logo of Footbal Club</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══ SIDEBAR ═══ -->
+                <div class="lg:col-span-1 reveal d2">
+                    <div class="sticky top-20 sm:top-24 md:top-28 space-y-4 sm:space-y-6 md:space-y-8 bg-zinc-50 dark:bg-zinc-900/60 rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 border border-zinc-100 dark:border-zinc-800 transition-colors">
+                        <div>
+                            <h4 class="text-[10px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-1.5 sm:mb-2 flex items-center gap-1.5 sm:gap-2">
+                                <svg class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3a4 4 0 100 8 4 4 0 000-8z"/></svg>
+                                Client
+                            </h4>
+                            <p class="font-medium text-sm sm:text-base text-zinc-900 dark:text-white" x-text="project.client"></p>
+                        </div>
+                        <div>
+                            <h4 class="text-[10px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-1.5 sm:mb-2 flex items-center gap-1.5 sm:gap-2">
+                                <svg class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                Year
+                            </h4>
+                            <p class="font-medium text-sm sm:text-base text-zinc-900 dark:text-white" x-text="project.year"></p>
+                        </div>
+                        <div>
+                            <h4 class="text-[10px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-1.5 sm:mb-2 flex items-center gap-1.5 sm:gap-2">
+                                <svg class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                Role
+                            </h4>
+                            <p class="font-medium text-sm sm:text-base text-zinc-900 dark:text-white" x-text="project.role"></p>
+                        </div>
+                        <div>
+                            <h4 class="text-[10px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2 sm:mb-3 flex items-center gap-1.5 sm:gap-2">
+                                <svg class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                                Deliverables
+                            </h4>
+                            <ul class="space-y-1 sm:space-y-1.5" role="list">
+                                <template x-for="item in project.deliverables" :key="item">
+                                    <li class="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-zinc-700 dark:text-zinc-300">
+                                        <span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-accent flex-shrink-0" aria-hidden="true"></span>
+                                        <span x-text="item"></span>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-[10px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2 sm:mb-3 flex items-center gap-1.5 sm:gap-2">
+                                <svg class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                Tools Used
+                            </h4>
+                            <div class="flex flex-wrap gap-1.5 sm:gap-2">
+                                <template x-for="tool in project.tools" :key="tool">
+                                    <span class="text-[10px] sm:text-xs bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full hover:border-accent hover:text-accent transition-colors">
+                                        <span x-text="getToolIcon(tool)"></span>
+                                        <span x-text="tool"></span>
+                                    </span>
+                                </template>
+                            </div>
+                        </div>
+                        <div class="pt-3 sm:pt-4 border-t border-zinc-200 dark:border-zinc-700 space-y-2">
+                            <button @click="downloadAll()" class="flex items-center justify-center gap-1.5 sm:gap-2 shimmer bg-accent text-white font-medium px-4 sm:px-6 py-2 sm:py-3 rounded-full hover:bg-accent-light hover:scale-105 transition-all duration-300 text-xs sm:text-sm w-full shadow-lg shadow-accent/20 hover:shadow-accent/40 group">
+                                <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 transform group-hover:-translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                Download All Variations
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ EXPLORE MORE PROJECTS (CAROUSEL) ═══ -->
+        <section class="py-8 sm:py-12 md:py-16 bg-zinc-50/60 dark:bg-zinc-900/30 border-y border-zinc-100 dark:border-zinc-800 reveal d4">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6">
+                <div class="flex items-center justify-between mb-5 sm:mb-8 md:mb-10">
+                    <div>
+                        <span class="text-[8px] sm:text-[10px] md:text-xs font-semibold text-accent tracking-widest uppercase">Explore More</span>
+                        <h2 class="font-bold text-xl sm:text-2xl md:text-3xl text-zinc-900 dark:text-white mt-0.5 sm:mt-1">More Projects</h2>
+                    </div>
+                    <div class="flex items-center gap-1.5 sm:gap-2">
+                        <button @click="prevSlide()" class="carousel-btn" aria-label="Previous projects">
+                            <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                        </button>
+                        <button @click="nextSlide()" class="carousel-btn" aria-label="Next projects">
+                            <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="overflow-hidden rounded-xl sm:rounded-2xl" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
+                    <div class="flex transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]" :style="`transform: translateX(-${carouselIndex * (100 / 3)}%);`">
+                        <template x-for="(item, idx) in carouselItems" :key="item.id">
+                            <div class="carousel-item flex-shrink-0 px-1.5 sm:px-2 md:px-3">
+                                <div class="carousel-card bg-white dark:bg-zinc-900/80 rounded-lg sm:rounded-xl md:rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 hover:border-accent/50 transition-all duration-500 h-full flex flex-col group">
+                                    <div class="photo-frame aspect-[16/10] relative">
+                                        <img :src="item.image" :alt="item.title" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" decoding="async" />
+                                    </div>
+                                    <div class="p-3 sm:p-4 md:p-5 flex flex-col flex-1">
+                                        <div class="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2 flex-wrap">
+                                            <span class="text-[8px] sm:text-[10px] font-medium text-accent bg-accent/10 px-1.5 sm:px-2 py-0.5 rounded-full" x-text="item.category"></span>
+                                        </div>
+                                        <h3 class="font-bold text-xs sm:text-sm md:text-lg text-zinc-900 dark:text-white mb-0.5 sm:mb-1.5 leading-tight" x-text="item.title"></h3>
+                                        <p class="text-[10px] sm:text-xs md:text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed flex-1" x-text="item.description"></p>
+                                        <a :href="item.link" class="mt-2 sm:mt-3 md:mt-4 inline-flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs md:text-sm font-medium text-accent hover:gap-2 sm:hover:gap-3 transition-all self-start">View case study →</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <nav class="flex items-center justify-center gap-0.5 sm:gap-1 md:gap-2 mt-4 sm:mt-6 md:mt-8" aria-label="Carousel pagination">
+                    <template x-if="totalPages > 1">
+                        <button @click="prevSlide()" class="pagination-link" aria-label="Previous page">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                        </button>
+                    </template>
+                    <template x-if="totalPages > 1">
+                        <template x-for="page in paginationPages" :key="page">
+                            <template x-if="page === -1">
+                                <span class="pagination-ellipsis" aria-hidden="true">…</span>
+                            </template>
+                            <template x-if="page !== -1">
+                                <button @click="goToPage(page)" class="pagination-link" :class="currentPage === page ? 'active-page' : ''" :aria-current="currentPage === page ? 'true' : 'false'" x-text="page"></button>
+                            </template>
+                        </template>
+                    </template>
+                    <template x-if="totalPages > 1">
+                        <button @click="nextSlide()" class="pagination-link" aria-label="Next page">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                        </button>
+                    </template>
+                </nav>
+                <p class="hidden sm:block text-center text-[8px] sm:text-[10px] text-zinc-400 dark:text-zinc-500 mt-1.5 sm:mt-2" x-text="`Page ${currentPage} of ${totalPages}`" x-show="totalPages > 1" aria-live="polite" aria-atomic="true"></p>
+            </div>
+        </section>
+
+        <!-- ═══ CTA ═══ -->
+        <section class="py-10 sm:py-14 md:py-16 reveal d4" aria-label="Call to action">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6">
+                <div class="bg-zinc-900 dark:bg-zinc-800 rounded-2xl sm:rounded-3xl p-6 sm:p-10 md:p-14 text-center relative overflow-hidden transition-colors">
+                    <div class="absolute top-0 right-0 w-40 h-40 sm:w-56 sm:h-56 md:w-64 md:h-64 bg-accent/20 rounded-full blur-3xl pointer-events-none animate-pulse-slow" aria-hidden="true"></div>
+                    <div class="absolute bottom-0 left-0 w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 bg-accent/10 rounded-full blur-2xl pointer-events-none animate-pulse-slow" style="animation-delay: 1s;" aria-hidden="true"></div>
+                    <div class="relative z-10">
+                        <p class="text-[10px] sm:text-xs font-semibold text-accent tracking-widest uppercase mb-3 sm:mb-4 flex items-center justify-center gap-2">
+                            <span class="w-4 sm:w-6 md:w-8 h-px bg-accent"></span>
+                            Need a logo?
+                            <span class="w-4 sm:w-6 md:w-8 h-px bg-accent"></span>
+                        </p>
+                        <h2 class="font-bold text-2xl sm:text-3xl md:text-4xl text-white mb-2 sm:mb-4">Let's build your<br class="sm:hidden"> logo system</h2>
+                        <p class="text-xs sm:text-sm md:text-base text-zinc-400 max-w-md mx-auto mb-4 sm:mb-6 md:mb-8">From wordmarks to emblems — I'll create a complete logo collection that works across every touchpoint.</p>
+                        <a href="index.html#contact" class="inline-flex items-center gap-1.5 sm:gap-2 shimmer bg-accent text-white font-medium px-5 sm:px-8 py-2.5 sm:py-3.5 rounded-full hover:bg-accent-light hover:scale-105 transition-all duration-300 shadow-lg shadow-accent/20 hover:shadow-accent/40 text-sm sm:text-base group">
+                            Start a project
+                            <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ═══ LIGHTBOX ═══ -->
+    <div x-show="lightboxOpen" x-cloak class="fixed inset-0 z-[999] lightbox-overlay flex items-center justify-center p-2 sm:p-4" @click.self="closeLightbox()" role="dialog" aria-label="Image viewer" aria-modal="true">
+        <button @click="closeLightbox()" class="absolute top-3 right-3 sm:top-4 sm:right-4 md:top-6 md:right-6 text-white/60 hover:text-white transition-colors text-2xl sm:text-3xl lightbox-close-btn z-10" aria-label="Close image viewer">✕</button>
+        <button @click="prevImage()" class="absolute left-1 sm:left-3 md:left-6 lightbox-btn z-10" aria-label="Previous image">‹</button>
+        <button @click="nextImage()" class="absolute right-1 sm:right-3 md:right-6 lightbox-btn z-10" aria-label="Next image">›</button>
+        <div class="lightbox-image-container flex items-center justify-center w-full h-full max-w-[95vw] max-h-[85vh]">
+            <img :src="lightboxImages[lightboxIndex]" :alt="lightboxTitle || 'Image viewer'" class="max-w-full max-h-full w-auto h-auto object-contain rounded-lg sm:rounded-xl shadow-2xl" />
+        </div>
+        <p class="absolute bottom-3 sm:bottom-4 md:bottom-8 text-white/40 text-[10px] sm:text-xs md:text-sm z-10 max-w-[80%] text-center" x-text="lightboxTitle"></p>
+    </div>
+
+    <!-- ═══ FAB ═══ -->
+    <div class="fixed right-3 sm:right-5 md:right-6 bottom-20 sm:bottom-24 z-40 flex flex-col gap-2 sm:gap-3">
+        <button @click="shareProject()" class="fab w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-full bg-white dark:bg-zinc-800 shadow-lg border border-zinc-200 dark:border-zinc-700 hover:bg-accent hover:text-white hover:border-accent hover:scale-110 transition-all duration-300 flex items-center justify-center text-zinc-600 dark:text-zinc-300 group" aria-label="Share page">
+            <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5 md:w-5 md:h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+        </button>
+        <button @click="window.scrollTo({top:0,behavior:'smooth'})" x-show="scrolled" class="relative w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-full bg-white dark:bg-zinc-800 shadow-lg border border-zinc-200 dark:border-zinc-700 hover:bg-accent hover:text-white hover:border-accent hover:scale-110 transition-all duration-300 flex items-center justify-center text-zinc-600 dark:text-zinc-300 group" aria-label="Scroll to top">
+            <svg class="absolute inset-0 w-full h-full -rotate-90">
+                <circle cx="50%" cy="50%" r="45%" fill="none" stroke="currentColor" stroke-width="2" class="text-zinc-200 dark:bg-zinc-700"/>
+                <circle cx="50%" cy="50%" r="45%" fill="none" stroke="#FF6B2B" stroke-width="2.5" :stroke-dasharray="`${progress * 282.7 / 100} 282.7`" class="transition-all duration-300"/>
+            </svg>
+            <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5 md:w-5 md:h-5 relative z-10 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+        </button>
+    </div>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="border-t border-zinc-200/30 dark:border-zinc-800/30 bg-white/40 dark:bg-black/20 backdrop-blur-sm transition-colors" role="contentinfo">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-5 sm:py-8 text-center">
+            <p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">
+                © <span id="yr"></span>
+                <a href="https://linkedin.com/in/adersh-c-s" target="_blank" rel="noopener noreferrer" class="font-medium hover:text-accent transition-colors">Adersh c.s</a>
+                | All rights reserved.
+            </p>
+        </div>
+    </footer>
+    <script>
+        // ============================================
+        // FOOTER YEAR
+        // ============================================
+        document.getElementById('yr').textContent = new Date().getFullYear();
+
+        // ============================================
+        // REVEAL ANIMATIONS
+        // ============================================
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => { 
+                if (e.isIntersecting) e.target.classList.add('visible'); 
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+        });
+
+        // ============================================
+        // CURSOR TRACKING - FIXED!
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const dot = document.getElementById('cursorDot');
+            const ring = document.getElementById('cursorRing');
+
+            // Exit if elements don't exist
+            if (!dot || !ring) return;
+            
+            // Hide on touch devices (no hover capability)
+            if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) {
+                dot.style.display = 'none';
+                ring.style.display = 'none';
+                return;
+            }
+
+            let mouseX = 0, mouseY = 0;
+            let ringX = 0, ringY = 0;
+
+            // Make cursor visible
+            dot.classList.add('visible');
+            ring.classList.add('visible');
+
+            // Dot follows mouse instantly
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                dot.style.transform = `translate(${mouseX - 4}px, ${mouseY - 4}px)`;
+            });
+
+            // Smooth ring following with requestAnimationFrame
+            function smoothRing() {
+                ringX += (mouseX - ringX) * 0.15;
+                ringY += (mouseY - ringY) * 0.15;
+                ring.style.transform = `translate(${ringX - 20}px, ${ringY - 20}px)`;
+                requestAnimationFrame(smoothRing);
+            }
+            smoothRing();
+
+            // Hover effects on interactive elements
+            const interactiveElements = document.querySelectorAll(
+                'a, button, .photo-frame, .tab-btn, .fab, .variation-card, .carousel-btn, .pagination-link, .context-item, .nav-link'
+            );
+
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    dot.classList.add('hover');
+                    ring.classList.add('hover');
+                });
+                el.addEventListener('mouseleave', () => {
+                    dot.classList.remove('hover');
+                    ring.classList.remove('hover');
+                });
+            });
+
+            // Click effect
+            document.addEventListener('mousedown', () => {
+                ring.classList.add('click');
+            });
+            document.addEventListener('mouseup', () => {
+                ring.classList.remove('click');
+            });
+
+            // Hide cursor when leaving window
+            document.addEventListener('mouseleave', () => {
+                dot.classList.remove('visible');
+                ring.classList.remove('visible');
+            });
+            document.addEventListener('mouseenter', () => {
+                dot.classList.add('visible');
+                ring.classList.add('visible');
+            });
+        });
+    </script>
+
+</body>
+</html>
