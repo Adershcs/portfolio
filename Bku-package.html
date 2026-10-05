@@ -1424,16 +1424,19 @@
     <p class="absolute bottom-8 text-white/40 text-sm" x-text="`${lightboxIndex + 1} / ${galleryImages.length}`"></p>
   </div>
 
-  <!-- ═══ FOOTER ═══ -->
-  <footer class="border-t border-zinc-100 dark:border-zinc-800 bg-white dark:bg-[#0a0a0a] transition-colors">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 text-center">
-      <p class="text-xs sm:text-sm text-zinc-400">
-        © <span id="yr"></span> . All rights reserved.
-        <br class="sm:hidden">
-        Developed by <a href="https://linkedin.com/in/adersh-c-s" target="_blank" rel="noopener noreferrer" class="font-medium hover:text-accent transition-colors">Adersh c.s</a>
-      </p>
-    </div>
-  </footer>
+
+ 
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="border-t border-zinc-200/30 dark:border-zinc-800/30 bg-white/40 dark:bg-black/20 backdrop-blur-sm transition-colors" role="contentinfo">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-5 sm:py-8 text-center">
+            <p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">
+                © <span id="yr"></span>
+                <a href="https://linkedin.com/in/adersh-c-s" target="_blank" rel="noopener noreferrer" class="font-medium hover:text-accent transition-colors">Adersh c.s</a>
+                | All rights reserved.
+            </p>
+        </div>
+    </footer>
+
 
   <script>
     document.getElementById('yr').textContent = new Date().getFullYear();
