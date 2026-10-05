@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{
+  dark: localStorage.getItem('theme')==='dark'||(!localStorage.getItem('theme')&&window.matchMedia('(prefers-color-scheme: dark)').matches),
+  scrolled: false,
+  mobileMenu: false,
+  progress: 0,
+  activeTab: 'overview',
+  lightboxOpen: false,
+  lightboxIndex: 0,
+  galleryImages: [],
+  hoveredIndex: null,
+  carouselIndex: 0,
+  carouselItems: [
+    {
+      id: 1,
+      title: 'Urban — Poster Series',
+      category: 'Poster Design',
+      image: '/images/COMMINGSOON.png',
+      description: 'A 6-poster series for a music festival featuring custom illustrations and vibrant summer colors.',
+      link: '#'
+    },
+    {
+      id: 2,
+      title: 'Bloom — Brand Identity',
+      category: 'Brand Design',
+      image: '/images/COMMINGSOON.png',
+      description: 'Complete brand identity for a sustainable flower shop including logo, packaging, and signage.',
+      link: '#'
+    },
+    {
+      id: 3,
+      title: 'Nova — Editorial Design',
+      category: 'Editorial',
+      image: '/images/COMMINGSOON.png',
+      description: 'Magazine layout design with a modern grid system and bold typography treatment.',
+      link: '#'
+    },
+    {
+      id: 4,
+      title: 'Vivid — Album Artwork',
+      category: 'Illustration',
+      image: '/images/COMMINGSOON.png',
+      description: 'Album cover and promotional artwork for an independent music artist.',
+      link: '#'
+    },
+    {
+      id: 5,
+      title: 'Apex — Packaging Design',
+      category: 'Packaging',
+      image: '/images/COMMINGSOON.png',
+      description: 'Premium packaging design for a luxury skincare brand with eco-friendly materials.',
+      link: '#'
+    },
+    {
+      id: 6,
+      title: 'Eclipse — Social Campaign',
+      category: 'Social Media',
+      image: '/images/COMMINGSOON.png',
+      description: 'Social media campaign with 15+ animated graphics for a product launch.',
+      link: '#'
+    }
+  ],
+  get totalPages() {
+    return Math.ceil(this.carouselItems.length / 3);
+  },
+  get currentPage() {
+    return Math.floor(this.carouselIndex / 3) + 1;
+  },
+  get paginationPages() {
+    const total = this.totalPages;
+    const current = this.currentPage;
+    if (total <= 1) return [1];
+    if (total <= 5) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+    const pages = [];
+    pages.push(1);
+    if (current > 3) pages.push(-1);
+    const start = Math.max(2, current - 1);
+    const end = Math.min(total - 1, current + 1);
+    for (let i = start; i <= end; i++) {
+      if (i > 1 && i < total) pages.push(i);
+    }
+    if (current < total - 2) pages.push(-1);
+    pages.push(total);
+    return pages;
+  },
+  goToPage(page) {
+    const idx = (page - 1) * 3;
+    if (idx >= 0 && idx < this.carouselItems.length) {
+      this.carouselIndex = idx;
+    }
+  },
+  prevSlide() {
+    const newIndex = this.carouselIndex - 3;
+    if (newIndex >= 0) {
+      this.carouselIndex = newIndex;
+    } else {
+      const total = this.carouselItems.length;
+      const remainder = total % 3;
+      const lastPageStart = remainder === 0 ? total - 3 : total - remainder;
+      this.carouselIndex = Math.max(0, lastPageStart);
+    }
+  },
+  nextSlide() {
+    const newIndex = this.carouselIndex + 3;
+    if (newIndex < this.carouselItems.length) {
+      this.carouselIndex = newIndex;
+    } else {
+      this.carouselIndex = 0;
+    }
+  },
+  project: {
+    id: 9,
+    title: 'The kitchen Treasures',
+    category: 'poster',
+    categoryLabel: 'Poster Design',
+    heroImage: '/images/mainpage2.png',
+    gallery: [
+      '/images/TC.png',
+      '/images/CB.png',
+      '/images/CN.png',
+      '/images/CM.png',
+      '/images/FM.png',
+      '/images/MD.png',
+      '/images/MC.png',
+      '/images/GC.png',
+      '/images/MC.png',
+      '/images/SP.png'
+    ],
+    moodboard: [
+      'https://picsum.photos/seed/mood-1/400/300',
+      'https://picsum.photos/seed/mood-2/400/300',
+      'https://picsum.photos/seed/mood-3/400/300',
+      'https://picsum.photos/seed/mood-4/400/300',
+      'https://picsum.photos/seed/mood-5/400/300',
+      'https://picsum.photos/seed/mood-6/400/300'
+    ],
+    overview: 'A premium digital food advertisement designed for The Kitchen Treasures to promote their signature Chicken Mandi across social media platforms.',
+    challenge: 'The primary hurdle was making the regional text stand out boldly while cleanly integrating essential delivery and food aggregator details without cluttering the visual space.',
+    solution: 'I created a high-contrast, dark-themed poster that isolates the vibrant food photography with dramatic lighting and uses a structured footer grid for instant scannability.',
+    posterSeries: [
+      {
+        name: 'Moodboard - Logo',
+        description: 'Moodboard for the poster series, featuring color swatches, typography samples, and visual inspiration for the overall design direction.',
+        image: '/images/DP1.png',
+        specs: 'Full bleed, 4/0 CMYK, Matte finish',
+        size: 'A3 (297 × 420 mm)'
+      },
+      {
+        name: 'Color-palettes',
+        description: 'Color palette exploration for the poster series, focusing on vibrant summer tones and complementary shades to enhance visual appeal.',
+        image: '/images/DP2.png',
+        specs: 'Full bleed, 4/0 CMYK, Gloss finish',
+        size: 'A3 (297 × 420 mm)'
+      },
+      {
+        name: 'Typography',
+        description: 'Typography exploration for the poster series, showcasing different font pairings and treatments for headlines and body text.',
+        image: '/images/D3.png',
+        specs: 'Full bleed, 2/0 PMS, Uncoated stock',
+        size: 'A2 (420 × 594 mm)'
+      },
+      {
+        name: 'Branding Elements',
+        description: 'Branding elements for the poster series, including logo variations, iconography, and visual motifs that reinforce the brand identity.',
+        image: '/images/D4.png',
+        specs: 'RGB, 72ppi, MP4/GIF formats',
+        size: '1080 × 1080 px (Social)'
+      },
+      {
+        name: 'Visual - Identity',
+        description: 'Visual identity exploration for the poster series, including logo treatments, iconography, and design principles.',
+        image: '/images/D5.png',
+        specs: 'RGB, 72ppi, MP4/GIF formats',
+        size: '1080 × 1920 px (Story)'
+      }
+    ],
+   designProcess: [
+      { phase: 'Research', description: 'Studied 30+ music festival poster designs, analyzed color psychology for summer events, and researched tropical illustration styles.' },
+      { phase: 'Sketching', description: 'Created 50+ thumbnail sketches exploring layout variations, illustration concepts, and typography treatments.' },
+      { phase: 'Illustration', description: 'Hand-drawn custom illustrations using Procreate, then vectorized in Adobe Illustrator for scalability.' },
+      { phase: 'Layout & Type', description: 'Developed a flexible grid system and selected typography pairing: Bebas Neue for headlines and Montserrat for body text.' },
+      { phase: 'Color Development', description: 'Created a palette of 5 vibrant summer colors with variations for each poster in the series while maintaining cohesion.' }
+    ],
+    designElements: {
+      typography: ['Malayalam Script (Headlines — Regional Connection)', 'Montserrat (Body — Clean Readability)', 'Geometric Bold Caps (CTA — Urgency)'],
+      colors: ['#801111 (Fiery Crimson — Appetite & Urgency)', '#EAA93B (Warm Amber — Flavor & Richness)', '#FFFFFF (Crisp White — Contrast & Clarity)', '#121212 (Deep Charcoal — Premium Feel)'],
+      illustrations: 'Custom food photography styling with dramatic lighting. Hand-drawn decorative elements inspired by Middle Eastern cuisine motifs.'
+    },
+    applications: [
+      'Print posters for in-store and outdoor advertising',
+      'Social media promotional graphics (Instagram, Facebook)',
+      'Delivery app banners (Zomato, Swiggy)',
+      'Digital menu boards',
+      'WhatsApp broadcast visuals'
+    ],
+    metrics: [
+      { value: '12K+', label: 'Social Reach' },
+      { value: '9', label: 'Poster Designs' },
+      { value: '3', label: 'Platforms Delivered' }
+    ],
+    year: '2026',
+    client: 'The Kitchen Treasures',
+    role: 'Lead Poster Designer & Illustrator',
+    deliverables: ['9 Poster Designs', 'Social Media Adaptations', 'Delivery App Banners'],
+    tools: ['Adobe Illustrator', 'Adobe Photoshop', 'Adobe InDesign'],
+    link: '#',
+    prevProject: { title: 'Urban — Editorial Series', url: '#' },
+    nextProject: { title: 'Urban — Poster Series', url: '#' }
+  },
+  setTab(tab) {
+    this.activeTab = tab;
+  },
+  openLightbox(index) {
+    this.galleryImages = [...this.project.gallery];
+    this.lightboxIndex = index;
+    this.lightboxOpen = true;
+    document.body.style.overflow = 'hidden';
+  },
+  closeLightbox() { 
+    this.lightboxOpen = false;
+    document.body.style.overflow = '';
+  },
+  prevImage() { 
+    if (this.galleryImages.length === 0) return;
+    this.lightboxIndex = (this.lightboxIndex - 1 + this.galleryImages.length) % this.galleryImages.length; 
+  },
+  nextImage() { 
+    if (this.galleryImages.length === 0) return;
+    this.lightboxIndex = (this.lightboxIndex + 1) % this.galleryImages.length; 
+  },
+  sharePage() {
+    if (navigator.share) {
+      navigator.share({
+        title: 'The Kitchen Treasures — Poster Campaign',
+        text: 'Check out this poster design campaign by Adersh c.s',
+        url: window.location.href
+      });
+    }
+  },
+  getMetricIcon(label) {
+    return '';
+  },
+  handleKeydown(e) {
+    if (!this.lightboxOpen) return;
+    if (e.key === 'Escape') this.closeLightbox();
+    if (e.key === 'ArrowLeft') this.prevImage();
+    if (e.key === 'ArrowRight') this.nextImage();
+  }
+}" :class="{'dark':dark}" x-init="
+  $watch('dark', v => localStorage.setItem('theme', v ? 'dark' : 'light'));
+  window.addEventListener('scroll', () => {
+    scrolled = window.scrollY > 20;
+    progress = Math.min(100, Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100));
+  }, { passive: true });
+  window.addEventListener('keydown', (e) => handleKeydown(e));
+" class="scroll-smooth" @keydown.window="handleKeydown($event)">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="last-modified" content="2026-08-29" />
+
+    <!-- Primary Meta Tags -->
+    <title>The Kitchen Treasures — Poster Campaign | Adersh c.s</title>
+    <meta name="title" content="The Kitchen Treasures — Poster Campaign | Adersh c.s" />
+    <meta name="description" content="The Kitchen Treasures — Premium food poster campaign by Adersh c.s. 9 vibrant poster designs featuring signature Chicken Mandi with dramatic lighting and regional typography." />
+    <meta name="keywords" content="The Kitchen Treasures, food poster design, poster campaign, food advertising, Chicken Mandi, social media design, Adersh c.s, graphic design, food illustration, poster series, restaurant branding, food photography" />
+    <meta name="author" content="Adersh c.s" />
+    <meta name="copyright" content="Adersh c.s 2026" />
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="language" content="English" />
+    <meta name="revisit-after" content="7 days" />
+    <meta name="distribution" content="global" />
+    <meta name="rating" content="General" />
+    <link rel="canonical" href="https://adersh-c-s.github.io/portfolio/kitchen-treasures.html" />
+
+    <!-- Geo Tags -->
+    <meta name="geo.region" content="IN-KL" />
+    <meta name="geo.placename" content="Thrissur, Kerala, India" />
+    <meta name="geo.position" content="10.5276;76.2144" />
+    <meta name="ICBM" content="10.5276, 76.2144" />
+
+    <!-- hreflang -->
+    <link rel="alternate" href="https://adersh-c-s.github.io/portfolio/kitchen-treasures.html" hreflang="en" />
+    <link rel="alternate" href="https://adersh-c-s.github.io/portfolio/kitchen-treasures.html" hreflang="x-default" />
+
+    <!-- Mobile & Theme -->
+    <meta name="theme-color" content="#801111" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Kitchen Treasures — Poster" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-TileColor" content="#801111" />
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:title" content="The Kitchen Treasures — Poster Campaign | Adersh c.s" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://adersh-c-s.github.io/portfolio/kitchen-treasures.html" />
+    <meta property="og:image" content="https://adersh-c-s.github.io/images/mainpage2.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content="The Kitchen Treasures — Food Poster Campaign featuring Chicken Mandi with dramatic lighting" />
+    <meta property="og:description" content="The Kitchen Treasures — Premium food poster campaign by Adersh c.s. 9 vibrant poster designs featuring signature Chicken Mandi with dramatic lighting and regional typography." />
+    <meta property="og:site_name" content="Adersh c.s Portfolio" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:email" content="adershcsengandiyur@gmail.com" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="The Kitchen Treasures — Poster Campaign" />
+    <meta name="twitter:description" content="The Kitchen Treasures — Premium food poster campaign by Adersh c.s. 9 vibrant poster designs featuring signature Chicken Mandi." />
+    <meta name="twitter:image" content="https://adersh-c-s.github.io/images/mainpage2.png" />
+    <meta name="twitter:image:alt" content="The Kitchen Treasures — Food Poster Campaign" />
+    <meta name="twitter:creator" content="@adersh_cs" />
+    <meta name="twitter:site" content="@adersh_cs" />
+
+    <!-- Verification -->
+    <meta name="google-site-verification" content="google1205c50f18b38cb5" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+
+    <!-- ═══ FAVICON - Personal Brand (A) ═══ -->
+   <!-- ═══ FAVICON ═══ -->
+ <link rel="icon" href="images/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+
+<!-- ↓ This one is NOT a favicon — it's for iOS home screen only -->
+<link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+
+<link rel="icon" type="image/png" sizes="192x192" href="images/android-chrome-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="images/android-chrome-512x512.png">
+<link rel="manifest" href="images/site.webmanifest">
+<meta name="theme-color" content="#ffffff">
+    <!-- ═══ SCHEMA.ORG STRUCTURED DATA ═══ -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "The Kitchen Treasures — Poster Campaign",
+            "description": "The Kitchen Treasures — Premium food poster campaign by Adersh c.s. 9 vibrant poster designs featuring signature Chicken Mandi with dramatic lighting and regional typography.",
+            "image": "https://adersh-c-s.github.io/images/mainpage2.png",
+            "author": {
+                "@type": "Person",
+                "name": "Adersh c.s",
+                "url": "https://github.com/Adershcs",
+                "sameAs": [
+                    "https://linkedin.com/in/adersh-c-s",
+                    "https://github.com/Adershcs",
+                    "https://twitter.com/adersh_cs"
+                ]
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "Adersh c.s Portfolio",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://adersh-c-s.github.io/images/og-image.jpg"
+                }
+            },
+            "datePublished": "2026-01-01",
+            "dateModified": "2026-08-29",
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": "https://adersh-c-s.github.io/portfolio/kitchen-treasures.html"
+            },
+            "keywords": "The Kitchen Treasures, food poster design, poster campaign, graphic design",
+            "about": {
+                "@type": "CreativeWork",
+                "name": "Poster Design Campaign"
+            }
+        }
+    </script>
+
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": "https://adersh-c-s.github.io/portfolio/"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Graphic Projects",
+                    "item": "https://adersh-c-s.github.io/portfolio/projects-graphic.html"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 3,
+                    "name": "The Kitchen Treasures — Poster Campaign",
+                    "item": "https://adersh-c-s.github.io/portfolio/kitchen-treasures.html"
+                }
+            ]
+        }
+    </script>
+
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "The Kitchen Treasures — Poster Campaign",
+            "description": "The Kitchen Treasures — Premium food poster campaign by Adersh c.s. 9 vibrant poster designs featuring signature Chicken Mandi.",
+            "url": "https://adersh-c-s.github.io/portfolio/kitchen-treasures.html",
+            "inLanguage": "en",
+            "about": {
+                "@type": "Brand",
+                "name": "The Kitchen Treasures"
+            }
+        }
+    </script>
+
+    <!-- ═══ DUBLIN CORE METADATA ═══ -->
+    <meta name="DC.title" content="The Kitchen Treasures — Poster Campaign" />
+    <meta name="DC.creator" content="Adersh c.s" />
+    <meta name="DC.description" content="The Kitchen Treasures — Premium food poster campaign featuring 9 vibrant poster designs." />
+    <meta name="DC.subject" content="The Kitchen Treasures, food poster design, poster campaign, graphic design" />
+    <meta name="DC.publisher" content="Adersh c.s Portfolio" />
+    <meta name="DC.date" content="2026-08-29" />
+    <meta name="DC.type" content="CreativeWork" />
+    <meta name="DC.format" content="text/html" />
+    <meta name="DC.language" content="en" />
+    <meta name="DC.rights" content="Copyright 2026 Adersh c.s. All rights reserved." />
+
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+
+    <!-- Preload Hero Image -->
+    <link rel="preload" as="image" href="/images/mainpage2.png" fetchpriority="high" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+     <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        accent: '#FF6B2B',
+                        'accent-light': '#FF8F5C',
+                        'accent-dark': '#E0551A',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color .3s, color .3s;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .skip-link {
+            position: absolute;
+            top: -100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #FF6B2B;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0 0 0.5rem 0.5rem;
+            z-index: 10000;
+            font-weight: 600;
+            transition: top 0.2s ease;
+        }
+        .skip-link:focus { top: 0; }
+
+        .cursor-dot {
+            position: fixed; width: 8px; height: 8px; background: #FF6B2B; border-radius: 50%;
+            pointer-events: none; z-index: 9999; transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.2s; will-change: transform; mix-blend-mode: difference;
+        }
+        .cursor-ring {
+            position: fixed; width: 40px; height: 40px; border: 1.5px solid rgba(255, 107, 43, 0.5);
+            border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, border-color 0.3s, background 0.3s; will-change: transform;
+        }
+        .cursor-ring.hover { width: 64px; height: 64px; border-color: rgba(255, 107, 43, 0.9); background: rgba(255, 107, 43, 0.08); }
+        .cursor-ring.click { width: 28px; height: 28px; border-color: #FF6B2B; background: rgba(255, 107, 43, 0.2); }
+        .cursor-dot.hover { width: 12px; height: 12px; background: #FF8F5C; }
+
+        @media (hover: none) and (pointer: coarse) {
+            .cursor-dot, .cursor-ring { display: none !important; }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #FF6B2B; border-radius: 99px; }
+
+        [x-cloak] { display: none !important; }
+
+        .reveal {
+            opacity: 0; transform: translateY(30px);
+            transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1);
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .d1 { transition-delay: .05s; } .d2 { transition-delay: .12s; } .d3 { transition-delay: .19s; } .d4 { transition-delay: .26s; } .d5 { transition-delay: .33s; }
+/* ═══ GLASS HEADER ═══ */
+.glass {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.dark .glass {
+    background: rgba(10, 10, 10, 0.75);
+    border-color: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* ═══ NAV LINKS ═══ */
+.nav-link {
+    position: relative;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(135deg, #FF4D1C 0%, #FF8C42 50%, #FFB347 100%);
+    transition: width .3s cubic-bezier(.22, 1, .36, 1);
+}
+.nav-link:hover::after,
+.nav-link.active::after {
+    width: 100%;
+}
+.nav-link.active {
+    color: #FF4D1C !important;
+}
+.dark .nav-link.active {
+    color: #FF6B3D !important;
+}
+
+        .shimmer { position: relative; overflow: hidden; }
+        .shimmer::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
+            background: rgba(255,255,255,.25); transform: skewX(-20deg); transition: left .5s cubic-bezier(.22,1,.36,1);
+        }
+        .shimmer:hover::after { left: 160%; }
+
+        .photo-frame { overflow: hidden; background: #e4e4e7; transition: background-color 0.3s; }
+        .dark .photo-frame { background: #27272a; }
+        .photo-frame img {
+            width: 100%; height: 100%; object-fit: cover; display: block;
+            transition: transform .5s cubic-bezier(.22,1,.36,1);
+        }
+        .photo-frame:hover img { transform: scale(1.03); }
+
+        .progress-bar {
+            position: fixed; top: 0; left: 0; height: 3px; background: #FF6B2B; z-index: 100; transition: width .1s linear;
+        }
+
+        .lightbox-overlay { background: rgba(0,0,0,0.92); backdrop-filter: blur(12px); }
+        .lightbox-btn {
+            transition: all .2s ease; width: 48px; height: 48px; border-radius: 50%;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.6); display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; cursor: pointer !important;
+        }
+        .lightbox-btn:hover { background: rgba(255,255,255,0.16); color: white; }
+
+        .gradient-text-hover {
+            background: linear-gradient(135deg, #FF6B2B 0%, #FF8F5C 50%, #FF6B2B 100%);
+            background-size: 200% 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; animation: gradientShift 4s ease-in-out infinite; transition: all 0.4s ease;
+        }
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; }
+        }
+        .gradient-text-hover:hover { background-size: 300% 300%; animation-duration: 1.5s; }
+
+        /* Gallery item with zoom overlay */
+        .gallery-item { 
+            cursor: pointer !important; 
+            position: relative; 
+            overflow: hidden; 
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+        }
+        .gallery-item .zoom-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(255,107,43,0.25);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+        .gallery-item:hover .zoom-overlay {
+            opacity: 1;
+        }
+        .gallery-item .zoom-overlay .zoom-btn {
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(8px);
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #FF6B2B;
+            transform: scale(0.8);
+            transition: transform 0.4s cubic-bezier(.22,1,.36,1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .gallery-item:hover .zoom-overlay .zoom-btn {
+            transform: scale(1);
+        }
+        .dark .gallery-item .zoom-overlay .zoom-btn {
+            background: rgba(30,30,30,0.92);
+            color: #FF8F5C;
+        }
+        .gallery-item .zoom-overlay .zoom-btn svg {
+            width: 1rem;
+            height: 1rem;
+            opacity: 0.7;
+        }
+
+        .lightbox-close-btn { cursor: pointer !important; transition: all 0.2s ease; }
+        .lightbox-close-btn:hover { color: white !important; transform: rotate(90deg); }
+
+        .tab-btn {
+            cursor: pointer !important; transition: all 0.25s ease; padding: 0.6rem 1.5rem; border-radius: 0.75rem;
+            font-weight: 500; font-size: 0.9rem; border: 2px solid transparent; background: transparent; color: #71717a;
+        }
+        .tab-btn:hover { color: #18181b; background: #f4f4f5; }
+        .dark .tab-btn:hover { color: #fafafa; background: #27272a; }
+        .tab-btn.active { background: #FF6B2B; color: white; border-color: #FF6B2B; }
+        .dark .tab-btn.active { background: #FF8F5C; border-color: #FF8F5C; color: #0a0a0a; }
+
+        .poster-card {
+            transition: all 0.3s ease; cursor: default !important;
+        }
+        @media (hover: hover) {
+            .poster-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 8px 24px rgba(255, 107, 43, 0.1);
+                border-color: #FF6B2B;
+            }
+            .dark .poster-card:hover {
+                box-shadow: 0 8px 24px rgba(255, 107, 43, 0.15);
+                border-color: #FF8F5C;
+            }
+        }
+
+        .process-step {
+            transition: all 0.3s ease; cursor: default !important;
+            border-left: 4px solid transparent;
+        }
+        @media (hover: hover) {
+            .process-step:hover {
+                transform: translateX(4px);
+                border-left-color: #FF6B2B;
+            }
+            .dark .process-step:hover { border-left-color: #FF8F5C; }
+        }
+
+        .color-chip {
+            transition: transform 0.3s ease;
+        }
+        .color-chip:hover {
+            transform: scale(1.1);
+        }
+
+        .scroll-indicator .animate-bounce {
+            animation: scrollBounce 1.8s ease-in-out infinite;
+        }
+        @keyframes scrollBounce {
+            0%, 100% { transform: translateY(0); opacity: 0.6; }
+            50% { transform: translateY(6px); opacity: 1; }
+        }
+
+        .hero-poster-gradient {
+            background: linear-gradient(135deg, rgba(255,107,43,0.15) 0%, transparent 50%, rgba(255,107,43,0.05) 100%);
+            animation: gradientPulse 4s ease-in-out infinite;
+        }
+        @keyframes gradientPulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .carousel-item {
+            flex: 0 0 100%;
+            padding: 0 0.75rem;
+        }
+        @media (min-width: 640px) {
+            .carousel-item {
+                flex: 0 0 50%;
+            }
+        }
+        @media (min-width: 1024px) {
+            .carousel-item {
+                flex: 0 0 33.333%;
+            }
+        }
+
+        .carousel-btn {
+            cursor: pointer !important;
+            transition: all 0.2s ease;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        .carousel-btn:hover {
+            background: rgba(255, 107, 43, 0.2);
+            border-color: #FF6B2B;
+            color: white;
+        }
+        .dark .carousel-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+        .dark .carousel-btn:hover {
+            background: rgba(255, 107, 43, 0.25);
+            border-color: #FF8F5C;
+        }
+
+        .carousel-card {
+            transition: all 0.3s ease;
+        }
+        .carousel-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 40px rgba(255, 107, 43, 0.12);
+        }
+        .dark .carousel-card:hover {
+            box-shadow: 0 12px 40px rgba(255, 107, 43, 0.18);
+        }
+
+        .pagination-link {
+            cursor: pointer !important;
+            transition: all 0.2s ease;
+        }
+        .pagination-link:hover {
+            border-color: #FF6B2B !important;
+            color: #FF6B2B !important;
+        }
+        .pagination-link.active-page {
+            background: #FF6B2B !important;
+            color: white !important;
+            border-color: #FF6B2B !important;
+        }
+        .dark .pagination-link.active-page {
+            background: #FF8F5C !important;
+            border-color: #FF8F5C !important;
+            color: #0a0a0a !important;
+        }
+
+        .fab {
+            transition: all 0.3s cubic-bezier(.22, 1, .36, 1);
+        }
+        .fab:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 24px rgba(255, 107, 43, 0.25);
+        }
+
+        .metric-card {
+            transition: all 0.3s ease;
+        }
+        .metric-card:hover {
+            transform: translateY(-2px);
+            border-color: #FF6B2B;
+        }
+
+        a, button, .gallery-item, .photo-frame, .tab-btn, .pagination-link, .carousel-btn, .fab {
+            cursor: pointer !important;
+        }
+
+        .lightbox-image-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            max-height: 85vh;
+        }
+        .lightbox-image-wrapper img {
+            max-width: 90vw;
+            max-height: 80vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        /* ═══ CINEMATIC HERO - ADDED ═══ */
+        .hero-container {
+            position: relative;
+            width: 100%;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            background: #0a0a0a;
+            transition: box-shadow 0.5s ease;
+        }
+        .hero-container:hover {
+            box-shadow: 0 24px 80px rgba(255, 107, 43, 0.12);
+        }
+
+        .hero-image-wrapper {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0a0a0a;
+        }
+        @media (min-width: 768px) {
+            .hero-image-wrapper {
+                aspect-ratio: 16/7;
+            }
+        }
+        @media (min-width: 1024px) {
+            .hero-image-wrapper {
+                aspect-ratio: 16/6;
+            }
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .hero-container:hover .hero-image {
+            transform: scale(1.05);
+        }
+
+        .hero-overlay-gradient {
+            position: absolute;
+            inset: 0;
+            background: transparent;
+            pointer-events: none;
+        }
+        .hero-overlay-gradient-right {
+            position: absolute;
+            inset: 0;
+            background: transparent;
+            pointer-events: none;
+        }
+
+        .hero-shine {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.04) 40%, rgba(255, 255, 255, 0.08) 45%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.08) 55%, rgba(255, 255, 255, 0.04) 60%, transparent 65%);
+            pointer-events: none;
+            z-index: 5;
+            animation: autoShine 5s ease-in-out infinite;
+        }
+        @keyframes autoShine {
+            0% { transform: translateX(-150%) skewX(-10deg); opacity: 0; }
+            15% { opacity: 1; }
+            40% { transform: translateX(150%) skewX(-10deg); opacity: 1; }
+            55% { opacity: 0; }
+            100% { opacity: 0; transform: translateX(150%) skewX(-10deg); }
+        }
+
+        .hero-blur-glow {
+            position: absolute;
+            bottom: -60px;
+            right: -60px;
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, rgba(255, 107, 43, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 1;
+            animation: glowPulse 4s ease-in-out infinite;
+        }
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgb(255, 255, 255);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 6px 14px 6px 10px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 500;
+            color: rgb(1, 1, 1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            animation: upDown 2s ease-in-out infinite;
+            z-index: 10;
+        }
+        @keyframes upDown {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .pulse-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulseDot 1.5s ease-in-out infinite;
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
+        }
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.4); }
+        }
+
+        @keyframes scrollBounce {
+            0%, 100% { transform: translateY(0); opacity: 1; }
+            50% { transform: translateY(8px); opacity: 0.4; }
+        }
+        .scroll-bounce {
+            animation: scrollBounce 1.8s ease-in-out infinite;
+        }
+
+        @media (max-width: 768px) {
+            .hero-blur-glow {
+                width: 150px;
+                height: 150px;
+                bottom: -30px;
+                right: -30px;
+                filter: blur(60px);
+            }
+            .hero-badge {
+                font-size: 10px;
+                padding: 4px 10px 4px 8px;
+            }
+        }
+        @media (max-width: 480px) {
+            .tab-btn {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.9rem;
+            }
+            .pagination-link {
+                width: 2rem !important;
+                height: 2rem !important;
+                font-size: 0.7rem !important;
+            }
+            .pagination-link svg {
+                width: 0.875rem !important;
+                height: 0.875rem !important;
+            }
+            .pagination-ellipsis {
+                font-size: 0.75rem !important;
+            }
+            .hero-badge {
+                font-size: 9px;
+                padding: 3px 8px 3px 6px;
+                gap: 5px;
+            }
+            .pulse-dot {
+                width: 6px;
+                height: 6px;
+            }
+        }
+
+        .dark .hero-container {
+            background: #0a0a0a;
+            
+        }
+        .dark .hero-badge {
+            background: rgb(255, 255, 255);
+            
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+        .dark .hero-badge:hover {
+            background: rgba(255, 107, 43, 0.2);
+        
+            border-color: #FF8F5C;
+        }
+
+        @media print {
+            .cursor-dot, .cursor-ring, .progress-bar, .fab, .fixed, .sticky, .shimmer, .scroll-indicator {
+                display: none !important;
+            }
+            .dark\:bg-\[\#0a0a0a\] { background: white !important; }
+            body { background: white !important; color: black !important; }
+            .photo-frame img { break-inside: avoid; max-height: 400px; }
+            .tab-btn {
+                border: 1px solid #ddd !important;
+                background: white !important;
+                color: black !important;
+            }
+            .tab-btn.active {
+                background: #FF6B2B !important;
+                color: white !important;
+                border-color: #FF6B2B !important;
+            }
+            .reveal { opacity: 1 !important; transform: none !important; }
+            .gradient-text-hover {
+                background: none !important;
+                -webkit-text-fill-color: #FF6B2B !important;
+                color: #FF6B2B !important;
+                animation: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-[#0a0a0a] text-zinc-800 dark:text-zinc-100 antialiased">
+
+    <!-- Skip link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- CUSTOM CURSOR -->
+    <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+    <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+  
+    <!-- ═══ NAV ═══ -->
+      <header class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[96%] max-w-7xl rounded-2xl glass shadow-lg shadow-black/5 dark:shadow-black/30 transition-all duration-300" :class="scrolled ? 'py-1' : 'py-2'" role="banner">
+    <nav class="px-5 md:px-6 flex items-center justify-between h-14 md:h-14" aria-label="Main navigation">
+        <!-- Logo -->
+        <a href="index.html" class="font-bold text-xl tracking-tight flex items-center gap-1 shrink-0" aria-label="Adersh C.S Home">
+            <span class="text-zinc-900 dark:text-white">Ade</span>
+            <span class="text-accent">rsh</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-accent to-accent-light animate-pulse ml-0.5" aria-hidden="true"></span>
+        </a>
+
+        <!-- Desktop Navigation - 3 items -->
+        <ul class="hidden md:flex items-center gap-7 text-sm font-medium" role="list">
+            <li><a href="projects-uiux.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors" :class="{'active': activeSection === 'ux'}">UX Work</a></li>
+                <li><a href="projects-frontend.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors" :class="{'active': activeSection === 'graphic'}">Frontend Work</a></li>
+             <li><a href="projects-graphic.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors active">Graphic Work</a></li>
+        </ul>
+
+        <!-- Right side -->
+        <div class="flex items-center gap-1 md:gap-2">
+            <!-- Theme Toggle -->
+            <button @click="dark=!dark" class="w-9 h-9 flex items-center justify-center rounded-full bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-white/70 dark:hover:bg-white/10 transition-colors shrink-0" :aria-label="dark ? 'Switch to light mode' : 'Switch to dark mode'">
+                <svg x-show="!dark" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                <svg x-show="dark" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
+            </button>
+
+            <!-- Hire Me (Styled like index) -->
+            <a href="index.html#contact" class="hidden md:inline-flex items-center gap-1.5 px-5 py-2 rounded-full text-white text-sm font-semibold shadow-lg shadow-accent/30 hover:shadow-accent/50 transition-all hover:scale-105 shrink-0" style="background: linear-gradient(135deg, #FF4D1C 0%, #FF8C42 50%, #FFB347 100%);">
+                Hire Me
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+            </a>
+
+            <!-- Mobile Menu Toggle (Styled like index) -->
+            <button @click="mobileMenu=!mobileMenu" class="md:hidden w-9 h-9 flex items-center justify-center rounded-full bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-white/70 dark:hover:bg-white/10 transition-colors" aria-label="Toggle menu">
+                <svg x-show="!mobileMenu" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                <svg x-show="mobileMenu" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu - 3 items (Styled like index) -->
+    <div x-show="mobileMenu" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" class="md:hidden bg-white/80 dark:bg-black/80 backdrop-blur-xl border-t border-zinc-200/30 dark:border-zinc-700/30 rounded-b-2xl overflow-hidden">
+        <ul class="flex flex-col px-6 py-6 gap-3 text-sm" role="list">
+            <li><a href="projects-uiux.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">UX Work</a></li>
+            <li><a href="projects-frontend.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Frontend Work</a></li>
+            <li><a href="projects-graphic.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Graphic Work</a></li>
+            <li class="pt-3 border-t border-zinc-200/30 dark:border-zinc-700/30">
+                <a href="index.html#contact" @click="mobileMenu=false" class="inline-flex shimmer bg-accent text-white font-medium text-sm px-6 py-2.5 rounded-full hover:bg-accent-dark transition-colors">
+                    Hire me →
+                </a>
+            </li>
+        </ul>
+    </div>
+</header>
+
+
+    <main id="main-content">
+
+        <!-- ═══ CINEMATIC HERO SECTION ═══ -->
+        <section class="relative pt-24 pb-6 max-w-6xl mx-auto px-4 sm:px-6" aria-label="Project hero">
+            <nav class="flex items-center gap-2 text-sm text-zinc-400 mb-4 mt-2" aria-label="Breadcrumb">
+                <a href="projects-graphic.html" class="hover:text-accent transition-colors">Graphic Work</a>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <span class="text-zinc-600 dark:text-zinc-300 font-medium truncate max-w-[200px]" x-text="project.title"></span>
+            </nav>
+
+            <div class="hero-container w-full relative">
+                <div class="hero-image-wrapper w-full rounded-2xl overflow-hidden shadow-2xl relative bg-zinc-900/5 dark:bg-zinc-800/30">
+                    <div class="relative overflow-hidden group">
+                        <img :src="project.heroImage" 
+                             :alt="project.title" 
+                             class="hero-image w-full h-full object-cover aspect-[21/9] sm:aspect-[21/9] md:aspect-[21/9] lg:aspect-[21/9]"
+                             fetchpriority="high"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%221200%22 height=%22600%22%3E%3Crect width=%221200%22 height=%22600%22 fill=%22%23121212%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-family=%22sans-serif%22 font-size=%2236%22 fill=%22%23FF6B2B%22 text-anchor=%22middle%22 dy=%22.3em%22%3EPoster Campaign%3C/text%3E%3C/svg%3E'" />
+                    </div>
+                    
+                    <!-- Overlays -->
+                    <div class="hero-overlay-gradient"></div>
+                    <div class="hero-overlay-gradient-right"></div>
+                    <div class="hero-shine"></div>
+                    <div class="hero-blur-glow"></div>
+                </div>
+
+                <!-- Badges -->
+                <div class="absolute top-4 right-4 flex flex-wrap items-center gap-2 z-10">
+                    <span class="hero-badge">
+                        <span class="pulse-dot"></span>
+                        Poster Campaign
+                    </span>
+                </div>
+            </div>
+
+            <!-- Scroll Indicator -->
+            <div class="flex justify-center mt-6">
+                <div class="text-zinc-400 dark:text-zinc-500 text-xs flex flex-col items-center gap-1.5 opacity-70 hover:opacity-100 transition-opacity">
+                    <span class="tracking-wider uppercase font-medium text-[10px] sm:text-xs">Scroll to explore</span>
+                    <div class="w-5 h-8 rounded-full border-2 border-zinc-400 dark:border-zinc-500 flex justify-center pt-2 relative overflow-hidden">
+                        <div class="absolute inset-0 flex justify-center pt-2">
+                            <div class="w-1 h-2 bg-accent rounded-full scroll-bounce"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ PROJECT DETAILS ═══ -->
+        <section class="max-w-6xl mx-auto px-6 pb-16">
+            <div class="grid lg:grid-cols-3 gap-10">
+                
+                <!-- Main Content -->
+                <div class="lg:col-span-2 space-y-10 reveal d1">
+                    <div>
+                        <span class="text-xs font-semibold text-accent tracking-widest uppercase" x-text="project.categoryLabel"></span>
+                        <h1 class="font-bold text-4xl md:text-5xl text-zinc-900 dark:text-white mt-2 mb-4 gradient-text-hover" x-text="project.title"></h1>
+                        <p class="text-lg text-zinc-600 dark:text-zinc-300 leading-relaxed" x-text="project.overview"></p>
+                    </div>
+
+                    <!-- Key Metrics -->
+                    <div class="grid grid-cols-3 gap-4">
+                        <template x-for="metric in project.metrics" :key="metric.label">
+                            <div class="metric-card bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-5 text-center border border-zinc-100 dark:border-zinc-800 hover:border-accent/50 hover:shadow-lg transition-all duration-300 cursor-default">
+                                <p class="text-2xl md:text-3xl font-bold text-accent" x-text="metric.value"></p>
+                                <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1" x-text="metric.label"></p>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Tabs -->
+                    <div class="flex flex-wrap gap-2 border-b border-zinc-100 dark:border-zinc-800 pb-4" role="tablist" aria-label="Project details">
+                        <button @click="setTab('overview')" class="tab-btn" :class="activeTab==='overview'?'active':''" role="tab" :aria-selected="activeTab==='overview'" aria-controls="panel-overview">Overview</button>
+                        <button @click="setTab('gallery')" class="tab-btn" :class="activeTab==='gallery'?'active':''" role="tab" :aria-selected="activeTab==='gallery'" aria-controls="panel-gallery">Gallery</button>
+                    </div>
+
+                    <!-- Tab Content: Overview -->
+                    <div x-show="activeTab==='overview'" id="panel-overview" role="tabpanel" class="space-y-8">
+                        <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl p-6 md:p-8 border border-zinc-100 dark:border-zinc-800 transition-colors">
+                            <h3 class="font-semibold text-xl text-zinc-900 dark:text-white mb-3 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-accent" aria-hidden="true"></span>
+                                The Challenge
+                            </h3>
+                            <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed" x-text="project.challenge"></p>
+                        </div>
+                        <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl p-6 md:p-8 border border-zinc-100 dark:border-zinc-800 transition-colors">
+                            <h3 class="font-semibold text-xl text-zinc-900 dark:text-white mb-3 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-accent" aria-hidden="true"></span>
+                                The Solution
+                            </h3>
+                            <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed" x-text="project.solution"></p>
+                        </div>
+
+                        <!-- Design Elements -->
+                        <div class="bg-accent/5 dark:bg-accent/10 rounded-2xl p-6 md:p-8 border border-accent/20">
+                            <h3 class="font-semibold text-xl text-zinc-900 dark:text-white mb-4">🎨 Design Elements</h3>
+                            
+                            <!-- Typography -->
+                            <div class="mb-4">
+                                <h4 class="text-sm font-semibold text-accent mb-2">Typography</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    <template x-for="font in project.designElements.typography" :key="font">
+                                        <span class="text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-3 py-1.5 rounded-full" x-text="font"></span>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <!-- Color Palette -->
+                            <div class="mb-4">
+                                <h4 class="text-sm font-semibold text-accent mb-2">Color Palette</h4>
+                                <div class="flex flex-wrap gap-3">
+                                    <template x-for="(color, i) in project.designElements.colors" :key="color">
+                                        <div class="flex items-center gap-2">
+                                            <div class="color-chip w-8 h-8 rounded-full border-2 border-zinc-200 dark:border-zinc-700" 
+                                                 :style="'background-color: ' + color.split(' ')[0]"></div>
+                                            <span class="text-xs text-zinc-600 dark:text-zinc-400" x-text="color.split('(')[1]?.replace(')', '') || color"></span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <!-- Illustrations -->
+                            <div>
+                                <h4 class="text-sm font-semibold text-accent mb-2">Illustrations</h4>
+                                <p class="text-sm text-zinc-600 dark:text-zinc-400" x-text="project.designElements.illustrations"></p>
+                            </div>
+                        </div>
+
+                        <!-- Applications -->
+                        <div>
+                            <h3 class="font-semibold text-xl text-zinc-900 dark:text-white mb-4">Applications</h3>
+                            <div class="grid grid-cols-2 gap-3">
+                                <template x-for="app in project.applications" :key="app">
+                                    <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-3 border border-zinc-100 dark:border-zinc-800 text-sm text-zinc-600 dark:text-zinc-400 flex items-center gap-2">
+                                        <span class="text-accent">✓</span>
+                                        <span x-text="app"></span>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ═══ TAB CONTENT: GALLERY (UPDATED) ═══ -->
+                    <div x-show="activeTab==='gallery'" id="panel-gallery" role="tabpanel">
+                        
+                        <!-- Image Counter & Actions -->
+                        <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                            <span class="text-sm text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                                <span x-text="project.gallery.length"></span> images
+                            </span>
+                            <button @click="openLightbox(0)" 
+                                    class="text-sm font-medium text-accent hover:text-accent-dark transition-colors flex items-center gap-1.5 hover:gap-2.5 duration-300"
+                                    x-show="project.gallery.length > 0">
+                                View all
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                            </button>
+                        </div>
+
+                        <!-- Gallery Grid -->
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <template x-for="(img, i) in project.gallery" :key="i">
+                                <div class="gallery-item photo-frame aspect-[4/5] rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 hover:border-accent/50 transition-all duration-300 cursor-pointer group relative" 
+                                     @click="openLightbox(i)" 
+                                     @mouseenter="hoveredIndex = i"
+                                     @mouseleave="hoveredIndex = null"
+                                     role="button" 
+                                     :aria-label="'View gallery image ' + (i+1)" 
+                                     tabindex="0" 
+                                     @keydown.enter="openLightbox(i)">
+                                    
+                                    <!-- Skeleton Loader -->
+                                    <div class="absolute inset-0 bg-zinc-200 dark:bg-zinc-700 animate-pulse z-0"></div>
+                                    
+                                    <img :src="img" 
+                                         :alt="'Gallery image ' + (i+1)" 
+                                         class="w-full h-full object-cover transition-transform duration-700 ease-out relative z-10"
+                                         :class="hoveredIndex === i ? 'scale-110' : 'scale-100'"
+                                         loading="lazy"
+                                         @load="$el.previousElementSibling?.remove()"
+                                         @error="$el.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22500%22 height=%22500%22%3E%3Crect width=%22500%22 height=%22500%22 fill=%22%231f2937%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-family=%22sans-serif%22 font-size=%2224%22 fill=%22%239ca3af%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'" />
+                                    
+                                    <!-- Gradient overlay -->
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
+                                    
+                                    <!-- Slide-up caption -->
+                                    <div class="absolute inset-x-0 bottom-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-400 ease-out z-20">
+                                        <p class="text-white text-sm font-medium flex items-center gap-2">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" x-show="hoveredIndex === i"></span>
+                                            <span x-text="'Poster ' + (i+1)"></span>
+                                        </p>
+                                        <p class="text-white/60 text-[10px] flex items-center gap-1 mt-0.5 group-hover:gap-2 transition-all duration-300">
+                                            <svg class="w-3 h-3 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                            <span>Click to enlarge</span>
+                                        </p>
+                                    </div>
+                                    
+                                    <!-- Image Counter Badge -->
+                                    <div class="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm text-white text-[10px] font-medium px-2 py-0.5 rounded-full z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        <span x-text="i+1"></span>/<span x-text="project.gallery.length"></span>
+                                    </div>
+                                    
+                                    <!-- Zoom overlay -->
+                                    <div class="zoom-overlay absolute inset-0 bg-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-400 flex items-center justify-center pointer-events-none z-30">
+                                        <div class="bg-white/95 dark:bg-zinc-800/95 backdrop-blur-md rounded-full p-3.5 shadow-2xl transform scale-75 group-hover:scale-100 transition-transform duration-400 ease-out border border-white/20 dark:border-zinc-700/50 relative">
+                                            <span class="absolute inset-0 rounded-full border-2 border-accent/30 animate-ping" style="animation-duration: 1.5s;"></span>
+                                            <svg class="w-5 h-5 text-accent relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                            
+                            <!-- Enhanced Empty State -->
+                            <template x-if="project.gallery.length === 0">
+                                <div class="col-span-full text-center py-20 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-100 dark:border-zinc-800">
+                                    <svg class="w-24 h-24 mx-auto text-zinc-300 dark:text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                    <h3 class="text-lg font-semibold text-zinc-700 dark:text-zinc-300 mt-4">No images yet</h3>
+                                    <p class="text-zinc-500 dark:text-zinc-400 mt-1">Check back soon for updates</p>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar Metadata -->
+                <div class="lg:col-span-1 reveal d2">
+                    <div class="sticky top-28 space-y-8 bg-zinc-50 dark:bg-zinc-900/60 rounded-2xl p-6 border border-zinc-100 dark:border-zinc-800 transition-colors">
+                        <div>
+                            <h4 class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Client</h4>
+                            <p class="font-medium text-zinc-900 dark:text-white" x-text="project.client"></p>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Year</h4>
+                            <p class="font-medium text-zinc-900 dark:text-white" x-text="project.year"></p>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Role</h4>
+                            <p class="font-medium text-zinc-900 dark:text-white" x-text="project.role"></p>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">Deliverables</h4>
+                            <ul class="space-y-1.5" role="list">
+                                <template x-for="item in project.deliverables" :key="item">
+                                    <li class="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0" aria-hidden="true"></span>
+                                        <span x-text="item"></span>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">Tools Used</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <template x-for="tool in project.tools" :key="tool">
+                                    <span class="text-xs bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 px-3 py-1.5 rounded-full transition-colors" x-text="tool"></span>
+                                </template>
+                            </div>
+                        </div>
+                        <div class="pt-4 border-t border-zinc-200 dark:border-zinc-700 space-y-2">
+                            <a :href="project.link" class="flex items-center justify-center gap-2 shimmer bg-accent text-white font-medium px-6 py-3 rounded-full hover:bg-accent-light transition-colors text-sm w-full">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                View Full Collection
+                            </a>
+                            <a :href="project.link" class="flex items-center justify-center gap-2 text-sm font-medium text-accent hover:text-accent-dark transition-colors py-2 w-full">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                Download Print Files
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ PROJECT CAROUSEL ═══ -->
+        <section class="py-12 sm:py-16 bg-zinc-50/60 dark:bg-zinc-900/30 border-y border-zinc-100 dark:border-zinc-800 reveal d4">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="flex items-center justify-between mb-8 sm:mb-10">
+                    <div>
+                        <span class="text-[10px] sm:text-xs font-semibold text-accent tracking-widest uppercase">Explore More</span>
+                        <h2 class="font-bold text-2xl sm:text-3xl text-zinc-900 dark:text-white mt-1">Related Projects</h2>
+                    </div>
+                   
+                </div>
+
+                <!-- Carousel Track -->
+                <div class="overflow-hidden rounded-2xl">
+                    <div class="flex transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]" :style="`transform: translateX(-${carouselIndex * (100 / 3)}%);`">
+                        <template x-for="(item, idx) in carouselItems" :key="item.id">
+                            <div class="carousel-item flex-shrink-0 px-2 sm:px-3">
+                                <div class="carousel-card bg-white dark:bg-zinc-900/80 rounded-xl sm:rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 hover:border-accent/50 transition-all h-full flex flex-col">
+                                    <div class="photo-frame aspect-[16/10]">
+                                        <img :src="item.image" :alt="item.title" class="w-full h-full object-cover" loading="lazy" />
+                                    </div>
+                                    <div class="p-4 sm:p-5 flex flex-col flex-1">
+                                        <div class="flex items-center gap-2 mb-2 flex-wrap">
+                                            <span class="text-[10px] font-medium text-accent bg-accent/10 px-2 py-0.5 rounded-full" x-text="item.category"></span>
+                                        </div>
+                                        <h3 class="font-bold text-base sm:text-lg text-zinc-900 dark:text-white mb-1.5 leading-tight" x-text="item.title"></h3>
+                                        <p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed flex-1" x-text="item.description"></p>
+                                        <a :href="item.link" class="mt-3 sm:mt-4 inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-accent hover:gap-3 transition-all self-start">
+                                            View case study →
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <nav class="flex items-center justify-center gap-1 sm:gap-2 mt-6 sm:mt-8" aria-label="Carousel pagination">
+                    <template x-if="totalPages > 1">
+                        <button @click="prevSlide()" class="pagination-link w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:border-accent hover:text-accent transition-colors text-sm" aria-label="Previous page">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
+                    </template>
+
+                    <template x-if="totalPages > 1">
+                        <template x-for="page in paginationPages" :key="page">
+                            <template x-if="page === -1">
+                                <span class="pagination-ellipsis text-zinc-400 dark:text-zinc-500 text-sm px-0.5 sm:px-1">…</span>
+                            </template>
+                            <template x-if="page !== -1">
+                                <button @click="goToPage(page)" class="pagination-link w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full border text-sm font-medium transition-colors" :class="currentPage === page ? 'active-page bg-accent text-white border-accent' : 'border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:border-accent hover:text-accent'" :aria-current="currentPage === page ? 'true' : 'false'" x-text="page">
+                                </button>
+                            </template>
+                        </template>
+                    </template>
+
+                    <template x-if="totalPages > 1">
+                        <button @click="nextSlide()" class="pagination-link w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:border-accent hover:text-accent transition-colors text-sm" aria-label="Next page">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </template>
+                </nav>
+
+                <p class="hidden sm:block text-center text-[10px] text-zinc-400 dark:text-zinc-500 mt-2" x-text="`Page ${currentPage} of ${totalPages}`" x-show="totalPages > 1"></p>
+            </div>
+        </section>
+
+        <!-- ═══ CTA ═══ -->
+        <section class="py-24">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="bg-zinc-900 dark:bg-zinc-800 rounded-3xl p-10 md:p-14 text-center relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-accent/20 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+                    <div class="absolute bottom-0 left-0 w-40 h-40 bg-accent/10 rounded-full blur-2xl pointer-events-none" aria-hidden="true"></div>
+                    <div class="relative z-10">
+                        <p class="text-xs font-semibold text-accent tracking-widest uppercase mb-4">Need a website?</p>
+                        <h2 class="font-bold text-3xl md:text-4xl text-white mb-4">Let's build something<br class="sm:hidden"> remarkable</h2>
+                        <p class="text-zinc-400 max-w-md mx-auto mb-8">From landing pages to full web applications — I'd love to hear about your project and help bring it to life.</p>
+                        <a href="index.html#contact" class="inline-flex items-center gap-2 shimmer bg-accent text-white font-medium px-8 py-3.5 rounded-full hover:bg-accent-light transition-colors hover:scale-105 duration-300 shadow-lg shadow-accent/20 hover:shadow-accent/40">
+                            Start a project →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ═══ LIGHTBOX ═══ -->
+    <div x-show="lightboxOpen" 
+         x-cloak 
+         class="fixed inset-0 z-[999] flex items-center justify-center p-4 lightbox-overlay" 
+         @click.self="closeLightbox()">
+        
+        <button @click="closeLightbox()" 
+                class="absolute top-4 right-4 sm:top-6 sm:right-6 text-white/60 hover:text-white transition-colors text-2xl sm:text-3xl lightbox-close-btn z-10 bg-black/30 rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center backdrop-blur-sm" 
+                aria-label="Close lightbox">
+            ✕
+        </button>
+        
+        <button @click="prevImage()" 
+                class="absolute left-2 sm:left-6 lightbox-btn z-10" 
+                aria-label="Previous image"
+                x-show="galleryImages.length > 1">
+            ‹
+        </button>
+        
+        <button @click="nextImage()" 
+                class="absolute right-2 sm:right-6 lightbox-btn z-10" 
+                aria-label="Next image"
+                x-show="galleryImages.length > 1">
+            ›
+        </button>
+        
+        <p class="absolute bottom-4 sm:bottom-8 text-white/40 text-xs sm:text-sm z-10 bg-black/30 px-3 py-1 rounded-full backdrop-blur-sm" 
+           x-text="`${lightboxIndex + 1} / ${galleryImages.length}`"
+           x-show="galleryImages.length > 1">
+        </p>
+        
+        <div class="lightbox-image-wrapper flex items-center justify-center w-full h-full max-h-[85vh]">
+            <template x-if="galleryImages.length > 0 && galleryImages[lightboxIndex]">
+                <img :src="galleryImages[lightboxIndex]" 
+                     :alt="'Gallery image ' + (lightboxIndex + 1)" 
+                     class="rounded-xl shadow-2xl"
+                     style="max-width: 90vw; max-height: 80vh; width: auto; height: auto; object-fit: contain; display: block;" />
+            </template>
+        </div>
+    </div>
+
+    <!-- ═══ FLOATING ACTION BUTTONS ═══ -->
+    <div class="fixed right-6 bottom-24 z-40 flex flex-col gap-3">
+        <button @click="sharePage()" class="fab w-12 h-12 rounded-full bg-white dark:bg-zinc-800 shadow-lg border border-zinc-200 dark:border-zinc-700 hover:bg-accent hover:text-white hover:border-accent hover:scale-110 transition-all duration-300 flex items-center justify-center text-zinc-600 dark:text-zinc-300" aria-label="Share page">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+        </button>
+
+        <button @click="window.scrollTo({top:0,behavior:'smooth'})" x-show="scrolled" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90" class="relative w-12 h-12 rounded-full bg-white dark:bg-zinc-800 shadow-lg border border-zinc-200 dark:border-zinc-700 hover:bg-accent hover:text-white hover:border-accent hover:scale-110 transition-all duration-300 flex items-center justify-center text-zinc-600 dark:text-zinc-300 group" aria-label="Scroll to top">
+            <svg class="absolute inset-0 w-full h-full -rotate-90">
+                <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="2" class="text-zinc-200 dark:text-zinc-700"/>
+                <circle cx="24" cy="24" r="20" fill="none" stroke="#FF6B2B" stroke-width="2.5" :stroke-dasharray="`${progress * 125.6 / 100} 125.6`" class="transition-all duration-300"/>
+            </svg>
+            <svg class="w-5 h-5 relative z-10 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+        </button>
+    </div>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="border-t border-zinc-100 dark:border-zinc-800 bg-white dark:bg-[#0a0a0a] transition-colors">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 text-center">
+            <p class="text-xs sm:text-sm text-zinc-400">
+                © <span id="yr"></span> . All rights reserved.
+                <br class="sm:hidden">
+                Developed by <a href="https://linkedin.com/in/adersh-c-s" target="_blank" rel="noopener noreferrer" class="font-medium hover:text-accent transition-colors">Adersh c.s</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('yr').textContent = new Date().getFullYear();
+
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) { e.target.classList.add('visible'); }
+            });
+        }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+        });
+
+        const dot = document.getElementById('cursorDot');
+        const ring = document.getElementById('cursorRing');
+        let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0, dotX = 0, dotY = 0;
+        const ringEase = 0.12, dotEase = 0.18;
+
+        const onMouseMove = (e) => { mouseX = e.clientX; mouseY = e.clientY; };
+
+        const animateCursor = () => {
+            ringX += (mouseX - ringX) * ringEase;
+            ringY += (mouseY - ringY) * ringEase;
+            dotX += (mouseX - dotX) * dotEase;
+            dotY += (mouseY - dotY) * dotEase;
+            if (ring) ring.style.transform = `translate(${ringX - 20}px, ${ringY - 20}px)`;
+            if (dot) dot.style.transform = `translate(${dotX - 4}px, ${dotY - 4}px)`;
+            requestAnimationFrame(animateCursor);
+        };
+
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+        if (!isTouchDevice && dot && ring) {
+            document.addEventListener('mousemove', onMouseMove);
+            animateCursor();
+            const hoverElements = document.querySelectorAll('a, button, .nav-link, .shimmer, .photo-frame, .gallery-item, .lightbox-btn, .lightbox-close-btn, .tab-btn, .pagination-link, .carousel-btn, .fab');
+            hoverElements.forEach(el => {
+                el.addEventListener('mouseenter', () => { ring.classList.add('hover'); dot.classList.add('hover'); });
+                el.addEventListener('mouseleave', () => { ring.classList.remove('hover'); dot.classList.remove('hover'); });
+                el.addEventListener('mousedown', () => { ring.classList.add('click'); });
+                el.addEventListener('mouseup', () => { ring.classList.remove('click'); });
+            });
+        }
+    </script>
+
+</body>
+</html>
