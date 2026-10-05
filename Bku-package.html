@@ -1289,10 +1289,10 @@
 
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
               <template x-for="(pkg, idx) in [
-                { name: '🏪Outdoor Advertising', img: '/images/Frame 2147236680.png' },
-                { name: '📱Digital & Social Media', img: '/images/socialmediapost.png' },
-                { name: '🛒Retail & Store Branding', img: '/images/bkushelf.png' },
-                { name: '🚚Brand Extensions', img: '/images/bkubag.png' }
+                { name: '🏪Outdoor Advertising', img: 'images/Frame 2147236680.png' },
+                { name: '📱Digital & Social Media', img: 'images/socialmediapost.png' },
+                { name: '🛒Retail & Store Branding', img: 'images/bkushelf.png' },
+                { name: '🚚Brand Extensions', img: 'images/bkubag.png' }
               ]" :key="idx">
                 <div class="gallery-item photo-frame aspect-square rounded-xl overflow-hidden border-2 border-zinc-200 dark:border-zinc-700 hover:border-accent/50 transition-all" @click="openLightbox(idx)" role="button" :aria-label="'View packaging: ' + pkg.name" tabindex="0" @keydown.enter="openLightbox(idx)">
                   <img :src="pkg.img" :alt="pkg.name" class="w-full h-full object-cover" loading="lazy" />
