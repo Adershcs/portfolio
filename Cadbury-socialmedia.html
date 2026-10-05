@@ -1,0 +1,1909 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{
+  dark: localStorage.getItem('theme')==='dark'||(!localStorage.getItem('theme')&&window.matchMedia('(prefers-color-scheme: dark)').matches),
+  scrolled: false,
+  mobileMenu: false,
+  progress: 0,
+  activeTab: 'overview',
+  lightboxOpen: false,
+  lightboxIndex: 0,
+  galleryImages: [],
+  hoveredIndex: null,
+  videoLightboxOpen: false,
+  videoLightboxIndex: 0,
+  videoGallery: [],
+  carouselIndex: 0,
+  carouselItems: [
+    {
+      id: 1,
+      title: 'Bloom — Social Campaign',
+      category: 'Social Media',
+      image: 'images/COMMINGSOON.png',
+      description: 'Social media campaign with 15+ animated graphics for a skincare brand launch.',
+      link: '#'
+    },
+    {
+      id: 2,
+      title: 'Kitchen Treasures — Food Ads',
+      category: 'Social Media',
+      image: 'images/COMMINGSOON.png',
+      description: 'Mouth-watering food photography and promotional content for social platforms.',
+      link: '#'
+    },
+    {
+      id: 3,
+      title: 'Eco Brand — Awareness Campaign',
+      category: 'Social Media',
+      image: 'images/COMMINGSOON.png',
+      description: 'Sustainable fashion brand social media campaign focusing on community engagement.',
+      link: '#'
+    },
+    {
+      id: 4,
+      title: 'Fitness App — Social Launch',
+      category: 'Social Media',
+      image: 'images/COMMINGSOON.png',
+      description: 'Instagram stories, reels, and static posts for a fitness app launch.',
+      link: '#'
+    },
+    {
+      id: 5,
+      title: 'Art Gallery — Social Presence',
+      category: 'Social Media',
+      image: '/images/COMMINGSOON.png',
+      description: 'Visual content strategy for an art gallery featuring artist spotlights and exhibition highlights.',
+      link: '#'
+    },
+    {
+      id: 6,
+      title: 'Tech Startup — Brand Launch',
+      category: 'Social Media',
+      image: 'images/COMMINGSOON.png',
+      description: 'Social media graphics for a tech startup launch with product teasers and educational content.',
+      link: '#'
+    }
+  ],
+  get totalPages() {
+    return Math.ceil(this.carouselItems.length / 3);
+  },
+  get currentPage() {
+    return Math.floor(this.carouselIndex / 3) + 1;
+  },
+  get paginationPages() {
+    const total = this.totalPages;
+    const current = this.currentPage;
+    if (total <= 1) return [1];
+    if (total <= 5) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+    const pages = [];
+    pages.push(1);
+    if (current > 3) pages.push(-1);
+    const start = Math.max(2, current - 1);
+    const end = Math.min(total - 1, current + 1);
+    for (let i = start; i <= end; i++) {
+      if (i > 1 && i < total) pages.push(i);
+    }
+    if (current < total - 2) pages.push(-1);
+    pages.push(total);
+    return pages;
+  },
+  goToPage(page) {
+    const idx = (page - 1) * 3;
+    if (idx >= 0 && idx < this.carouselItems.length) {
+      this.carouselIndex = idx;
+    }
+  },
+  prevSlide() {
+    const newIndex = this.carouselIndex - 3;
+    if (newIndex >= 0) {
+      this.carouselIndex = newIndex;
+    } else {
+      const total = this.carouselItems.length;
+      const remainder = total % 3;
+      const lastPageStart = remainder === 0 ? total - 3 : total - remainder;
+      this.carouselIndex = Math.max(0, lastPageStart);
+    }
+  },
+  nextSlide() {
+    const newIndex = this.carouselIndex + 3;
+    if (newIndex < this.carouselItems.length) {
+      this.carouselIndex = newIndex;
+    } else {
+      this.carouselIndex = 0;
+    }
+  },
+  socialProject: {
+    id: 15,
+    title: 'Cadbury - Dairy Milk',
+    category: 'Social Media Design',
+    categoryLabel: 'Social Media',
+    heroImage: 'images/cadbury.png',
+    gallery: [
+      'images/Cadbury01.png',
+      'images/Cadbury02.png',
+      'images/Cadbury03.png',
+      'images/Cadbury04.png',
+      'images/TOFFEE.png',
+      'images/WHOLENUT.png',
+      'images/CHOCOLATE.png',
+      'images/NUT.FRUIT.png',
+      'images/TCRISP.png'
+    ],
+    overview: 'A comprehensive social media campaign for Cadbury Dairy Milk, designed to build brand awareness and drive engagement across multiple platforms. The campaign focuses on educational content, lifestyle imagery, and cohesive brand storytelling.',
+    challenge: 'Creating a cohesive visual identity across Instagram, Facebook, LinkedIn, and TikTok while maintaining each platform\'s unique format requirements and best practices.',
+    solution: 'Developed a flexible visual system with modular designs that adapt to each platform while maintaining brand consistency. Created platform-specific content strategies with optimized formats.',
+    platformStrategy: [
+      { 
+        platform: 'Instagram', 
+        icon: '📸',
+        focus: 'Visual storytelling, product education, community engagement', 
+        formats: 'Grid posts, Stories, Reels',
+        hovered: false,
+        expanded: false
+      },
+    ],
+    designElements: {
+      typography: ['Playfair Display (Headlines)', 'Inter (Body)', 'DM Sans (Captions)'],
+      colors: [ '#442D85 (Cadbury Royal Purple)', '#6541D2 (Bright Violet Purple)', '#D8A62A (Golden Yellow)'],
+      illustrations: 'Botanical illustrations, product sketches, and lifestyle scenes.'
+    },
+ metrics: [
+      { value: '10K+', label: 'Social Reach' },
+      { value: '6', label: 'Poster Designs' },
+     
+    ],
+    year: '2026',
+    client: 'Mondelēz International',
+    role: 'Lead Poster Designer & Illustrator',
+    deliverables: ['9 Poster Designs', 'Social Media Adaptations'],
+    tools: ['🎨 Adobe Illustrator', '🖼️ Adobe Photoshop'],
+    link: '#',
+    prevProject: { title: 'Urban — Editorial Series', url: '#' },
+    nextProject: { title: 'Urban — Poster Series', url: '#' }
+  },
+  setTab(tab) {
+    this.activeTab = tab;
+  },
+  openLightbox(index) {
+    this.galleryImages = [...this.socialProject.gallery];
+    this.lightboxIndex = index;
+    this.lightboxOpen = true;
+    document.body.style.overflow = 'hidden';
+  },
+  closeLightbox() { 
+    this.lightboxOpen = false;
+    document.body.style.overflow = '';
+  },
+  prevImage() { 
+    if (this.galleryImages.length === 0) return;
+    this.lightboxIndex = (this.lightboxIndex - 1 + this.galleryImages.length) % this.galleryImages.length; 
+  },
+  nextImage() { 
+    if (this.galleryImages.length === 0) return;
+    this.lightboxIndex = (this.lightboxIndex + 1) % this.galleryImages.length; 
+  },
+  openVideoLightbox(assetIndex, videoIndex) {
+    const asset = this.socialProject.socialAssets[assetIndex];
+    this.videoGallery = asset.videos || [];
+    this.videoLightboxIndex = videoIndex || 0;
+    this.videoLightboxOpen = true;
+  },
+  closeVideoLightbox() {
+    this.videoLightboxOpen = false;
+    setTimeout(() => {
+      document.querySelectorAll('.lightbox-video').forEach(v => v.pause());
+    }, 100);
+  },
+  prevVideo() {
+    if (this.videoGallery.length === 0) return;
+    this.videoLightboxIndex = (this.videoLightboxIndex - 1 + this.videoGallery.length) % this.videoGallery.length;
+  },
+  nextVideo() {
+    if (this.videoGallery.length === 0) return;
+    this.videoLightboxIndex = (this.videoLightboxIndex + 1) % this.videoGallery.length;
+  },
+  handleKeydown(e) {
+    if (this.lightboxOpen) {
+      if (e.key === 'Escape') this.closeLightbox();
+      if (e.key === 'ArrowLeft') this.prevImage();
+      if (e.key === 'ArrowRight') this.nextImage();
+    }
+    if (this.videoLightboxOpen) {
+      if (e.key === 'Escape') this.closeVideoLightbox();
+      if (e.key === 'ArrowLeft') this.prevVideo();
+      if (e.key === 'ArrowRight') this.nextVideo();
+    }
+  },
+  fallbackImage(e) {
+    e.target.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect width=%22400%22 height=%22300%22 fill=%22%23e5e7eb%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2220%22 fill=%22%239ca3af%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E';
+  },
+  touchStartX: 0,
+  touchCurrentX: 0,
+  isDragging: false,
+  touchStart(e) {
+    this.touchStartX = e.touches[0].clientX;
+    this.isDragging = true;
+  },
+  touchMove(e) {
+    if (!this.isDragging) return;
+    this.touchCurrentX = e.touches[0].clientX;
+  },
+  touchEnd() {
+    if (!this.isDragging) return;
+    this.isDragging = false;
+    const diff = this.touchStartX - this.touchCurrentX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        this.nextSlide();
+      } else {
+        this.prevSlide();
+      }
+    }
+    this.touchStartX = 0;
+    this.touchCurrentX = 0;
+  }
+}" :class="{'dark':dark}" x-init="
+  $watch('dark', v => localStorage.setItem('theme', v ? 'dark' : 'light'));
+  window.addEventListener('scroll', () => {
+    scrolled = window.scrollY > 20;
+    progress = Math.min(100, Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100));
+  }, { passive: true });
+  window.addEventListener('keydown', (e) => handleKeydown(e));
+" class="scroll-smooth" @keydown.window="handleKeydown($event)">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="last-modified" content="2026-08-29" />
+
+    <!-- Primary Meta Tags -->
+    <title>Cadbury — Dairy Milk Poster Campaign | Adersh c.s</title>
+    <meta name="title" content="Cadbury — Dairy Milk Poster Campaign | Adersh c.s" />
+    <meta name="description" content="Cadbury Dairy Milk poster design campaign by Adersh c.s. 6 unique social media poster designs for Mondelēz International featuring Cadbury Royal Purple and Golden Yellow color palette." />
+    <meta name="keywords" content="Cadbury, Dairy Milk, poster design, social media campaign, graphic design, Adersh c.s, Mondelēz International, poster campaign, brand design, social media graphics, food packaging design, illustration, poster series" />
+    <meta name="author" content="Adersh c.s" />
+    <meta name="copyright" content="Adersh c.s 2026" />
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="language" content="English" />
+    <meta name="revisit-after" content="7 days" />
+    <meta name="distribution" content="global" />
+    <meta name="rating" content="General" />
+    <link rel="canonical" href="https://adersh-c-s.github.io/portfolio/cadbury-poster-campaign.html" />
+
+    <!-- Geo Tags -->
+    <meta name="geo.region" content="IN-KL" />
+    <meta name="geo.placename" content="Thrissur, Kerala, India" />
+    <meta name="geo.position" content="10.5276;76.2144" />
+    <meta name="ICBM" content="10.5276, 76.2144" />
+
+    <!-- hreflang -->
+    <link rel="alternate" href="https://adersh-c-s.github.io/portfolio/cadbury-poster-campaign.html" hreflang="en" />
+    <link rel="alternate" href="https://adersh-c-s.github.io/portfolio/cadbury-poster-campaign.html" hreflang="x-default" />
+
+    <!-- Mobile & Theme -->
+    <meta name="theme-color" content="#442D85" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Cadbury — Poster Campaign" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-TileColor" content="#442D85" />
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:title" content="Cadbury — Dairy Milk Poster Campaign | Adersh c.s" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://adersh-c-s.github.io/portfolio/cadbury-poster-campaign.html" />
+    <meta property="og:image" content="https://adersh-c-s.github.io/images/cadbury.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content="Cadbury Dairy Milk poster design campaign featuring Cadbury Royal Purple and Golden Yellow color palette" />
+    <meta property="og:description" content="A comprehensive poster design campaign for Cadbury Dairy Milk featuring 6 unique poster designs with the iconic Cadbury Royal Purple and Golden Yellow color palette." />
+    <meta property="og:site_name" content="Adersh c.s Portfolio" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:email" content="adershcsengandiyur@gmail.com" />
+    <meta property="og:phone_number" content="+91-XXXXX-XXXXX" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Cadbury — Dairy Milk Poster Campaign" />
+    <meta name="twitter:description" content="Poster design campaign for Cadbury Dairy Milk by Adersh c.s. 6 unique social media poster designs." />
+    <meta name="twitter:image" content="https://adersh-c-s.github.io/images/cadbury.png" />
+    <meta name="twitter:image:alt" content="Cadbury Dairy Milk poster design" />
+    <meta name="twitter:creator" content="@adersh_cs" />
+    <meta name="twitter:site" content="@adersh_cs" />
+
+    <!-- Verification -->
+    <meta name="google-site-verification" content="google1205c50f18b38cb5" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+
+   
+    <!-- ═══ FAVICON ═══ -->
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="images/favicon-48.png">
+<link rel="icon" type="image/png" sizes="192x192" href="images/favicon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="images/favicon-180.png">
+<meta name="theme-color" content="#FF4D1C">
+
+
+    <!-- ═══ SCHEMA.ORG STRUCTURED DATA ═══ -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "Cadbury — Dairy Milk Poster Campaign",
+            "description": "A comprehensive poster design campaign for Cadbury Dairy Milk featuring 6 unique poster designs with the iconic Cadbury Royal Purple and Golden Yellow color palette.",
+            "image": "https://adersh-c-s.github.io/images/cadbury.png",
+            "author": {
+                "@type": "Person",
+                "name": "Adersh c.s",
+                "url": "https://github.com/Adershcs",
+                "sameAs": [
+                    "https://linkedin.com/in/adersh-c-s",
+                    "https://github.com/Adershcs",
+                    "https://twitter.com/adersh_cs"
+                ]
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "Adersh c.s Portfolio",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://adersh-c-s.github.io/images/og-image.jpg"
+                }
+            },
+            "datePublished": "2026-01-01",
+            "dateModified": "2026-08-29",
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": "https://adersh-c-s.github.io/portfolio/cadbury-poster-campaign.html"
+            },
+            "keywords": "Cadbury, Dairy Milk, poster design, social media campaign, Mondelēz International",
+            "about": {
+                "@type": "CreativeWork",
+                "name": "Poster Design Campaign"
+            }
+        }
+    </script>
+
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": "https://adersh-c-s.github.io/portfolio/"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Graphic Projects",
+                    "item": "https://adersh-c-s.github.io/portfolio/projects-graphic.html"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 3,
+                    "name": "Cadbury — Dairy Milk Poster Campaign",
+                    "item": "https://adersh-c-s.github.io/portfolio/cadbury-poster-campaign.html"
+                }
+            ]
+        }
+    </script>
+
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "Cadbury — Dairy Milk Poster Campaign",
+            "description": "Cadbury Dairy Milk poster design campaign by Adersh c.s. 6 unique social media poster designs for Mondelēz International.",
+            "url": "https://adersh-c-s.github.io/portfolio/cadbury-poster-campaign.html",
+            "inLanguage": "en",
+            "about": {
+                "@type": "Brand",
+                "name": "Cadbury",
+                "brand": {
+                    "@type": "Brand",
+                    "name": "Cadbury Dairy Milk"
+                }
+            }
+        }
+    </script>
+
+    <!-- ═══ DUBLIN CORE METADATA ═══ -->
+    <meta name="DC.title" content="Cadbury — Dairy Milk Poster Campaign" />
+    <meta name="DC.creator" content="Adersh c.s" />
+    <meta name="DC.description" content="Cadbury Dairy Milk poster design campaign featuring 6 unique social media poster designs." />
+    <meta name="DC.subject" content="Cadbury, Dairy Milk, poster design, social media campaign" />
+    <meta name="DC.publisher" content="Adersh c.s Portfolio" />
+    <meta name="DC.date" content="2026-08-29" />
+    <meta name="DC.type" content="CreativeWork" />
+    <meta name="DC.format" content="text/html" />
+    <meta name="DC.language" content="en" />
+    <meta name="DC.rights" content="Copyright 2026 Adersh c.s. All rights reserved." />
+
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+
+    <!-- Preload Hero Image -->
+    <link rel="preload" as="image" href="/images/cadbury.png" fetchpriority="high" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        accent: '#FF6B2B',
+                        'accent-light': '#FF8F5C',
+                        'accent-dark': '#E0551A',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color .3s, color .3s;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .cursor-dot {
+            position: fixed; width: 8px; height: 8px; background: #FF6B2B; border-radius: 50%;
+            pointer-events: none; z-index: 9999; transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.2s; will-change: transform; mix-blend-mode: difference;
+        }
+        .cursor-ring {
+            position: fixed; width: 40px; height: 40px; border: 1.5px solid rgba(255, 107, 43, 0.5);
+            border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, border-color 0.3s, background 0.3s; will-change: transform;
+        }
+        .cursor-ring.hover { width: 64px; height: 64px; border-color: rgba(255, 107, 43, 0.9); background: rgba(255, 107, 43, 0.08); }
+        .cursor-ring.click { width: 28px; height: 28px; border-color: #FF6B2B; background: rgba(255, 107, 43, 0.2); }
+        .cursor-dot.hover { width: 12px; height: 12px; background: #FF8F5C; }
+
+        @media (hover: none) and (pointer: coarse) {
+            .cursor-dot, .cursor-ring { display: none !important; }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #FF6B2B; border-radius: 99px; }
+
+        [x-cloak] { display: none !important; }
+
+        .reveal {
+            opacity: 0; transform: translateY(30px);
+            transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1);
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .d1 { transition-delay: .05s; } .d2 { transition-delay: .12s; } .d3 { transition-delay: .19s; } .d4 { transition-delay: .26s; } .d5 { transition-delay: .33s; }
+
+        /* ═══ GLASS HEADER ═══ */
+        .glass {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        }
+        .dark .glass {
+            background: rgba(10, 10, 10, 0.75);
+            border-color: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        /* ═══ NAV LINKS ═══ */
+        .nav-link {
+            position: relative;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #FF4D1C 0%, #FF8C42 50%, #FFB347 100%);
+            transition: width .3s cubic-bezier(.22, 1, .36, 1);
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        .nav-link.active {
+            color: #FF4D1C !important;
+        }
+        .dark .nav-link.active {
+            color: #FF6B3D !important;
+        }
+
+        .shimmer { position: relative; overflow: hidden; }
+        .shimmer::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
+            background: rgba(255,255,255,.25); transform: skewX(-20deg); transition: left .5s cubic-bezier(.22,1,.36,1);
+        }
+        .shimmer:hover::after { left: 160%; }
+
+        .photo-frame { overflow: hidden; background: #e4e4e7; transition: background-color 0.3s; }
+        .dark .photo-frame { background: #27272a; }
+        .photo-frame img {
+            width: 100%; height: 100%; object-fit: cover; display: block;
+            transition: transform .5s cubic-bezier(.22,1,.36,1);
+        }
+        .photo-frame:hover img { transform: scale(1.03); }
+
+        .progress-bar {
+            position: fixed; top: 0; left: 0; height: 3px; background: #FF6B2B; z-index: 100; transition: width .1s linear;
+        }
+
+        .lightbox-overlay { background: rgba(0,0,0,0.92); backdrop-filter: blur(12px); }
+        .lightbox-btn {
+            transition: all .2s ease; width: 48px; height: 48px; border-radius: 50%;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.6); display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; cursor: pointer !important;
+        }
+        .lightbox-btn:hover { background: rgba(255,255,255,0.16); color: white; }
+
+        .gradient-text-hover {
+            background: linear-gradient(135deg, #FF6B2B 0%, #FF8F5C 50%, #FF6B2B 100%);
+            background-size: 200% 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; animation: gradientShift 4s ease-in-out infinite; transition: all 0.4s ease;
+        }
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; }
+        }
+        .gradient-text-hover:hover { background-size: 300% 300%; animation-duration: 1.5s; }
+
+        .gallery-item { cursor: pointer !important; position: relative; overflow: hidden; border-radius: 1rem; }
+        .gallery-item::after {
+            content: ''; position: absolute; inset: 0; background: rgba(255,107,43,0.15);
+            opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
+        }
+        .gallery-item:hover::after { opacity: 1; }
+
+        .lightbox-close-btn { cursor: pointer !important; transition: all 0.2s ease; }
+        .lightbox-close-btn:hover { color: white !important; transform: rotate(90deg); }
+
+        .tab-btn {
+            cursor: pointer !important; transition: all 0.25s ease; padding: 0.6rem 1.5rem; border-radius: 0.75rem;
+            font-weight: 500; font-size: 0.9rem; border: 2px solid transparent; background: transparent; color: #71717a;
+        }
+        .tab-btn:hover { color: #18181b; background: #f4f4f5; }
+        .dark .tab-btn:hover { color: #fafafa; background: #27272a; }
+        .tab-btn.active { background: #FF6B2B; color: white; border-color: #FF6B2B; }
+        .dark .tab-btn.active { background: #FF8F5C; border-color: #FF8F5C; color: #0a0a0a; }
+
+        .asset-card {
+            transition: all 0.3s ease; cursor: default !important;
+        }
+        @media (hover: hover) {
+            .asset-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 8px 24px rgba(255, 107, 43, 0.1);
+                border-color: #FF6B2B;
+            }
+            .dark .asset-card:hover {
+                box-shadow: 0 8px 24px rgba(255, 107, 43, 0.15);
+                border-color: #FF8F5C;
+            }
+        }
+
+        .platform-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: rgba(255,107,43,0.1);
+            color: #FF6B2B;
+            border: 1px solid rgba(255,107,43,0.2);
+        }
+        .dark .platform-badge {
+            background: rgba(255,107,43,0.2);
+            color: #FF8F5C;
+        }
+
+        .platform-card {
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        .platform-card:hover {
+            border-left-color: #FF6B2B;
+            transform: translateX(4px);
+        }
+        .dark .platform-card:hover {
+            border-left-color: #FF8F5C;
+        }
+
+        .carousel-item {
+            flex: 0 0 100%;
+            padding: 0 0.75rem;
+        }
+        @media (min-width: 640px) {
+            .carousel-item {
+                flex: 0 0 50%;
+            }
+        }
+        @media (min-width: 1024px) {
+            .carousel-item {
+                flex: 0 0 33.333%;
+            }
+        }
+
+        .carousel-btn {
+            cursor: pointer !important;
+            transition: all 0.2s ease;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        .carousel-btn:hover {
+            background: rgba(255, 107, 43, 0.2);
+            border-color: #FF6B2B;
+            color: white;
+        }
+        .dark .carousel-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+        .dark .carousel-btn:hover {
+            background: rgba(255, 107, 43, 0.25);
+            border-color: #FF8F5C;
+        }
+
+        .carousel-card {
+            transition: all 0.4s ease;
+        }
+        .carousel-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 40px rgba(255, 107, 43, 0.12);
+        }
+        .dark .carousel-card:hover {
+            box-shadow: 0 12px 40px rgba(255, 107, 43, 0.18);
+        }
+
+        .carousel-card .photo-frame .overlay-view {
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .carousel-card:hover .photo-frame .overlay-view { opacity: 1; }
+        .carousel-card .photo-frame img {
+            transition: transform 0.6s ease;
+        }
+        .carousel-card:hover .photo-frame img { transform: scale(1.08); }
+        .carousel-card .photo-frame .gradient-overlay {
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .carousel-card:hover .photo-frame .gradient-overlay { opacity: 1; }
+        .carousel-card .title-link {
+            transition: color 0.3s ease;
+        }
+        .carousel-card:hover .title-link { color: #FF6B2B; }
+
+        .pagination-link {
+            cursor: pointer !important;
+            transition: all 0.2s ease;
+            width: 2.25rem;
+            height: 2.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            border: 1px solid #e4e4e7;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #52525b;
+            background: transparent;
+        }
+        .dark .pagination-link {
+            border-color: #27272a;
+            color: #a1a1aa;
+        }
+        .pagination-link:hover {
+            border-color: #FF6B2B;
+            color: #FF6B2B;
+        }
+        .dark .pagination-link:hover {
+            border-color: #FF8F5C;
+            color: #FF8F5C;
+        }
+        .pagination-link.active-page {
+            background: #FF6B2B !important;
+            color: white !important;
+            border-color: #FF6B2B !important;
+        }
+        .dark .pagination-link.active-page {
+            background: #FF8F5C !important;
+            border-color: #FF8F5C !important;
+            color: #0a0a0a !important;
+        }
+
+        .pagination-ellipsis {
+            color: #a1a1aa;
+            font-size: 0.875rem;
+            padding: 0 0.25rem;
+        }
+        .dark .pagination-ellipsis { color: #52525b; }
+
+        a, button, .gallery-item, .photo-frame, .tab-btn, .pagination-link, .carousel-btn {
+            cursor: pointer !important;
+        }
+
+        .lightbox-image-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            max-height: 85vh;
+        }
+        .lightbox-image-wrapper img {
+            max-width: 90vw;
+            max-height: 80vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .social-stats-highlight {
+            background: linear-gradient(135deg, rgba(255,107,43,0.05), rgba(255,143,92,0.05));
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(255,107,43,0.1);
+        }
+
+        .video-thumbnail {
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            border-radius: 0.75rem;
+        }
+        .video-thumbnail video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .video-badge {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.75);
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            border: 2px solid rgba(255,255,255,0.3);
+            pointer-events: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+        .group:hover .video-badge {
+            background: rgba(255,107,43,0.9);
+            transform: translate(-50%, -50%) scale(1.1);
+            border-color: white;
+        }
+
+        .video-tag {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: rgba(255,0,0,0.85);
+            color: white;
+            font-size: 8px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(4px);
+            z-index: 5;
+        }
+
+        .lightbox-video-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            max-height: 85vh;
+        }
+        .lightbox-video-wrapper video {
+            max-width: 90vw;
+            max-height: 80vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            background: #000;
+        }
+
+        .asset-image-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+
+        .touch-swipe-hint {
+            animation: pulse-swipe 2s ease-in-out infinite;
+        }
+        @keyframes pulse-swipe {
+            0%, 100% { opacity: 0.4; transform: translateX(0); }
+            50% { opacity: 1; transform: translateX(4px); }
+        }
+
+        @media (max-width: 640px) {
+            .lightbox-image-wrapper img,
+            .lightbox-video-wrapper video {
+                max-width: 95vw;
+                max-height: 70vh;
+            }
+            .tab-btn {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.9rem;
+            }
+            .asset-image-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .video-badge {
+                width: 36px;
+                height: 36px;
+                font-size: 1rem;
+            }
+        }
+
+        /* Scroll Indicator Animation */
+        .animate-scroll {
+            animation: scrollBounce 1.8s ease-in-out infinite;
+        }
+
+        @keyframes scrollBounce {
+            0% { transform: translateY(0); opacity: 0.4; }
+            50% { transform: translateY(6px); opacity: 1; }
+            100% { transform: translateY(0); opacity: 0.4; }
+        }
+
+        /* Responsive hero text */
+        .hero-title {
+            font-size: clamp(1rem, 4vw, 2.5rem);
+            line-height: 1.2;
+        }
+
+        /* Responsive metrics */
+        .metric-value {
+            font-size: clamp(1.125rem, 3vw, 2rem);
+        }
+
+        /* Responsive breadcrumb */
+        @media (max-width: 480px) {
+            .breadcrumb-text {
+                max-width: 120px;
+            }
+        }
+
+        /* Better touch targets on mobile */
+        @media (max-width: 640px) {
+            .tab-btn {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.7rem;
+                min-height: 40px;
+            }
+            .carousel-btn {
+                width: 36px;
+                height: 36px;
+            }
+            .pagination-link {
+                width: 32px;
+                height: 32px;
+                font-size: 0.75rem;
+            }
+        }
+
+        /* ═══ CINEMATIC HERO - ENHANCED ═══ */
+        .hero-container {
+            position: relative;
+            width: 100%;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            background: #0a0a0a;
+            transition: box-shadow 0.5s ease;
+        }
+        .hero-container:hover {
+            box-shadow: 0 24px 80px rgba(255, 107, 43, 0.12);
+        }
+
+        .hero-image-wrapper {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0a0a0a;
+        }
+        @media (min-width: 768px) {
+            .hero-image-wrapper {
+                aspect-ratio: 16/7;
+            }
+        }
+        @media (min-width: 1024px) {
+            .hero-image-wrapper {
+                aspect-ratio: 16/6;
+            }
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .hero-container:hover .hero-image {
+            transform: scale(1.05);
+        }
+
+        .hero-gradient-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, transparent 50%, rgba(0,0,0,0.4) 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .hero-shine {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.04) 40%, rgba(255, 255, 255, 0.08) 45%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.08) 55%, rgba(255, 255, 255, 0.04) 60%, transparent 65%);
+            pointer-events: none;
+            z-index: 3;
+            animation: autoShine 5s ease-in-out infinite;
+            will-change: transform, opacity;
+        }
+        @keyframes autoShine {
+            0% { transform: translateX(-150%) skewX(-10deg); opacity: 0; }
+            15% { opacity: 1; }
+            35% { transform: translateX(150%) skewX(-10deg); opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 0; transform: translateX(150%) skewX(-10deg); }
+        }
+
+        .hero-blur-glow {
+            position: absolute;
+            bottom: -60px;
+            right: -60px;
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, rgba(255, 107, 43, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 1;
+            animation: glowPulse 4s ease-in-out infinite;
+        }
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 6px 14px 6px 10px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #0a0a0a;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s cubic-bezier(.22,1,.36,1);
+            cursor: pointer;
+            z-index: 10;
+            animation: upDown 2s ease-in-out infinite;
+        }
+        .hero-badge:hover {
+            transform: scale(1.05) translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            border-color: #FF6B2B;
+        }
+        @keyframes upDown {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        .hero-badge:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .pulse-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulseDot 1.5s ease-in-out infinite;
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
+        }
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.4); }
+        }
+
+        .hero-bottom-content {
+            position: absolute;
+            bottom: 20px;
+            left: 24px;
+            right: 24px;
+            z-index: 10;
+        }
+        @media (min-width: 640px) {
+            .hero-bottom-content {
+                bottom: 28px;
+                left: 32px;
+                right: 32px;
+            }
+        }
+
+        .hero-badge-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+        @media (min-width: 640px) {
+            .hero-badge-group {
+                gap: 12px;
+            }
+        }
+
+        .hero-badge-sm {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            border-radius: 9999px;
+            font-size: 10px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        @media (min-width: 640px) {
+            .hero-badge-sm {
+                font-size: 12px;
+                padding: 5px 14px;
+                gap: 6px;
+            }
+        }
+        .hero-badge-sm svg {
+            width: 12px;
+            height: 12px;
+        }
+        @media (min-width: 640px) {
+            .hero-badge-sm svg {
+                width: 14px;
+                height: 14px;
+            }
+        }
+
+        .hero-title-lg {
+            font-size: clamp(1.25rem, 4vw, 2.5rem);
+            font-weight: 700;
+            color: white;
+            margin-top: 8px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+        @media (min-width: 640px) {
+            .hero-title-lg {
+                margin-top: 12px;
+            }
+        }
+        @media (min-width: 1024px) {
+            .hero-title-lg {
+                font-size: clamp(2rem, 4vw, 3rem);
+            }
+        }
+
+        .hero-badge-sm-highlight {
+            background: rgba(255, 107, 43, 0.9);
+            color: white;
+            border-color: rgba(255, 107, 43, 0.3);
+        }
+
+        .scroll-indicator {
+            display: flex;
+            justify-content: center;
+            margin-top: 24px;
+        }
+        @media (min-width: 640px) {
+            .scroll-indicator {
+                margin-top: 32px;
+            }
+        }
+
+        .scroll-indicator-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            color: #a1a1aa;
+            font-size: 10px;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            cursor: pointer;
+        }
+        .scroll-indicator-inner:hover {
+            opacity: 1;
+        }
+        @media (min-width: 640px) {
+            .scroll-indicator-inner {
+                font-size: 12px;
+                gap: 8px;
+            }
+        }
+
+        .scroll-indicator-label {
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 500;
+        }
+
+        .scroll-indicator-box {
+            width: 20px;
+            height: 32px;
+            border-radius: 9999px;
+            border: 2px solid #a1a1aa;
+            display: flex;
+            justify-content: center;
+            padding-top: 8px;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s ease;
+        }
+        .scroll-indicator-inner:hover .scroll-indicator-box {
+            border-color: #FF6B2B;
+        }
+        @media (min-width: 640px) {
+            .scroll-indicator-box {
+                width: 24px;
+                height: 40px;
+                padding-top: 10px;
+            }
+        }
+
+        .scroll-indicator-dot {
+            width: 4px;
+            height: 8px;
+            background: #FF6B2B;
+            border-radius: 9999px;
+            animation: scrollBounce 1.8s ease-in-out infinite;
+        }
+        @media (min-width: 640px) {
+            .scroll-indicator-dot {
+                width: 5px;
+                height: 10px;
+            }
+        }
+
+        @keyframes scrollBounce {
+            0%, 100% { transform: translateY(0); opacity: 1; }
+            50% { transform: translateY(8px); opacity: 0.4; }
+        }
+
+        @media (max-width: 640px) {
+            .hero-blur-glow {
+                width: 150px;
+                height: 150px;
+                bottom: -30px;
+                right: -30px;
+                filter: blur(60px);
+            }
+            .hero-badge {
+                font-size: 10px;
+                padding: 4px 10px 4px 8px;
+            }
+            .hero-bottom-content {
+                bottom: 14px;
+                left: 16px;
+                right: 16px;
+            }
+        }
+
+        .dark .hero-badge {
+            background: rgba(20, 20, 20, 0.95);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+        .dark .hero-badge:hover {
+            background: rgba(255, 107, 43, 0.2);
+            border-color: #FF8F5C;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-[#0a0a0a] text-zinc-800 dark:text-zinc-100 antialiased">
+
+    <!-- CUSTOM CURSOR -->
+    <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+    <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+    <!-- ═══ NAV ═══ -->
+    <header class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[96%] max-w-7xl rounded-2xl glass shadow-lg shadow-black/5 dark:shadow-black/30 transition-all duration-300" :class="scrolled ? 'py-1' : 'py-2'" role="banner">
+        <nav class="px-5 md:px-6 flex items-center justify-between h-14 md:h-14" aria-label="Main navigation">
+            <!-- Logo -->
+            <a href="index.html" class="font-bold text-xl tracking-tight flex items-center gap-1 shrink-0" aria-label="Adersh C.S Home">
+                <span class="text-zinc-900 dark:text-white">Ade</span>
+                <span class="text-accent">rsh</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-accent to-accent-light animate-pulse ml-0.5" aria-hidden="true"></span>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <ul class="hidden md:flex items-center gap-7 text-sm font-medium" role="list">
+                <li><a href="projects-uiux.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">UX Work</a></li>
+                <li><a href="projects-frontend.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">Frontend Work</a></li>
+                <li><a href="projects-graphic.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors active">Graphic Work</a></li>
+            </ul>
+
+            <!-- Right side -->
+            <div class="flex items-center gap-1 md:gap-2">
+                <button @click="dark=!dark" class="w-9 h-9 flex items-center justify-center rounded-full bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-white/70 dark:hover:bg-white/10 transition-colors shrink-0" :aria-label="dark ? 'Switch to light mode' : 'Switch to dark mode'">
+                    <svg x-show="!dark" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                    <svg x-show="dark" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
+                </button>
+
+                <a href="index.html#contact" class="hidden md:inline-flex items-center gap-1.5 px-5 py-2 rounded-full text-white text-sm font-semibold shadow-lg shadow-accent/30 hover:shadow-accent/50 transition-all hover:scale-105 shrink-0" style="background: linear-gradient(135deg, #FF4D1C 0%, #FF8C42 50%, #FFB347 100%);">
+                    Hire Me
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                </a>
+
+                <button @click="mobileMenu=!mobileMenu" class="md:hidden w-9 h-9 flex items-center justify-center rounded-full bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-white/70 dark:hover:bg-white/10 transition-colors" aria-label="Toggle menu">
+                    <svg x-show="!mobileMenu" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    <svg x-show="mobileMenu" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div x-show="mobileMenu" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" class="md:hidden bg-white/80 dark:bg-black/80 backdrop-blur-xl border-t border-zinc-200/30 dark:border-zinc-700/30 rounded-b-2xl overflow-hidden">
+            <ul class="flex flex-col px-6 py-6 gap-3 text-sm" role="list">
+                <li><a href="projects-uiux.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">UX Work</a></li>
+                <li><a href="projects-frontend.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Frontend Work</a></li>
+                <li><a href="projects-graphic.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Graphic Work</a></li>
+                <li class="pt-3 border-t border-zinc-200/30 dark:border-zinc-700/30">
+                    <a href="index.html#contact" @click="mobileMenu=false" class="inline-flex shimmer bg-accent text-white font-medium text-sm px-6 py-2.5 rounded-full hover:bg-accent-dark transition-colors">
+                        Hire me →
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- ═══ ENHANCED CINEMATIC HERO SECTION ═══ -->
+        <section class="relative pt-24 pb-6 max-w-6xl mx-auto px-4 sm:px-6" aria-label="Project hero">
+            
+            <!-- Enhanced Breadcrumb -->
+            <nav class="flex items-center gap-2 text-sm text-zinc-400 mb-4 mt-2" aria-label="Breadcrumb">
+                <a href="projects-graphic.html" class="group flex items-center gap-1.5 hover:gap-2.5 transition-all duration-300 text-zinc-500 dark:text-zinc-400 hover:text-accent dark:hover:text-accent-light font-medium">
+                    <!-- <svg class="w-4 h-4 transition-transform duration-300 group-hover:-translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1m-2 0h2"/>
+                    </svg> -->
+                    <span>Graphic Work</span>
+                </a>
+                
+                <!-- Separator -->
+                <svg class="w-4 h-4 text-zinc-400 dark:text-zinc-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+                
+                <!-- Current Page -->
+                <span class="text-zinc-700 dark:text-zinc-200 font-semibold truncate max-w-[120px] sm:max-w-[200px] flex items-center gap-1.5" x-text="socialProject.title">
+                    <span class="w-1.5 h-1.5 rounded-full bg-accent/60 animate-pulse hidden sm:inline-block" aria-hidden="true"></span>
+                    Cadbury - Dairy Milk
+                </span>
+            </nav>
+
+            <!-- Hero Container -->
+            <div class="hero-container w-full relative group">
+                
+                <!-- Hero Image Wrapper -->
+                <div class="hero-image-wrapper w-full rounded-2xl overflow-hidden shadow-2xl relative bg-zinc-900/5 dark:bg-zinc-800/30">
+                    
+                    <!-- Image -->
+                    <div class="relative overflow-hidden">
+                        <img :src="socialProject.heroImage" 
+                             :alt="socialProject.title" 
+                             class="hero-image w-full h-full object-cover aspect-[16/10] sm:aspect-[16/9] md:aspect-[21/9] lg:aspect-[21/8]"
+                             fetchpriority="high"
+                             @error="$el.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%221200%22 height=%22600%22%3E%3Crect width=%221200%22 height=%22600%22 fill=%22%23121212%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-family=%22sans-serif%22 font-size=%2236%22 fill=%22%23FF6B2B%22 text-anchor=%22middle%22 dy=%22.3em%22%3EPoster Campaign%3C/text%3E%3C/svg%3E'" />
+                    </div>
+                    
+                    <!-- Gradient Overlay for readability -->
+                    <div class="hero-gradient-overlay"></div>
+                    
+                    <!-- Shine Effect -->
+                    <div class="hero-shine"></div>
+                    
+                    <!-- Glow Effect -->
+                    <div class="hero-blur-glow"></div>
+                </div>
+
+                <!-- Badges - Top Right -->
+                <div class="absolute top-4 right-4 flex flex-wrap items-center gap-2 z-20">
+                    <span class="hero-badge">
+                        <span class="pulse-dot"></span>
+                        Poster Campaign
+                    </span>
+                    <!-- <span class="hero-badge hidden sm:flex" style="animation-delay: 0.5s;">
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
+                        <span x-text="socialProject.year">2026</span>
+                    </span> -->
+                </div>
+
+                <!-- Bottom Content - Title & Category Badges -->
+                <div class="hero-bottom-content">
+                    <div class="hero-badge-group">
+                        <!-- <span class="hero-badge-sm hero-badge-sm-highlight" x-text="socialProject.categoryLabel">Social Media</span> -->
+                        <!-- <span class="hero-badge-sm">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
+                            <span x-text="socialProject.year">2026</span>
+                        </span> -->
+                        <!-- <span class="hero-badge-sm" x-show="socialProject.deliverables.length > 0">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/></svg>
+                            <span x-text="socialProject.deliverables[0]">9 Poster Designs</span>
+                        </span> -->
+                    </div>
+                    <!-- <h1 class="hero-title-lg" x-text="socialProject.title">Cadbury - Dairy Milk</h1> -->
+                </div>
+            </div>
+
+            <!-- Scroll Indicator -->
+            <div class="scroll-indicator">
+                <div class="scroll-indicator-inner" @click="window.scrollTo({top:800,behavior:'smooth'})">
+                    <span class="scroll-indicator-label">Scroll to explore</span>
+                    <div class="scroll-indicator-box">
+                        <div class="scroll-indicator-dot"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ SOCIAL MEDIA HIGHLIGHT BANNER ═══ -->
+        <section class="max-w-6xl mx-auto px-6 pb-8">
+            <div class="social-stats-highlight">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <span class="text-3xl">📱</span>
+                        <div>
+                            <h3 class="text-lg font-bold text-zinc-900 dark:text-white">Social Media Campaign</h3>
+                            <p class="text-sm text-zinc-500 dark:text-zinc-400">Multi-platform strategy & visual content</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="platform-badge">📸 Instagram</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ PROJECT DETAILS ═══ -->
+        <section class="max-w-6xl mx-auto px-6 pb-16">
+            <div class="grid lg:grid-cols-3 gap-10">
+                
+                <!-- Main Content -->
+                <div class="lg:col-span-2 space-y-10 reveal d1">
+                    <div>
+                        <span class="text-xs font-semibold text-accent tracking-widest uppercase" x-text="socialProject.categoryLabel"></span>
+                        <h1 class="font-bold text-3xl sm:text-4xl md:text-5xl text-zinc-900 dark:text-white mt-2 mb-4 gradient-text-hover" x-text="socialProject.title"></h1>
+                        <p class="text-base sm:text-lg text-zinc-600 dark:text-zinc-300 leading-relaxed" x-text="socialProject.overview"></p>
+                    </div>
+
+                    <!-- Metrics Cards -->
+                    <div class="grid grid-cols-3 gap-3 sm:gap-4">
+                        <template x-for="metric in socialProject.metrics" :key="metric.label">
+                            <div class="metric-card bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-4 sm:p-5 text-center border border-zinc-100 dark:border-zinc-800 hover:border-accent/50 hover:shadow-lg transition-all duration-300 cursor-default">
+                                <p class="metric-value font-bold text-accent" x-text="metric.value"></p>
+                                <p class="text-[10px] sm:text-xs text-zinc-500 dark:text-zinc-400 mt-1" x-text="metric.label"></p>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Tabs -->
+                    <div class="flex flex-wrap gap-2 border-b border-zinc-100 dark:border-zinc-800 pb-4" role="tablist" aria-label="Project details">
+                        <button @click="setTab('overview')" class="tab-btn" :class="activeTab==='overview'?'active':''" role="tab" :aria-selected="activeTab==='overview'" aria-controls="panel-overview">Overview</button>
+                        <button @click="setTab('gallery')" class="tab-btn" :class="activeTab==='gallery'?'active':''" role="tab" :aria-selected="activeTab==='gallery'" aria-controls="panel-gallery">Gallery</button>
+                    </div>
+
+                    <!-- Tab Content: Overview -->
+                    <div x-show="activeTab==='overview'" id="panel-overview" role="tabpanel" class="space-y-8">
+                        <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl p-6 md:p-8 border border-zinc-100 dark:border-zinc-800 transition-colors">
+                            <h3 class="font-semibold text-xl text-zinc-900 dark:text-white mb-3 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-accent" aria-hidden="true"></span>
+                                The Challenge
+                            </h3>
+                            <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed" x-text="socialProject.challenge"></p>
+                        </div>
+                        <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl p-6 md:p-8 border border-zinc-100 dark:border-zinc-800 transition-colors">
+                            <h3 class="font-semibold text-xl text-zinc-900 dark:text-white mb-3 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-accent" aria-hidden="true"></span>
+                                The Solution
+                            </h3>
+                            <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed" x-text="socialProject.solution"></p>
+                        </div>
+
+                        <!-- Platform Strategy -->
+                        <div>
+                            <h3 class="font-semibold text-xl text-zinc-900 dark:text-white mb-4">📊 Platform Strategy</h3>
+                            <div class="space-y-3">
+                                <template x-for="(platform, idx) in socialProject.platformStrategy" :key="platform.platform">
+                                    <div class="group platform-card bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-4 border border-zinc-100 dark:border-zinc-800 transition-all duration-300 cursor-pointer hover:border-accent/50 hover:shadow-lg hover:shadow-accent/10 hover:-translate-y-0.5 relative overflow-hidden"
+                                         @mouseenter="platform.hovered = true"
+                                         @mouseleave="platform.hovered = false"
+                                         @click="platform.expanded = !platform.expanded">
+                                        
+                                        <div class="absolute left-0 top-0 bottom-0 w-1 bg-accent rounded-full transition-all duration-500"
+                                             :class="platform.hovered ? 'h-full' : 'h-0'"></div>
+                                        
+                                        <div class="flex flex-wrap items-start justify-between gap-2 pl-3">
+                                            <div class="flex-1">
+                                                <div class="flex items-center gap-3">
+                                                    <span class="text-2xl transition-all duration-300 group-hover:scale-125 group-hover:-rotate-12" 
+                                                          x-text="platform.icon || '📱'"></span>
+                                                    <div>
+                                                        <h4 class="font-semibold text-zinc-900 dark:text-white transition-colors duration-300 group-hover:text-accent flex items-center gap-2">
+                                                            <span x-text="platform.platform"></span>
+                                                            <span class="text-[10px] font-normal bg-accent/10 text-accent px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                                                Active
+                                                            </span>
+                                                        </h4>
+                                                        <p class="text-sm text-zinc-600 dark:text-zinc-400 transition-colors duration-300 group-hover:text-zinc-700 dark:group-hover:text-zinc-300" 
+                                                           x-text="platform.focus"></p>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="mt-2 overflow-hidden transition-all duration-500"
+                                                     :style="platform.expanded ? 'max-height: 200px; opacity: 1;' : 'max-height: 0; opacity: 0;'">
+                                                    <div class="pt-2 border-t border-zinc-200 dark:border-zinc-700">
+                                                        <p class="text-xs text-zinc-500 dark:text-zinc-400">
+                                                            <span class="font-medium text-accent">Formats:</span> 
+                                                            <span x-text="platform.formats"></span>
+                                                        </p>
+                                                        <div class="flex gap-1 mt-1.5 flex-wrap">
+                                                            <span class="text-[10px] bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-400 px-2 py-0.5 rounded-full">Engaging</span>
+                                                            <span class="text-[10px] bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-400 px-2 py-0.5 rounded-full">Visual</span>
+                                                            <span class="text-[10px] bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-400 px-2 py-0.5 rounded-full">Strategic</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="flex items-center gap-2">
+                                                <span class="text-xs bg-accent/10 text-accent px-3 py-1 rounded-full transition-all duration-300 group-hover:bg-accent group-hover:text-white" 
+                                                      x-text="platform.formats.split(',').length + ' formats'"></span>
+                                                <button class="w-6 h-6 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center transition-all duration-300 group-hover:bg-accent group-hover:text-white"
+                                                        @click.stop="platform.expanded = !platform.expanded">
+                                                    <svg class="w-3 h-3 transition-transform duration-300" 
+                                                         :class="platform.expanded ? 'rotate-180' : ''" 
+                                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- Design Elements -->
+                        <div class="bg-accent/5 dark:bg-accent/10 rounded-2xl p-6 md:p-8 border border-accent/20">
+                            <h3 class="font-semibold text-xl text-zinc-900 dark:text-white mb-4">🎨 Design Elements</h3>
+                            
+                            <div class="mb-4">
+                                <h4 class="text-sm font-semibold text-accent mb-2">Typography</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    <template x-for="font in socialProject.designElements.typography" :key="font">
+                                        <span class="text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-3 py-1.5 rounded-full" x-text="font"></span>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h4 class="text-sm font-semibold text-accent mb-2">Color Palette</h4>
+                                <div class="flex flex-wrap gap-3">
+                                    <template x-for="(color, i) in socialProject.designElements.colors" :key="i">
+                                        <div class="group flex items-center gap-2 cursor-pointer">
+                                            <div class="color-chip w-8 h-8 rounded-full border-2 border-zinc-200 dark:border-zinc-700 transition-all duration-200 group-hover:scale-110 group-hover:shadow-lg" 
+                                                 :style="'background-color: ' + color.split(' ')[0]"
+                                                 :title="'Click to copy ' + color.split(' ')[0]"></div>
+                                            <span class="text-xs text-zinc-600 dark:text-zinc-400" 
+                                                  x-text="color.split('(')[1]?.replace(')', '') || color"></span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 class="text-sm font-semibold text-accent mb-2">Illustrations</h4>
+                                <p class="text-sm text-zinc-600 dark:text-zinc-400" x-text="socialProject.designElements.illustrations"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ═══ TAB CONTENT: GALLERY ═══ -->
+                    <div x-show="activeTab==='gallery'" id="panel-gallery" role="tabpanel">
+                        
+                        <!-- Image Counter & Actions -->
+                        <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                            <span class="text-sm text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                                <span x-text="socialProject.gallery.length"></span> images
+                            </span>
+                            <button @click="openLightbox(0)" 
+                                    class="text-sm font-medium text-accent hover:text-accent-dark transition-colors flex items-center gap-1.5 hover:gap-2.5 duration-300"
+                                    x-show="socialProject.gallery.length > 0">
+                                View all
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                            </button>
+                        </div>
+
+                        <!-- Gallery Grid -->
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
+                            <template x-for="(img, i) in socialProject.gallery" :key="i">
+                                <div class="gallery-item photo-frame relative rounded-xl overflow-hidden 
+                                            border-2 border-zinc-200 dark:border-zinc-700 hover:border-accent/50 
+                                            transition-all duration-300 cursor-pointer group shadow-sm hover:shadow-lg 
+                                            hover:shadow-accent/10 aspect-[4/5]"
+                                     @click="openLightbox(i)"
+                                     role="button"
+                                     :aria-label="'View gallery image ' + (i+1)"
+                                     tabindex="0"
+                                     @keydown.enter="openLightbox(i)">
+                                    
+                                    <!-- Skeleton Loader -->
+                                    <div class="absolute inset-0 bg-zinc-200 dark:bg-zinc-700 animate-pulse z-0"></div>
+                                    
+                                    <!-- Image -->
+                                    <img :src="img" 
+                                         :alt="'Gallery image ' + (i+1)" 
+                                         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 relative z-10" 
+                                         loading="lazy" 
+                                         decoding="async"
+                                         @error="fallbackImage"
+                                         @load="$el.previousElementSibling?.remove()" />
+                                    
+                                    <!-- Zoom Overlay -->
+                                    <div class="zoom-overlay absolute inset-0 bg-accent/30 opacity-0 group-hover:opacity-100 
+                                                transition-opacity duration-300 flex items-center justify-center pointer-events-none z-20">
+                                        <div class="bg-white/90 dark:bg-zinc-800/90 backdrop-blur-sm rounded-full p-3.5 
+                                                    transform scale-75 group-hover:scale-100 transition-transform duration-300 shadow-lg">
+                                            <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24" 
+                                                 stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" 
+                                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Image Counter Badge -->
+                                    <div class="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm text-white text-[10px] font-medium px-2 py-0.5 rounded-full z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        <span x-text="i+1"></span>/<span x-text="socialProject.gallery.length"></span>
+                                    </div>
+                                </div>
+                            </template>
+                            
+                            <!-- Empty State -->
+                            <template x-if="socialProject.gallery.length === 0">
+                                <div class="col-span-full text-center py-20 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl 
+                                            border border-zinc-100 dark:border-zinc-800">
+                                    <svg class="w-24 h-24 mx-auto text-zinc-300 dark:text-zinc-600" fill="none" 
+                                         stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" 
+                                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                    <h3 class="text-lg font-semibold text-zinc-700 dark:text-zinc-300 mt-4">No images yet</h3>
+                                    <p class="text-zinc-500 dark:text-zinc-400 mt-1">Check back soon for updates</p>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar Metadata -->
+                <div class="lg:col-span-1 reveal d2">
+                    <div class="sticky top-28 space-y-8 bg-zinc-50 dark:bg-zinc-900/60 rounded-2xl p-6 border border-zinc-100 dark:border-zinc-800 transition-colors">
+                        <div>
+                            <h4 class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Client</h4>
+                            <p class="font-medium text-zinc-900 dark:text-white" x-text="socialProject.client"></p>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Year</h4>
+                            <p class="font-medium text-zinc-900 dark:text-white" x-text="socialProject.year"></p>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Role</h4>
+                            <p class="font-medium text-zinc-900 dark:text-white" x-text="socialProject.role"></p>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">Deliverables</h4>
+                            <ul class="space-y-1.5" role="list">
+                                <template x-for="item in socialProject.deliverables" :key="item">
+                                    <li class="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0" aria-hidden="true"></span>
+                                        <span x-text="item"></span>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">Tools Used</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <template x-for="tool in socialProject.tools" :key="tool">
+                                    <span class="text-xs bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 px-3 py-1.5 rounded-full transition-colors hover:bg-orange-50 dark:hover:bg-orange-950/30 hover:border-orange-400 dark:hover:border-orange-500 hover:text-orange-600 dark:hover:text-orange-300 hover:scale-105 hover:shadow-md cursor-default" x-text="tool"></span>
+                                </template>
+                            </div>
+                        </div>
+                        <div class="pt-4 border-t border-zinc-200 dark:border-zinc-700 space-y-2">
+                            <a :href="socialProject.link" class="flex items-center justify-center gap-2 shimmer bg-accent text-white font-medium px-6 py-3 rounded-full hover:bg-accent-light transition-colors text-sm w-full">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                View Full Collection
+                            </a>
+                            <a :href="socialProject.link" class="flex items-center justify-center gap-2 text-sm font-medium text-accent hover:text-accent-dark transition-colors py-2 w-full">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                Download Asset Pack
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ ENHANCED CAROUSEL WITH TOUCH SWIPE ═══ -->
+        <section class="py-10 sm:py-16 bg-zinc-50/60 dark:bg-zinc-900/30 border-y border-zinc-100 dark:border-zinc-800 reveal d4">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6">
+                <div class="flex items-center justify-between mb-6 sm:mb-10">
+                    <div>
+                        <span class="text-[10px] sm:text-xs font-semibold text-accent tracking-widest uppercase">Explore More</span>
+                        <h2 class="font-bold text-xl sm:text-2xl md:text-3xl text-zinc-900 dark:text-white mt-1">More Projects</h2>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button @click="prevSlide()" class="carousel-btn" aria-label="Previous projects">
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                        </button>
+                        <button @click="nextSlide()" class="carousel-btn" aria-label="Next projects">
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="overflow-hidden rounded-2xl" @touchstart="touchStart($event)" @touchmove="touchMove($event)" @touchend="touchEnd($event)">
+                    <div class="flex transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]" :style="`transform: translateX(-${carouselIndex * (100 / 3)}%);`">
+                        <template x-for="(item, idx) in carouselItems" :key="item.id">
+                            <div class="carousel-item flex-shrink-0 px-2 sm:px-3">
+                                <div class="carousel-card bg-white dark:bg-zinc-900/80 rounded-xl sm:rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 hover:border-accent/50 hover:shadow-xl transition-all duration-500 h-full flex flex-col group">
+                                    <div class="photo-frame aspect-[16/10] relative">
+                                        <img :src="item.image" :alt="item.title" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" decoding="async" />
+                                        <div class="gradient-overlay absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-500"></div>
+                                    </div>
+                                    <div class="p-4 sm:p-5 flex flex-col flex-1">
+                                        <div class="flex items-center gap-2 mb-2 flex-wrap">
+                                            <span class="text-[10px] font-medium text-accent bg-accent/10 px-2 py-0.5 rounded-full" x-text="item.category"></span>
+                                        </div>
+                                        <h3 class="title-link font-bold text-sm sm:text-lg text-zinc-900 dark:text-white mb-1.5 leading-tight transition-colors" x-text="item.title"></h3>
+                                        <p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed flex-1" x-text="item.description"></p>
+                                        <a :href="item.link" class="mt-3 sm:mt-4 inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-accent hover:gap-3 transition-all self-start">View case study →</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <nav class="flex items-center justify-center gap-1 sm:gap-2 mt-6 sm:mt-8" aria-label="Carousel pagination">
+                    <template x-if="totalPages > 1">
+                        <button @click="prevSlide()" class="pagination-link" aria-label="Previous page">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                        </button>
+                    </template>
+                    <template x-if="totalPages > 1">
+                        <template x-for="page in paginationPages" :key="page">
+                            <template x-if="page === -1">
+                                <span class="pagination-ellipsis" aria-hidden="true">…</span>
+                            </template>
+                            <template x-if="page !== -1">
+                                <button @click="goToPage(page)" class="pagination-link" :class="currentPage === page ? 'active-page' : ''" :aria-current="currentPage === page ? 'true' : 'false'" x-text="page"></button>
+                            </template>
+                        </template>
+                    </template>
+                    <template x-if="totalPages > 1">
+                        <button @click="nextSlide()" class="pagination-link" aria-label="Next page">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                        </button>
+                    </template>
+                </nav>
+                <p class="hidden sm:block text-center text-[10px] text-zinc-400 dark:text-zinc-500 mt-2" x-text="`Page ${currentPage} of ${totalPages}`" x-show="totalPages > 1" aria-live="polite" aria-atomic="true"></p>
+            </div>
+        </section>
+
+        <!-- ═══ CTA ═══ -->
+        <section class="py-24">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="bg-zinc-900 dark:bg-zinc-800 rounded-3xl p-10 md:p-14 text-center relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-accent/20 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+                    <div class="absolute bottom-0 left-0 w-40 h-40 bg-accent/10 rounded-full blur-2xl pointer-events-none" aria-hidden="true"></div>
+                    <div class="relative z-10">
+                        <p class="text-xs font-semibold text-accent tracking-widest uppercase mb-4">Need a website?</p>
+                        <h2 class="font-bold text-3xl md:text-4xl text-white mb-4">Let's build something<br class="sm:hidden"> remarkable</h2>
+                        <p class="text-zinc-400 max-w-md mx-auto mb-8">From landing pages to full web applications — I'd love to hear about your project and help bring it to life.</p>
+                        <a href="index.html#contact" class="inline-flex items-center gap-2 shimmer bg-accent text-white font-medium px-8 py-3.5 rounded-full hover:bg-accent-light transition-colors hover:scale-105 duration-300 shadow-lg shadow-accent/20 hover:shadow-accent/40">
+                            Start a project →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ═══ VIDEO LIGHTBOX ═══ -->
+    <div x-show="videoLightboxOpen" x-cloak class="fixed inset-0 z-[999] flex items-center justify-center p-4 lightbox-overlay" @click.self="closeVideoLightbox()">
+        <button @click="closeVideoLightbox()" class="absolute top-4 right-4 sm:top-6 sm:right-6 text-white/60 hover:text-white transition-colors text-2xl sm:text-3xl lightbox-close-btn z-10 bg-black/30 rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center backdrop-blur-sm" aria-label="Close lightbox">✕</button>
+        <button @click="prevVideo()" class="absolute left-2 sm:left-6 lightbox-btn z-10" aria-label="Previous video" x-show="videoGallery.length > 1">‹</button>
+        <button @click="nextVideo()" class="absolute right-2 sm:right-6 lightbox-btn z-10" aria-label="Next video" x-show="videoGallery.length > 1">›</button>
+        <p class="absolute bottom-4 sm:bottom-8 text-white/40 text-xs sm:text-sm z-10 bg-black/30 px-3 py-1 rounded-full backdrop-blur-sm" x-text="`${videoLightboxIndex + 1} / ${videoGallery.length}`" x-show="videoGallery.length > 1"></p>
+        <div class="lightbox-video-wrapper flex items-center justify-center w-full h-full max-h-[85vh]">
+            <template x-if="videoGallery.length > 0 && videoGallery[videoLightboxIndex]">
+                <video :src="videoGallery[videoLightboxIndex].url || videoGallery[videoLightboxIndex]" controls autoplay playsinline class="lightbox-video rounded-xl shadow-2xl" style="max-width: 90vw; max-height: 80vh; width: auto; height: auto; object-fit: contain;">Your browser does not support the video tag.</video>
+            </template>
+        </div>
+    </div>
+
+    <!-- ═══ IMAGE LIGHTBOX ═══ -->
+    <div x-show="lightboxOpen" x-cloak class="fixed inset-0 z-[999] flex items-center justify-center p-4 lightbox-overlay" @click.self="closeLightbox()">
+        <button @click="closeLightbox()" class="absolute top-4 right-4 sm:top-6 sm:right-6 text-white/60 hover:text-white transition-colors text-2xl sm:text-3xl lightbox-close-btn z-10 bg-black/30 rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center backdrop-blur-sm" aria-label="Close lightbox">✕</button>
+        <button @click="prevImage()" class="absolute left-2 sm:left-6 lightbox-btn z-10" aria-label="Previous image" x-show="galleryImages.length > 1">‹</button>
+        <button @click="nextImage()" class="absolute right-2 sm:right-6 lightbox-btn z-10" aria-label="Next image" x-show="galleryImages.length > 1">›</button>
+        <p class="absolute bottom-4 sm:bottom-8 text-white/40 text-xs sm:text-sm z-10 bg-black/30 px-3 py-1 rounded-full backdrop-blur-sm" x-text="`${lightboxIndex + 1} / ${galleryImages.length}`" x-show="galleryImages.length > 1"></p>
+        <div class="lightbox-image-wrapper flex items-center justify-center w-full h-full max-h-[85vh]">
+            <template x-if="galleryImages.length > 0 && galleryImages[lightboxIndex]">
+                <img :src="galleryImages[lightboxIndex]" :alt="'Gallery image ' + (lightboxIndex + 1)" @error="fallbackImage" class="rounded-xl shadow-2xl" style="max-width: 90vw; max-height: 80vh; width: auto; height: auto; object-fit: contain; display: block;" />
+            </template>
+        </div>
+    </div>
+
+  <!-- ═══ FOOTER ═══ -->
+    <footer class="border-t border-zinc-200/30 dark:border-zinc-800/30 bg-white/40 dark:bg-black/20 backdrop-blur-sm transition-colors" role="contentinfo">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-5 sm:py-8 text-center">
+            <p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">
+                © <span id="yr"></span>
+                <a href="https://linkedin.com/in/adersh-c-s" target="_blank" rel="noopener noreferrer" class="font-medium hover:text-accent transition-colors">Adersh c.s</a>
+                | All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- ═══ FLOATING ACTION BUTTONS ═══ -->
+    <div class="fixed right-6 bottom-24 z-40 flex flex-col gap-3">
+        <!-- Share Button -->
+        <button @click="sharePage()" class="fab w-12 h-12 rounded-full bg-white dark:bg-zinc-800 shadow-lg border border-zinc-200 dark:border-zinc-700 hover:bg-accent hover:text-white hover:border-accent hover:scale-110 transition-all duration-300 flex items-center justify-center text-zinc-600 dark:text-zinc-300" aria-label="Share page">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+        </button>
+
+        <!-- Scroll to Top with Progress Ring -->
+        <button @click="window.scrollTo({top:0,behavior:'smooth'})" x-show="scrolled" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90" class="relative w-12 h-12 rounded-full bg-white dark:bg-zinc-800 shadow-lg border border-zinc-200 dark:border-zinc-700 hover:bg-accent hover:text-white hover:border-accent hover:scale-110 transition-all duration-300 flex items-center justify-center text-zinc-600 dark:text-zinc-300 group" aria-label="Scroll to top">
+            <!-- SVG ring showing scroll progress -->
+            <svg class="absolute inset-0 w-full h-full -rotate-90">
+                <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="2" class="text-zinc-200 dark:text-zinc-700"/>
+                <circle cx="24" cy="24" r="20" fill="none" stroke="#FF6B2B" stroke-width="2.5" :stroke-dasharray="`${progress * 125.6 / 100} 125.6`" class="transition-all duration-300"/>
+            </svg>
+            <svg class="w-5 h-5 relative z-10 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+        </button>
+    </div>
+
+    <script>
+        document.getElementById('yr').textContent = new Date().getFullYear();
+
+        // Global Share Function
+        window.sharePage = function() {
+            if (navigator.share) {
+                navigator.share({
+                    title: document.title,
+                    text: document.querySelector('meta[name="description"]')?.content || '',
+                    url: window.location.href
+                }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    alert('Link copied to clipboard!');
+                });
+            }
+        };
+
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+        });
+
+        const dot = document.getElementById('cursorDot');
+        const ring = document.getElementById('cursorRing');
+        let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0, dotX = 0, dotY = 0;
+        const ringEase = 0.12, dotEase = 0.18;
+
+        const onMouseMove = (e) => { mouseX = e.clientX; mouseY = e.clientY; };
+
+        const animateCursor = () => {
+            ringX += (mouseX - ringX) * ringEase;
+            ringY += (mouseY - ringY) * ringEase;
+            dotX += (mouseX - dotX) * dotEase;
+            dotY += (mouseY - dotY) * dotEase;
+            if (ring) ring.style.transform = 'translate(' + (ringX - 20) + 'px, ' + (ringY - 20) + 'px)';
+            if (dot) dot.style.transform = 'translate(' + (dotX - 4) + 'px, ' + (dotY - 4) + 'px)';
+            requestAnimationFrame(animateCursor);
+        };
+
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+        if (!isTouchDevice && dot && ring) {
+            document.addEventListener('mousemove', onMouseMove);
+            animateCursor();
+            const hoverElements = document.querySelectorAll('a, button, .nav-link, .shimmer, .photo-frame, .gallery-item, .lightbox-btn, .lightbox-close-btn, .tab-btn, .pagination-link, .carousel-btn, .video-thumbnail');
+            hoverElements.forEach(function(el) {
+                el.addEventListener('mouseenter', function() { ring.classList.add('hover'); dot.classList.add('hover'); });
+                el.addEventListener('mouseleave', function() { ring.classList.remove('hover'); dot.classList.remove('hover'); });
+                el.addEventListener('mousedown', function() { ring.classList.add('click'); });
+                el.addEventListener('mouseup', function() { ring.classList.remove('click'); });
+            });
+        }
+    </script>
+
+</body>
+</html>
