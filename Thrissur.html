@@ -147,7 +147,7 @@
     title: 'Thrissur Tourism — Website',
     category: 'frontend',
     categoryLabel: 'Front-End Development',
-    heroImage: 'images/thrissurthumb.png',
+    heroImage: '/images/thrissurthumb.png',
     gallery: [
       '/images/image-001.png',
       '/images/image-002.png',
@@ -263,6 +263,15 @@
     <meta property="og:locale" content="en_IN" />
     <meta property="og:email" content="adershcsengandiyur@gmail.com" />
 
+    <!-- ═══ FAVICON ═══ -->
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="images/favicon-48.png">
+<link rel="icon" type="image/png" sizes="192x192" href="images/favicon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="images/favicon-180.png">
+<meta name="theme-color" content="#FF4D1C">
+
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Thrissur Tourism — Front-End Development Case Study | Adersh C.S" />
@@ -346,9 +355,18 @@
             }
         }
     </script>
+ <!-- ═══ FAVICON ═══ -->
+ <link rel="icon" href="images/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
 
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='white'/%3E%3Ccircle cx='50' cy='50' r='45' fill='none' stroke='%23FF6B2B' stroke-width='2'/%3E%3Ctext x='50' y='72' font-family='Arial' font-size='60' font-weight='bold' fill='%23FF6B2B' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E" />
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='white'/%3E%3Ccircle cx='50' cy='50' r='45' fill='none' stroke='%23FF6B2B' stroke-width='2'/%3E%3Ctext x='50' y='72' font-family='Arial' font-size='60' font-weight='bold' fill='%23FF6B2B' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E" />
+<!-- ↓ This one is NOT a favicon — it's for iOS home screen only -->
+<link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+
+<link rel="icon" type="image/png" sizes="192x192" href="images/android-chrome-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="images/android-chrome-512x512.png">
+<link rel="manifest" href="images/site.webmanifest">
+<meta name="theme-color" content="#ffffff">
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -1508,13 +1526,14 @@
         </button>
     </div>
 
+ 
     <!-- ═══ FOOTER ═══ -->
-    <footer class="border-t border-zinc-100 dark:border-zinc-800 bg-white dark:bg-[#0a0a0a] transition-colors">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 text-center">
-            <p class="text-xs sm:text-sm text-zinc-400">
-                © <span id="yr"></span> . All rights reserved.
-                <br class="sm:hidden">
-                Developed by <a href="https://linkedin.com/in/adersh-c-s" target="_blank" rel="noopener noreferrer" class="font-medium hover:text-accent transition-colors">Adersh c.s</a>
+    <footer class="border-t border-zinc-200/30 dark:border-zinc-800/30 bg-white/40 dark:bg-black/20 backdrop-blur-sm transition-colors" role="contentinfo">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-5 sm:py-8 text-center">
+            <p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">
+                © <span id="yr"></span>
+                <a href="https://linkedin.com/in/adersh-c-s" target="_blank" rel="noopener noreferrer" class="font-medium hover:text-accent transition-colors">Adersh c.s</a>
+                | All rights reserved.
             </p>
         </div>
     </footer>
