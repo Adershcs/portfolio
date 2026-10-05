@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{
+  dark: localStorage.getItem('theme')==='dark'||(!localStorage.getItem('theme')&&window.matchMedia('(prefers-color-scheme: dark)').matches),
+  scrolled: false,
+  mobileMenu: false,
+  progress: 0,
+  filter: 'all',
+  lightboxOpen: false,
+  lightboxIndex: 0,
+  galleryImages: [],
+  loading: true,
+  imageErrors: {},
+  projects: [
+    { id: 1, title: 'Ksrtc - Public Transport App', category: 'mobile', categoryLabel: 'Mobile App', image: 'images/ksrtc-main1.png', description: 'A modern public transport app designed for seamless navigation and real-time updates.', link: '/ksrtcapp.html', year: '2025' },
+    { id: 2, title: 'Sunrise Solar — Single-page website', category: 'singlepage', categoryLabel: 'Single Page', image: 'images/SunriseSolar.png', description:'Power your home or business with next-generation solar panels engineered for peak efficiency, weather resilience, and maximum financial savings.', link: '/SunriseWebsite.html', year: '2026' },
+    { id: 3, title: 'Vows — Wedding Planning Platform', category: 'multipage', categoryLabel: 'Multi-Page', image: 'images/vowsmain.png', description: 'Wedding planning platform with customizable templates and seamless booking integration.', link: '/vowswedd.html', year: '2024' }
+  ],
+
+  filterOptions: [
+    { key: 'all',        label: 'All Projects', icon: '✦'  },
+    { key: 'mobile',     label: 'Mobile App',   icon: '📱' },
+    { key: 'singlepage', label: 'Single Page',  icon: '📄' },
+    { key: 'multipage',  label: 'Multi-Page',   icon: '📚' }
+  
+  ],
+
+  get filteredProjects() {
+    if (this.filter === 'all') return this.projects;
+    return this.projects.filter(p => p.category === this.filter);
+  },
+
+  get visibleCount() { return this.filteredProjects.length; },
+  get totalCount()   { return this.projects.length; },
+
+  countFor(key) {
+    if (key === 'all') return this.projects.length;
+    return this.projects.filter(p => p.category === key).length;
+  },
+
+  setFilter(key) {
+    this.filter = key;
+  },
+
+  openLightbox(index) {
+    const images = this.filteredProjects.map(p => p.image);
+    this.galleryImages = images;
+    this.lightboxIndex = index;
+    this.lightboxOpen = true;
+    document.body.style.overflow = 'hidden';
+  },
+  closeLightbox() {
+    this.lightboxOpen = false;
+    document.body.style.overflow = '';
+  },
+  prevImage() { this.lightboxIndex = (this.lightboxIndex - 1 + this.galleryImages.length) % this.galleryImages.length; },
+  nextImage() { this.lightboxIndex = (this.lightboxIndex + 1) % this.galleryImages.length; },
+
+  sharePage() {
+    if (navigator.share) {
+      navigator.share({
+        title: 'UI/UX Design Portfolio — Adersh C.S',
+        text: 'Explore my UI/UX design portfolio featuring mobile apps, single-page sites, multi-page sites, and web apps.',
+        url: window.location.href
+      });
+    }
+  },
+
+  getCategoryIcon(category) {
+    const icons = { mobile: '📱', singlepage: '📄', multipage: '📚', dashboard: '📊' };
+    return icons[category] || '🎨';
+  },
+  getCategoryLabel(category) {
+    const labels = { mobile: 'Mobile App', singlepage: 'Single Page', multipage: 'Multi-Page', dashboard: 'Web App' };
+    return labels[category] || category;
+  },
+  handleImageError(id) { this.imageErrors[id] = true; }
+}" :class="{'dark':dark}" x-init="
+  $watch('dark', v => localStorage.setItem('theme', v ? 'dark' : 'light'));
+  window.addEventListener('scroll', () => {
+    scrolled = window.scrollY > 20;
+    progress = Math.min(100, Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100));
+  }, { passive: true });
+  setTimeout(() => { loading = false; }, 600);
+" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>UI/UX Design Portfolio — Mobile Apps, Web Apps &amp; More | Adersh C.S</title>
+    <meta name="title" content="UI/UX Design Portfolio — Mobile Apps, Web Apps &amp; More | Adersh C.S" />
+    <meta name="description" content="Explore Adersh C.S's UI/UX design portfolio featuring mobile apps, single-page sites, multi-page sites, and web apps. Human-centered design for digital products." />
+    <meta name="keywords" content="UI/UX Designer, Product Design, Mobile App Design, Web Design, Dashboard Design, User Experience, Adersh C.S, Kerala, Thrissur, UX Portfolio, Figma, Prototyping" />
+    <meta name="author" content="Adersh C.S" />
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <link rel="canonical" href="https://adershcs.github.io/portfolio/projects-uiux.html" />
+
+    <meta name="theme-color" content="#FF6B2B" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="UI/UX Design Portfolio" />
+
+    <meta property="og:title" content="UI/UX Design Portfolio — Mobile Apps, Web Apps &amp; More | Adersh C.S" />
+    <meta property="og:description" content="Explore Adersh C.S's UI/UX design portfolio featuring mobile apps, single-page sites, multi-page sites, and web apps." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://adershcs.github.io/portfolio/projects-uiux.html" />
+    <meta property="og:image" content="https://adershcs.github.io/portfolio/images/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:site_name" content="Adersh C.S — Designer Portfolio" />
+    <meta property="og:locale" content="en_IN" />
+
+    <!-- ═══ FAVICON ═══ -->
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="images/favicon-48.png">
+<link rel="icon" type="image/png" sizes="512x512" href="images/favicon-512.png">
+<link rel="apple-touch-icon" sizes="180x180" href="images/favicon-180.png">
+<meta name="theme-color" content="#FF6B2B">
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="UI/UX Design Portfolio — Mobile Apps, Web Apps &amp; More | Adersh C.S" />
+    <meta name="twitter:description" content="Explore Adersh C.S's UI/UX design portfolio featuring mobile apps, single-page sites, multi-page sites, and web apps." />
+    <meta name="twitter:image" content="https://adershcs.github.io/portfolio/images/og-image.jpg" />
+
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": "UI/UX Design Portfolio — Adersh C.S",
+            "description": "Explore Adersh C.S's UI/UX design portfolio featuring mobile apps, single-page sites, multi-page sites, and web apps.",
+            "url": "https://adershcs.github.io/portfolio/projects-uiux.html",
+            "about": { "@type": "Thing", "name": "UI/UX Design Portfolio" },
+            "author": { "@type": "Person", "name": "Adersh C.S" }
+        }
+    </script>
+
+ 
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        accent: '#FF6B2B',
+                        'accent-light': '#FF8F5C',
+                        'accent-dark': '#E0551A',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color .3s, color .3s;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .skip-link {
+            position: absolute;
+            top: -100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #FF6B2B;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0 0 0.5rem 0.5rem;
+            z-index: 10000;
+            font-weight: 600;
+            transition: top 0.2s ease;
+        }
+        .skip-link:focus { top: 0; }
+
+        .cursor-dot {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: #FF6B2B;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.2s;
+            will-change: transform;
+            mix-blend-mode: difference;
+        }
+        .cursor-ring {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 1.5px solid rgba(255, 107, 43, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, border-color 0.3s, background 0.3s;
+            will-change: transform;
+        }
+        .cursor-ring.hover {
+            width: 64px;
+            height: 64px;
+            border-color: rgba(255, 107, 43, 0.9);
+            background: rgba(255, 107, 43, 0.08);
+        }
+        .cursor-ring.click {
+            width: 28px;
+            height: 28px;
+            border-color: #FF6B2B;
+            background: rgba(255, 107, 43, 0.2);
+        }
+        .cursor-dot.hover {
+            width: 12px;
+            height: 12px;
+            background: #FF8F5C;
+        }
+        @media (hover: none) and (pointer: coarse) {
+            .cursor-dot, .cursor-ring { display: none !important; }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #FF6B2B; border-radius: 99px; }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: .03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        [x-cloak] { display: none !important; }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity .7s cubic-bezier(.22, 1, .36, 1), transform .7s cubic-bezier(.22, 1, .36, 1);
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        /* ═══ GLASSMORPHISM ═══ */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .glass {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        /* ═══ NAV LINKS ═══ */
+        .nav-link {
+            position: relative;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #FF4D1C 0%, #FF8C42 50%, #FFB347 100%);
+            transition: width .3s cubic-bezier(.22, 1, .36, 1);
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        .nav-link.active {
+            color: #FF4D1C !important;
+        }
+        .dark .nav-link.active {
+            color: #FF6B3D !important;
+        }
+
+        /* ═══ SHIMMER EFFECT ═══ */
+        .shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        .shimmer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 60%;
+            height: 100%;
+            background: rgba(255, 255, 255, .25);
+            transform: skewX(-20deg);
+            transition: left .5s cubic-bezier(.22, 1, .36, 1);
+        }
+        .shimmer:hover::after {
+            left: 160%;
+        }
+
+        .photo-frame {
+            overflow: hidden;
+            background: #e4e4e7;
+            transition: background-color 0.3s;
+        }
+        .dark .photo-frame { background: #27272a; }
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform .5s cubic-bezier(.22, 1, .36, 1);
+        }
+        .photo-frame:hover img { transform: scale(1.03); }
+
+        .card-hover {
+            transition: transform .35s cubic-bezier(.22, 1, .36, 1), box-shadow .35s cubic-bezier(.22, 1, .36, 1), border-color .25s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, .12);
+        }
+        .dark .card-hover:hover { box-shadow: 0 20px 40px -12px rgba(0, 0, 0, .4); }
+
+        .glow-orbe {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            opacity: .4;
+        }
+        .dark .glow-orbe { opacity: .2; }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #FF6B2B 0%, #FF8F5C 50%, #FF6B2B 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease-in-out infinite;
+        }
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: #FF6B2B;
+            z-index: 100;
+            transition: width .1s linear;
+        }
+
+        .filter-btn {
+            transition: all .25s ease;
+            padding: 0.5rem 1.25rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1.5px solid transparent;
+            background: transparent;
+            color: #71717a;
+            cursor: pointer !important;
+        }
+        .filter-btn:hover {
+            color: #18181b;
+            border-color: #e4e4e7;
+        }
+        .dark .filter-btn:hover {
+            color: #fafafa;
+            border-color: #3f3f46;
+        }
+        .filter-btn.active {
+            background: #FF6B2B;
+            color: white;
+            border-color: #FF6B2B;
+        }
+        .dark .filter-btn.active {
+            background: #FF8F5C;
+            border-color: #FF8F5C;
+            color: #0a0a0a;
+        }
+        .filter-btn.active:hover {
+            background: #E0551A;
+            border-color: #E0551A;
+        }
+        .dark .filter-btn.active:hover {
+            background: #FF6B2B;
+            border-color: #FF6B2B;
+            color: white;
+        }
+
+        .category-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255,107,43,0.9);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.3rem 0.8rem;
+            border-radius: 9999px;
+            letter-spacing: 0.02em;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .dark .category-badge { background: rgba(255,107,43,0.85); }
+
+        .lightbox-overlay {
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(12px);
+        }
+        .lightbox-btn {
+            transition: all .2s ease;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer !important;
+        }
+        .lightbox-btn:hover {
+            background: rgba(255,255,255,0.16);
+            color: white;
+        }
+        .lightbox-close-btn {
+            cursor: pointer !important;
+            transition: all 0.2s ease;
+        }
+        .lightbox-close-btn:hover {
+            color: white !important;
+            transform: rotate(90deg);
+        }
+
+        a, button, .card-hover, .nav-link, .shimmer, .photo-frame, .filter-btn, .lightbox-btn,
+        [role="button"], .skill-tag, .view-project-btn, .lightbox-close-btn, .fab {
+            cursor: pointer !important;
+        }
+
+        .skill-tag {
+            transition: all .2s ease;
+            cursor: pointer !important;
+        }
+        .skill-tag:hover {
+            border-color: #FF6B2B;
+            color: #FF6B2B;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 43, 0.15);
+        }
+        .dark .skill-tag:hover {
+            box-shadow: 0 4px 12px rgba(255, 107, 43, 0.25);
+        }
+
+        .reveal-project {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .reveal-project.visible { opacity: 1; transform: translateY(0); }
+
+        /* ═══ FILTER CARD ANIMATION (matching Graphic page) ═══ */
+        .filter-card {
+            animation: filterFadeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+        @keyframes filterFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .gradient-text-hover {
+            background: linear-gradient(135deg, #FF6B2B 0%, #FF8F5C 50%, #FF6B2B 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease-in-out infinite;
+            transition: all 0.4s ease;
+        }
+        .gradient-text-hover:hover {
+            background-size: 300% 300%;
+            animation-duration: 1.5s;
+        }
+
+        .card-image-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(255,107,43,0.2) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .group:hover .card-image-overlay { opacity: 1; }
+
+        .view-project-btn {
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            cursor: pointer !important;
+        }
+        .view-project-btn:hover { gap: 0.75rem; }
+        .view-project-btn svg {
+            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .view-project-btn:hover svg { transform: translateX(4px); }
+
+        .fab {
+            transition: all 0.3s cubic-bezier(.22, 1, .36, 1);
+        }
+        .fab:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 24px rgba(255, 107, 43, 0.25);
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: skeletonShimmer 1.5s ease-in-out infinite;
+        }
+        .dark .skeleton {
+            background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+            background-size: 200% 100%;
+        }
+        @keyframes skeletonShimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        :focus-visible {
+            outline: 2px solid #FF6B2B;
+            outline-offset: 2px;
+            border-radius: 0.25rem;
+        }
+
+        .process-step {
+            position: relative;
+            padding-left: 2.5rem;
+        }
+        .process-step::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            background: rgba(255,107,43,0.15);
+            border: 2px solid #FF6B2B;
+        }
+        .process-step .step-number {
+            position: absolute;
+            left: 0.4rem;
+            top: 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #FF6B2B;
+        }
+
+        @media (max-width: 480px) {
+            .filter-btn { font-size: 0.75rem; padding: 0.4rem 0.9rem; }
+        }
+
+        @media print {
+            .cursor-dot, .cursor-ring, .progress-bar, .fab, .fixed, .sticky, .shimmer, .glow-orbe {
+                display: none !important;
+            }
+            .dark\:bg-\[\#0a0a0a\] { background: white !important; }
+            body { background: white !important; color: black !important; }
+            .photo-frame img { break-inside: avoid; max-height: 300px; }
+            .filter-btn {
+                border: 1px solid #ddd !important;
+                background: white !important;
+                color: black !important;
+                padding: 0.3rem 0.8rem !important;
+                font-size: 0.75rem !important;
+            }
+            .filter-btn.active {
+                background: #FF6B2B !important;
+                color: white !important;
+                border-color: #FF6B2B !important;
+            }
+            .card-hover { transform: none !important; box-shadow: none !important; }
+            .reveal-project, .filter-card { opacity: 1 !important; transform: none !important; animation: none !important; }
+            .gradient-text-hover {
+                background: none !important;
+                -webkit-text-fill-color: #FF6B2B !important;
+                color: #FF6B2B !important;
+                animation: none !important;
+            }
+            .dark\:text-zinc-100 { color: black !important; }
+            .dark\:bg-zinc-800 { background: #f3f4f6 !important; }
+            .dark\:border-zinc-700 { border-color: #d1d5db !important; }
+            .backdrop-blur-xl { backdrop-filter: none !important; }
+            .dark\:bg-\[\#0a0a0a\]\/85 { background: white !important; }
+            [x-cloak] { display: block !important; }
+            section { page-break-inside: avoid; }
+            .bg-gradient-to-t { background: none !important; }
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-[#0a0a0a] text-zinc-800 dark:text-zinc-100 antialiased">
+
+    <!-- Skip link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Custom cursor -->
+    <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+    <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+    <!-- ═══ NAV ═══ -->
+    <header class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[96%] max-w-7xl rounded-2xl glass shadow-lg shadow-black/5 dark:shadow-black/30 transition-all duration-300" :class="scrolled ? 'py-1' : 'py-2'" role="banner">
+        <nav class="px-5 md:px-6 flex items-center justify-between h-14 md:h-14" aria-label="Main navigation">
+            <!-- Logo -->
+            <a href="index.html" class="font-bold text-xl tracking-tight flex items-center gap-1 shrink-0" aria-label="Adersh C.S Home">
+                <span class="text-zinc-900 dark:text-white">Ade</span>
+                <span class="text-accent">rsh</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-accent to-accent-light animate-pulse ml-0.5" aria-hidden="true"></span>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <ul class="hidden md:flex items-center gap-7 text-sm font-medium" role="list">
+                <li><a href="projects-uiux.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors active">Ux Work</a></li>
+                <li><a href="projects-frontend.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">Frontend Work</a></li>
+                <li><a href="projects-graphic.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">Graphic Work</a></li>
+            </ul>
+
+            <!-- Right side -->
+            <div class="flex items-center gap-1 md:gap-2">
+                <button @click="dark=!dark" class="w-9 h-9 flex items-center justify-center rounded-full bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-white/70 dark:hover:bg-white/10 transition-colors shrink-0" :aria-label="dark ? 'Switch to light mode' : 'Switch to dark mode'">
+                    <svg x-show="!dark" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                    <svg x-show="dark" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
+                </button>
+                <a href="index.html#contact" class="hidden md:inline-flex items-center gap-1.5 px-5 py-2 rounded-full text-white text-sm font-semibold shadow-lg shadow-accent/30 hover:shadow-accent/50 transition-all hover:scale-105 shrink-0" style="background: linear-gradient(135deg, #FF4D1C 0%, #FF8C42 50%, #FFB347 100%);">
+                    Hire Me
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                </a>
+                <button @click="mobileMenu=!mobileMenu" class="md:hidden w-9 h-9 flex items-center justify-center rounded-full bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-white/70 dark:hover:bg-white/10 transition-colors" aria-label="Toggle menu">
+                    <svg x-show="!mobileMenu" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    <svg x-show="mobileMenu" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div x-show="mobileMenu" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" class="md:hidden bg-white/80 dark:bg-black/80 backdrop-blur-xl border-t border-zinc-200/30 dark:border-zinc-700/30 rounded-b-2xl overflow-hidden">
+            <ul class="flex flex-col px-6 py-6 gap-3 text-sm" role="list">
+                <li><a href="projects-uiux.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">UX Work</a></li>
+                <li><a href="projects-frontend.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Frontend Work</a></li>
+                <li><a href="projects-graphic.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Graphic Work</a></li>
+                <li class="pt-3 border-t border-zinc-200/30 dark:border-zinc-700/30">
+                    <a href="index.html#contact" @click="mobileMenu=false" class="inline-flex shimmer bg-accent text-white font-medium text-sm px-6 py-2.5 rounded-full hover:bg-accent-dark transition-colors">
+                        Hire me →
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <main id="main-content">
+
+        <!-- ═══ HERO ═══ -->
+        <section class="relative pt-32 pb-12 max-w-4xl mx-auto px-6 overflow-hidden">
+            <a href="index.html#work" class="inline-flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400 hover:text-accent transition-colors mb-8">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" /></svg>
+                Back to Works
+            </a>
+
+            <div class="glow-orbe w-[500px] h-[500px] -top-40 -right-40 bg-accent/30" style="filter:blur(140px)"></div>
+            <div class="glow-orbe w-[300px] h-[300px] -bottom-20 -left-20 bg-accent/20" style="filter:blur(100px)"></div>
+
+            <div class="relative z-10">
+                <span class="inline-block px-3 py-1 text-xs font-semibold text-accent bg-accent/10 border border-accent/20 rounded-full mb-4">
+                    ✦ UI/UX Design
+                </span>
+                <h1 class="font-extrabold text-4xl md:text-5xl lg:text-6xl text-zinc-900 dark:text-white leading-[1.1] mb-5">
+                    UX &amp; Product<br>
+                    <span class="gradient-text-hover">Design Projects</span>
+                </h1>
+                <p class="text-lg text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-2xl">
+                    A curated portfolio of UX research, interface design, and product strategy work. Each project demonstrates a human-centered approach to solving complex problems.
+                </p>
+                <div class="flex flex-wrap gap-3 mt-6">
+                    <span class="inline-flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                        <span x-text="`${totalCount} Projects`"></span>
+                    </span>
+                    <span class="text-zinc-300 dark:text-zinc-700">|</span>
+                    <span class="inline-flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+                        <span class="w-2 h-2 rounded-full bg-accent"></span>
+                        <span x-text="filterOptions.length - 1 + ' Categories'"></span>
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ FILTERS + GALLERY ═══ -->
+        <section class="max-w-6xl mx-auto px-6 pb-24">
+
+            <!-- Filter Buttons -->
+            <div class="flex flex-wrap items-center gap-2 mb-8 border-b border-zinc-100 dark:border-zinc-800 pb-5">
+                <template x-for="opt in filterOptions" :key="opt.key">
+                    <button
+                        type="button"
+                        @click="setFilter(opt.key)"
+                        class="filter-btn"
+                        :class="filter === opt.key ? 'active' : ''"
+                        :aria-pressed="filter === opt.key">
+                        <span class="flex items-center gap-2">
+                            <span x-text="opt.icon"></span>
+                            <span x-text="opt.label"></span>
+                            <span class="text-xs opacity-60" x-text="countFor(opt.key)"></span>
+                        </span>
+                    </button>
+                </template>
+            </div>
+
+            <!-- Skeleton Loading -->
+            <div x-show="loading" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <template x-for="i in 6" :key="i">
+                    <div class="bg-white dark:bg-zinc-900/80 rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 animate-pulse">
+                        <div class="w-full aspect-[4/2] skeleton"></div>
+                        <div class="p-5 space-y-3">
+                            <div class="h-4 skeleton rounded w-3/4"></div>
+                            <div class="h-3 skeleton rounded w-full"></div>
+                            <div class="h-3 skeleton rounded w-2/3"></div>
+                            <div class="flex justify-between items-center pt-2">
+                                <div class="h-4 skeleton rounded w-24"></div>
+                                <div class="h-3 skeleton rounded w-12"></div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Project Grid — matches Graphic page card style -->
+            <div x-show="!loading" :key="filter" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <template x-for="(project, index) in filteredProjects" :key="filter + '-' + project.id">
+                    <div class="filter-card" :style="`animation-delay:${(index % 3) * 0.08}s`">
+                        <article class="group relative bg-white dark:bg-zinc-900/80 rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 hover:border-accent/50 transition-all card-hover h-full">
+
+                            <!-- Image — wide 4:2 ratio like Graphic page -->
+                            <div class="relative">
+                                <div class="photo-frame w-full aspect-[4/2]">
+                                    <img :src="project.image" :alt="project.title" loading="lazy" decoding="async" @error="handleImageError(project.id)" />
+                                </div>
+                                <div class="card-image-overlay"></div>
+                                <template x-if="imageErrors[project.id]">
+                                    <div class="absolute inset-0 flex items-center justify-center bg-zinc-100 dark:bg-zinc-800">
+                                        <span class="text-zinc-400 dark:text-zinc-500 text-sm flex items-center gap-2">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                            Image unavailable
+                                        </span>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <!-- Category Badge -->
+                            <span class="category-badge" x-text="project.categoryLabel"></span>
+
+                            <!-- Content -->
+                            <div class="p-5">
+                                <a :href="project.link" class="block">
+                                    <h3 class="font-bold text-base text-zinc-900 dark:text-white mb-1.5 group-hover:text-accent transition-colors" x-text="project.title"></h3>
+                                </a>
+                                <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-3 line-clamp-2" x-text="project.description"></p>
+                                <div class="flex items-center justify-between">
+                                    <a :href="project.link" class="view-project-btn inline-flex items-center gap-1.5 text-sm font-medium text-accent transition-all">
+                                        View project
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                                    </a>
+                                    <span class="text-xs text-zinc-400" x-text="project.year"></span>
+                                </div>
+                            </div>
+
+                        </article>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Empty state -->
+            <div x-show="!loading && filteredProjects.length === 0" class="text-center py-16">
+                <div class="text-6xl mb-4">🔍</div>
+                <p class="text-zinc-500 dark:text-zinc-400">No projects found in this category.</p>
+                <button @click="setFilter('all')" class="mt-4 text-accent hover:underline font-medium">View all projects</button>
+            </div>
+
+            <!-- Counter -->
+            <p x-show="!loading" class="text-sm text-zinc-400 dark:text-zinc-500 mt-8 text-center"
+               x-text="`${filteredProjects.length} project${filteredProjects.length !== 1 ? 's' : ''} — ${filter === 'all' ? 'all categories' : getCategoryLabel(filter)}`"></p>
+
+        </section>
+
+
+
+        <!-- ═══ SKILLS / UX TOOLS ═══ -->
+        <section class="py-20">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <span class="inline-block px-3 py-1 text-xs font-semibold text-accent bg-accent/10 border border-accent/20 rounded-full mb-4">
+                        🛠️ Toolkit
+                    </span>
+                    <h2 class="font-bold text-3xl md:text-4xl text-zinc-900 dark:text-white">UX Toolkit</h2>
+                    <p class="text-zinc-500 dark:text-zinc-400 mt-4">The tools and methodologies I use to deliver human-centered design solutions.</p>
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-3">
+                    <span class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-full">Figma</span>
+                    <span class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-full">UX Research</span>
+                    <span class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-full">User Interviews</span>
+                    <span class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-full">Usability Testing</span>
+                    <span class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-full">Prototyping</span>
+                    <span class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-full">Design Systems</span>
+                    <span class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-full">Wireframing</span>
+                    <span class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-full">Journey Mapping</span>
+                    <span class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-full">A/B Testing</span>
+                    <span class="skill-tag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-4 py-2 rounded-full">WCAG Accessibility</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ CTA ═══ -->
+        <section class="py-24">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="bg-zinc-900 dark:bg-zinc-800 rounded-3xl p-10 md:p-14 text-center relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-accent/20 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+                    <div class="absolute bottom-0 left-0 w-40 h-40 bg-accent/10 rounded-full blur-2xl pointer-events-none" aria-hidden="true"></div>
+                    <div class="relative z-10">
+                        <p class="text-xs font-semibold text-accent tracking-widest uppercase mb-4">Need UX expertise?</p>
+                        <h2 class="font-bold text-3xl md:text-4xl text-white mb-4">Let's design something<br class="sm:hidden"> meaningful</h2>
+                        <p class="text-zinc-400 max-w-md mx-auto mb-8">From research and strategy to pixel-perfect interfaces — I'm here to help you build products people love to use.</p>
+                        <a href="index.html#contact" class="inline-flex items-center gap-2 shimmer bg-accent text-white font-medium px-8 py-3.5 rounded-full hover:bg-accent-light hover:scale-105 transition-all duration-300 shadow-lg shadow-accent/20 hover:shadow-accent/40">
+                            Start a project →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ═══ LIGHTBOX ═══ -->
+    <div x-show="lightboxOpen" x-cloak class="fixed inset-0 z-[999] lightbox-overlay flex items-center justify-center p-4" @click.self="closeLightbox()" @keydown.escape="closeLightbox()">
+        <button @click="closeLightbox()" class="absolute top-6 right-6 text-white/60 hover:text-white transition-colors text-3xl lightbox-close-btn" aria-label="Close lightbox">✕</button>
+        <button @click="prevImage()" class="absolute left-6 lightbox-btn" aria-label="Previous image">‹</button>
+        <button @click="nextImage()" class="absolute right-6 lightbox-btn" aria-label="Next image">›</button>
+        <div class="max-w-5xl max-h-[85vh] rounded-2xl overflow-hidden shadow-2xl">
+            <img :src="galleryImages[lightboxIndex]" alt="Gallery image" class="w-full h-full object-contain" />
+        </div>
+        <p class="absolute bottom-8 text-white/40 text-sm" x-text="`${lightboxIndex + 1} / ${galleryImages.length}`"></p>
+    </div>
+
+    <!-- ═══ FLOATING ACTION BUTTONS ═══ -->
+    <div class="fixed right-6 bottom-24 z-40 flex flex-col gap-3">
+        <!-- Share Button -->
+        <button @click="sharePage()" class="fab w-12 h-12 rounded-full bg-white dark:bg-zinc-800 shadow-lg border border-zinc-200 dark:border-zinc-700 hover:bg-accent hover:text-white hover:border-accent hover:scale-110 transition-all duration-300 flex items-center justify-center text-zinc-600 dark:text-zinc-300" aria-label="Share page">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+        </button>
+
+        <!-- Scroll to Top with Progress Ring -->
+        <button @click="window.scrollTo({top:0,behavior:'smooth'})" x-show="scrolled" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90" class="relative w-12 h-12 rounded-full bg-white dark:bg-zinc-800 shadow-lg border border-zinc-200 dark:border-zinc-700 hover:bg-accent hover:text-white hover:border-accent hover:scale-110 transition-all duration-300 flex items-center justify-center text-zinc-600 dark:text-zinc-300 group" aria-label="Scroll to top">
+            <svg class="absolute inset-0 w-full h-full -rotate-90">
+                <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="2" class="text-zinc-200 dark:text-zinc-700"/>
+                <circle cx="24" cy="24" r="20" fill="none" stroke="#FF6B2B" stroke-width="2.5" :stroke-dasharray="`${progress * 125.6 / 100} 125.6`" class="transition-all duration-300"/>
+            </svg>
+            <svg class="w-5 h-5 relative z-10 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+        </button>
+    </div>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="border-t border-zinc-200/30 dark:border-zinc-800/30 bg-white/40 dark:bg-black/20 backdrop-blur-sm transition-colors" role="contentinfo">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-5 sm:py-8 text-center">
+            <p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">
+                © <span id="yr"></span>
+                <a href="https://linkedin.com/in/adersh-c-s" target="_blank" rel="noopener noreferrer" class="font-medium hover:text-accent transition-colors">Adersh c.s</a>
+                | All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('yr').textContent = new Date().getFullYear();
+
+        // ── Reveal on scroll ──
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    obs.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
+
+        function observeRevealProjects() {
+            document.querySelectorAll('.reveal-project:not(.visible)').forEach(el => obs.observe(el));
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            observeRevealProjects();
+        });
+
+        document.addEventListener('alpine:initialized', () => {
+            setTimeout(observeRevealProjects, 100);
+        });
+
+        const gridObserver = new MutationObserver(() => {
+            observeRevealProjects();
+        });
+        document.addEventListener('DOMContentLoaded', () => {
+            const grid = document.querySelector('[x-show][x-key]') || document.querySelector('.grid');
+            if (grid) {
+                gridObserver.observe(document.body, { childList: true, subtree: true });
+            }
+        });
+
+        // ── Custom Cursor ──
+        const dot = document.getElementById('cursorDot');
+        const ring = document.getElementById('cursorRing');
+        let mouseX = 0, mouseY = 0;
+        let ringX = 0, ringY = 0;
+        let dotX = 0, dotY = 0;
+        const ringEase = 0.12;
+        const dotEase = 0.18;
+
+        const onMouseMove = (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        };
+
+        const animateCursor = () => {
+            ringX += (mouseX - ringX) * ringEase;
+            ringY += (mouseY - ringY) * ringEase;
+            dotX += (mouseX - dotX) * dotEase;
+            dotY += (mouseY - dotY) * dotEase;
+
+            ring.style.transform = `translate(${ringX - 20}px, ${ringY - 20}px)`;
+            dot.style.transform = `translate(${dotX - 4}px, ${dotY - 4}px)`;
+
+            requestAnimationFrame(animateCursor);
+        };
+
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+        if (!isTouchDevice) {
+            document.addEventListener('mousemove', onMouseMove);
+            animateCursor();
+
+            document.addEventListener('mouseover', (e) => {
+                const target = e.target.closest('a, button, .card-hover, .nav-link, .shimmer, .photo-frame, .filter-btn, .lightbox-btn, .skill-tag, .view-project-btn, .lightbox-close-btn, .fab');
+                if (target) {
+                    ring.classList.add('hover');
+                    dot.classList.add('hover');
+                }
+            });
+            document.addEventListener('mouseout', (e) => {
+                const target = e.target.closest('a, button, .card-hover, .nav-link, .shimmer, .photo-frame, .filter-btn, .lightbox-btn, .skill-tag, .view-project-btn, .lightbox-close-btn, .fab');
+                if (target) {
+                    ring.classList.remove('hover');
+                    dot.classList.remove('hover');
+                }
+            });
+            document.addEventListener('mousedown', (e) => {
+                const target = e.target.closest('a, button, .card-hover, .nav-link, .shimmer, .photo-frame, .filter-btn, .lightbox-btn, .skill-tag, .view-project-btn, .lightbox-close-btn, .fab');
+                if (target) ring.classList.add('click');
+            });
+            document.addEventListener('mouseup', () => {
+                ring.classList.remove('click');
+            });
+        }
+
+        // ── Image error handling (delegated) ──
+        document.addEventListener('error', (e) => {
+            const img = e.target;
+            if (img.tagName === 'IMG' && img.closest('.photo-frame')) {
+                const parent = img.closest('.photo-frame');
+                if (parent && !parent.dataset.errorHandled) {
+                    parent.dataset.errorHandled = 'true';
+                    parent.innerHTML = `
+                        <div class="flex items-center justify-center h-full w-full bg-zinc-100 dark:bg-zinc-800">
+                            <span class="text-zinc-400 dark:text-zinc-500 text-sm flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                Image unavailable
+                            </span>
+                        </div>
+                    `;
+                }
+            }
+        }, true);
+    </script>
+
+</body>
+</html>
