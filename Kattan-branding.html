@@ -1,0 +1,2076 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{
+  dark: localStorage.getItem('theme')==='dark'||(!localStorage.getItem('theme')&&window.matchMedia('(prefers-color-scheme: dark)').matches),
+  scrolled: false,
+  mobileMenu: false,
+  progress: 0,
+  activeTab: 'overview',
+  lightboxOpen: false,
+  lightboxIndex: 0,
+  galleryImages: [],
+  logoLightboxOpen: false,
+  logoLightboxIndex: 0,
+  appLightboxOpen: false,
+  appLightboxIndex: 0,
+  videoLightboxOpen: false,
+  videoLightboxIndex: 0,
+  carouselIndex: 0,
+  touchStartX: 0,
+  touchEndX: 0,
+  imageErrors: {},
+  carouselItems: [
+    {
+      id: 1,
+      title: 'Mother Dental Clinic',
+      category: 'Frontend',
+      image: 'images/COMMINGSOON.png',
+      description: 'Responsive corporate website with 96/100 Lighthouse score, 100% accessibility, and mobile-first design.',
+      link: '#'
+    },
+    {
+      id: 2,
+      title: 'Thrissur Tourism',
+      category: 'Frontend',
+      image: 'images/COMMINGSOON.png',
+      description: 'Landing page with Tailwind CSS, smooth scroll animations, and fully responsive layout.',
+      link: '#'
+    },
+    {
+      id: 3,
+      title: 'Summer Poster Campaign',
+      category: 'Graphic Design',
+      image: 'images/COMMINGSOON.png',
+      description: 'Vibrant summer campaign with bold typography, illustration, and social media assets.',
+      link: '#'
+    },
+    {
+      id: 4,
+      title: 'Wellness Magazine Editorial',
+      category: 'Editorial Design',
+      image: 'images/COMMINGSOON.png',
+      description: 'Complete editorial design for wellness magazine with custom layouts and photography.',
+      link: '#'
+    },
+    {
+      id: 5,
+      title: 'Bloom — Brand Identity',
+      category: 'Branding',
+      image: 'images/COMMINGSOON.png',
+      description: 'Complete brand identity with logo, packaging, guidelines, and visual language system.',
+      link: '#'
+    },
+    {
+      id: 6,
+      title: 'Novu — SaaS Dashboard',
+      category: 'Frontend',
+      image: 'images/COMMINGSOON.png',
+      description: 'Interactive dashboard with data visualization, dark/light themes, and component-based architecture.',
+      link: '#'
+    }
+  ],
+  get totalPages() {
+    return Math.ceil(this.carouselItems.length / 3);
+  },
+  get currentPage() {
+    return Math.floor(this.carouselIndex / 3) + 1;
+  },
+  get maxIndex() {
+    return Math.max(0, this.carouselItems.length - 3);
+  },
+  get paginationPages() {
+    const total = this.totalPages;
+    const current = this.currentPage;
+    if (total <= 1) return [1];
+    if (total <= 5) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+    const pages = [];
+    pages.push(1);
+    if (current > 3) pages.push(-1);
+    const start = Math.max(2, current - 1);
+    const end = Math.min(total - 1, current + 1);
+    for (let i = start; i <= end; i++) {
+      if (i > 1 && i < total) pages.push(i);
+    }
+    if (current < total - 2) pages.push(-1);
+    pages.push(total);
+    return pages;
+  },
+  goToPage(page) {
+    const idx = (page - 1) * 3;
+    if (idx >= 0 && idx < this.carouselItems.length) {
+      this.carouselIndex = idx;
+    }
+  },
+  prevSlide() {
+    const newIndex = this.carouselIndex - 3;
+    if (newIndex >= 0) {
+      this.carouselIndex = newIndex;
+    } else {
+      const total = this.carouselItems.length;
+      const remainder = total % 3;
+      const lastPageStart = remainder === 0 ? total - 3 : total - remainder;
+      this.carouselIndex = Math.max(0, lastPageStart);
+    }
+  },
+  nextSlide() {
+    const newIndex = this.carouselIndex + 3;
+    if (newIndex < this.carouselItems.length) {
+      this.carouselIndex = newIndex;
+    } else {
+      this.carouselIndex = 0;
+    }
+  },
+  handleTouchStart(e) {
+    if (e.target.closest('.carousel-container')) {
+      this.touchStartX = e.touches[0].screenX;
+    }
+  },
+  handleTouchEnd(e) {
+    if (e.target.closest('.carousel-container')) {
+      const diff = this.touchStartX - e.changedTouches[0].screenX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) {
+          this.nextSlide();
+        } else {
+          this.prevSlide();
+        }
+      }
+    }
+  },
+  project: {
+    id: 1,
+    title: 'KATTAN — Brand Identity',
+    category: 'branding',
+    categoryLabel: 'Brand Identity',
+    heroImage: 'images/kattanmain.png',
+    gallery: [
+      'images/kattanstandee.png',
+      'images/kattancompany.png',
+      'images/kattanstore.png',
+      'images/kattanfactory.png',
+      'images/kattanbillboard.png'
+    ],
+    videos: [
+      {
+        src: 'images/kattanbrand.mp4',
+        poster: 'images/kattanbranding.png',
+        title: 'KOKO Brand Film',
+        subtitle: '60-second brand story',
+        type: 'video/mp4',
+        tag: '🎬 Brand Film'
+      },
+      {
+        src: 'images/kattanpackage.mp4',
+        poster: 'images/kattanpackaging.png',
+        title: 'Packaging Reveal',
+        subtitle: 'Bottle & label animation',
+        type: 'video/mp4',
+        tag: '📦 Product'
+      }
+    ],
+    moodboard: [
+      'images/visual1.png',
+      'images/visual2.png',
+      'images/visual3.png'
+    ],
+    overview: 'Real coffee. Real tea. Kerala soul. Ready to drink — two classic brews in a chilled 250ml can, crafted with authentic extracts and zero artificial flavours.',
+    challenge: 'Bottling Kerala\'s traditional kattan (black coffee) and chaya (black tea) for modern on-the-go consumption without losing authenticity.',
+    solution: 'A bold black can with copper storytelling — Kerala backwater line art, a leaf mark that reads as both coffee and tea, and a script tagline that carries the regional soul.',
+    process: [
+         { phase: 'Discovery', description: 'Studied Kerala\'s kattan and chaya culture, roadside chai stalls, and the ritual of pouring.', duration: '2 weeks' },
+    { phase: 'Concept', description: 'Explored 3 directions — rustic, minimal, and heritage-modern. Chose heritage-modern with copper on black.', duration: '3 weeks' },
+    { phase: 'Design', description: 'Designed can artwork, leaf logomark, icon set, and dual-variant system (Kappi / Chaya).', duration: '4 weeks' },
+    { phase: 'Guidelines', description: 'Packaging specs, line-art library, copper-on-black system, and social templates.', duration: '2 weeks' }
+    ],
+    year: '2026',
+    client: 'Kattan Beverages',
+    role: 'Lead Brand Designer',
+    deliverables: ['Brand Strategy',
+    'Leaf Logomark',
+    'Can Packaging (Kappi + Chaya)',
+    'Kerala Line-Art Illustration',
+    'Icon Set',
+    'Brand Guidelines',
+    'Social Media Assets',
+    'Retail Collateral'],
+    tools: ['Adobe Illustrator', 'Adobe Photoshop', 'Adobe InDesign', 'Figma', 'Procreate'],
+    link: '#',
+    prevProject: { title: 'Summer Poster Campaign', url: '#' },
+    nextProject: { title: 'Editorial — Wellness Magazine', url: '#' },
+    metrics: [
+      { value: '6', label: 'Product SKUs' },
+      { value: '60+', label: 'Guidelines Pages' },
+      { value: '12', label: 'Brand Touchpoints' }
+    ],
+colors: [
+  { name: 'Primary',     realName: 'Kattan Black',  hex: '#0B0B0B', role: 'Can body, hero' },
+    { name: 'Hero Accent', realName: 'Kerala Copper', hex: '#C97B3F', role: 'Script, CTAs' },
+    { name: 'Warm Accent', realName: 'Terracotta',    hex: '#B35A2E', role: 'Illustration' },
+    { name: 'Neutral',     realName: 'Ivory',         hex: '#F5EFE0', role: 'Icons, text' },
+    { name: 'Secondary',   realName: 'Palm Green',    hex: '#3E5C3A', role: 'Leaves' },
+    { name: 'Dark',        realName: 'Espresso',      hex: '#1A1C21', role: 'Depth' }
+],
+     moodAdjectives: ['Keralam', 'Warm', 'Grounded', 'Bold', 'Authentic', 'Refreshing'],
+     strategy: {
+    positioning: 'Real brews from Kerala, ready to drink — no artificial flavours, no compromise.',
+    audience: 'Urban Kerala expats, 22–40, coffee & tea lovers wanting authentic regional taste.',
+    tone: 'Warm, proud, direct. Speaks like a local, not a corporation.',
+    pillars: ['Authentic Extracts', 'No Artificial Flavours', 'Low Calorie', 'Ready to Drink']
+  },
+    typography: {
+       heading: { family: 'Playfair Display', weight: 'Bold', usage: 'Headlines, hero' },
+    body:    { family: 'Inter', weight: 'Regular', usage: 'Body copy, UI' },
+      accent:  { family: 'Inter', weight: 'Bold', usage: 'Gradient text, #DrinkKoko' },
+      scale: [
+        { label: 'H1', size: '48px', weight: '700' },
+        { label: 'H2', size: '32px', weight: '700' },
+        { label: 'H3', size: '24px', weight: '600' },
+        { label: 'Body', size: '16px', weight: '400' },
+        { label: 'Caption', size: '12px', weight: '400' }
+      ]
+    },
+    photography: {
+      direction: 'Natural light, warm tones, product-centered compositions with generous negative space.',
+      dos: ['Soft natural lighting', 'Warm color grading', 'Product in real environments', 'Generous negative space'],
+      donts: ['Harsh flash', 'Cool/blue tones', 'Cluttered backgrounds', 'Heavy filters'],
+      references: [
+        { image: 'images/visual1.png', caption: 'Natural light' },
+        { image: 'images/COCO2.png', caption: 'Product composition' },
+        { image: 'images/COCO3.png', caption: 'Tropical warmth' },
+      ]
+    },
+    iconography: {
+    style: 'Thin-line, circular badge icons in ivory on black — 1.5px stroke, geometric.',
+    elements: ['Leaf (dual coffee/tea)', 'Coffee bean', 'Tea leaf', 'Water drop', 'Sun'],
+    pattern: 'Kerala backwater line-art — palms, houseboat, glass, ripples — used across can and social.'
+  },
+    strategy: {
+      positioning: 'Straight from Nature — pure, clean hydration without compromise.',
+      audience: 'Health-conscious adults, 25–40, urban, premium beverage buyers.',
+      tone: 'Honest, playful, grounded. Speaks like a friend, not a corporation.',
+      pillars: ['100% Natural', 'No Preservatives', 'Sustainable Packaging', 'Premium Sourcing']
+    },
+    competitors: [
+      { name: 'Vita Coco',         colors: ['#FFD700', '#00A651'], note: 'Bright, mass-market' },
+      { name: 'Harmless Harvest',  colors: ['#F5E6D3', '#2D5016'], note: 'Natural, premium' },
+      { name: 'Zico',              colors: ['#003DA5', '#FFFFFF'], note: 'Sporty, functional' },
+      { name: 'KOKO',              colors: ['#0e2818', '#4CC66E'], note: 'Premium natural', isKoko: true }
+    ],
+  logoVariants: [
+    { name: 'Primary', description: 'Ivory leaf on black can', image: 'images/primarylogokattan.png', bg: 'bg-zinc-900' },
+    { name: 'Accent',  description: 'Copper leaf, light bg',    image: 'images/Accentlogokattan.png', bg: 'bg-[#F5EFE0]' },
+    { name: 'Copper',    description: 'Black leaf on ivory',      image: 'images/Copperlogokattan.png', bg: 'bg-[#F5EFE0]' },
+    { name: 'Outline', description: 'Single-line mark',         image: 'images/Outlinelogokattan.png', bg: 'bg-[#ffffff]' }
+  ],
+    appImages: [
+    { image: 'images/brandapps1.png', title: 'Social Media Post',  subtitle: 'Featuring Aluminum Cans', tag: '📱 Social Media' },
+    { image: 'images/brandapps2.png', title: 'Website Ui',  subtitle: 'Featuring Plastic/PET Bottles',    tag: ' Website' },
+    { image: 'images/brandapps3.png', title: 'Mobile App Interface',     subtitle: 'Featuring Glass Bottles', tag: ' Apps' },
+    { image: 'images/brandapps4.png', title: 'Retail Van / Food Truck',   subtitle: 'Featuring Fountain & Bulk Systems',  tag: ' Retails' }
+  ]
+},
+
+  setTab(tab) {
+    this.activeTab = tab;
+  },
+  openLightbox(index) {
+    if (this.activeTab === 'moodboard') {
+      this.galleryImages = this.project.moodboard;
+    } else {
+      this.galleryImages = this.project.gallery;
+    }
+    this.lightboxIndex = index;
+    this.lightboxOpen = true;
+    document.body.style.overflow = 'hidden';
+  },
+  closeLightbox() {
+    this.lightboxOpen = false;
+    document.body.style.overflow = '';
+  },
+  prevImage() {
+    if (this.galleryImages.length > 0) {
+      this.lightboxIndex = (this.lightboxIndex - 1 + this.galleryImages.length) % this.galleryImages.length;
+    }
+  },
+  nextImage() {
+    if (this.galleryImages.length > 0) {
+      this.lightboxIndex = (this.lightboxIndex + 1) % this.galleryImages.length;
+    }
+  },
+  openLogoLightbox(index) {
+    this.logoLightboxIndex = index;
+    this.logoLightboxOpen = true;
+    document.body.style.overflow = 'hidden';
+  },
+  closeLogoLightbox() {
+    this.logoLightboxOpen = false;
+    document.body.style.overflow = '';
+  },
+  prevLogoImage() {
+    this.logoLightboxIndex = (this.logoLightboxIndex - 1 + this.project.logoVariants.length) % this.project.logoVariants.length;
+  },
+  nextLogoImage() {
+    this.logoLightboxIndex = (this.logoLightboxIndex + 1) % this.project.logoVariants.length;
+  },
+  openAppLightbox(index) {
+    this.appLightboxIndex = index;
+    this.appLightboxOpen = true;
+    document.body.style.overflow = 'hidden';
+  },
+  closeAppLightbox() {
+    this.appLightboxOpen = false;
+    document.body.style.overflow = '';
+  },
+  prevAppImage() {
+    this.appLightboxIndex = (this.appLightboxIndex - 1 + this.project.appImages.length) % this.project.appImages.length;
+  },
+  nextAppImage() {
+    this.appLightboxIndex = (this.appLightboxIndex + 1) % this.project.appImages.length;
+  },
+  openVideoLightbox(index) {
+    this.videoLightboxIndex = index;
+    this.videoLightboxOpen = true;
+    document.body.style.overflow = 'hidden';
+  },
+  closeVideoLightbox() {
+    this.videoLightboxOpen = false;
+    document.body.style.overflow = '';
+    const v = document.getElementById('lightboxVideo');
+    if (v) {
+      v.pause();
+      v.currentTime = 0;
+      v.muted = true;
+    }
+  },
+  prevVideo() {
+    if (this.project.videos && this.project.videos.length > 0) {
+      this.videoLightboxIndex = (this.videoLightboxIndex - 1 + this.project.videos.length) % this.project.videos.length;
+    }
+  },
+  nextVideo() {
+    if (this.project.videos && this.project.videos.length > 0) {
+      this.videoLightboxIndex = (this.videoLightboxIndex + 1) % this.project.videos.length;
+    }
+  },
+  shareProject() {
+    if (navigator.share) {
+      navigator.share({
+        title: this.project.title,
+        text: `Check out ${this.project.title} by Adersh c.s`,
+        url: window.location.href
+      }).catch(() => {
+        this.copyToClipboard();
+      });
+    } else {
+      this.copyToClipboard();
+    }
+  },
+  copyToClipboard() {
+    const url = window.location.href;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(url).then(() => {
+        this.showNotification('Link copied to clipboard!');
+      }).catch(() => {
+        this.fallbackCopy(url);
+      });
+    } else {
+      this.fallbackCopy(url);
+    }
+  },
+  fallbackCopy(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+      document.execCommand('copy');
+      this.showNotification('Link copied to clipboard!');
+    } catch (err) {
+      this.showNotification('Could not copy link. Please copy manually.');
+    }
+    document.body.removeChild(textarea);
+  },
+  showNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-accent text-white px-6 py-3 rounded-xl shadow-2xl z-50 animate-fade-in-up';
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    setTimeout(() => {
+      notification.style.opacity = '0';
+      notification.style.transform = 'translateX(-50%) translateY(20px)';
+      setTimeout(() => document.body.removeChild(notification), 300);
+    }, 3000);
+  },
+  getToolIcon(tool) {
+    const icons = {
+      'Illustrator': '🎨',
+      'Photoshop': '🖼️',
+      'InDesign': '📐',
+      'Figma': '✏️',
+      'Procreate': '🖌️'
+    };
+    for (const [key, icon] of Object.entries(icons)) {
+      if (tool.includes(key)) return icon;
+    }
+    return '🛠️';
+  },
+  handleImageError(id) {
+    this.imageErrors[id] = true;
+  },
+  trackEvent(action, category, label) {
+    console.log(`[Analytics] ${action} - ${category} - ${label}`);
+  }
+}" :class="{'dark':dark}" x-init="
+  $watch('dark', v => localStorage.setItem('theme', v ? 'dark' : 'light'));
+  window.addEventListener('scroll', () => {
+    scrolled = window.scrollY > 20;
+    progress = Math.min(100, Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100));
+  }, { passive: true });
+" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="description" content="KOKO brand identity case study by Adersh c.s. Complete branding project including logo, packaging, and guidelines." />
+    <meta name="author" content="Adersh c.s" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#FF6B2B" />
+
+    <meta property="og:title" content="KOKO — Brand Identity | Adersh c.s" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://adershcs.github.io/your-page-url/" />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1590736704728-f4730bb30770?w=1200&q=80" />
+    <meta property="og:description" content="A complete branding project for KOKO coconut water, including logo design, packaging, and comprehensive brand guidelines." />
+    <meta property="og:site_name" content="Adersh c.s Portfolio" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="KOKO — Brand Identity | Adersh c.s" />
+    <meta name="twitter:description" content="A complete branding project for KOKO coconut water, including logo design, packaging, and comprehensive brand guidelines." />
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1590736704728-f4730bb30770?w=1200&q=80" />
+ <!-- ═══ FAVICON ═══ -->
+ <link rel="icon" href="images/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+
+<!-- ↓ This one is NOT a favicon — it's for iOS home screen only -->
+<link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+
+<link rel="icon" type="image/png" sizes="192x192" href="images/android-chrome-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="images/android-chrome-512x512.png">
+<link rel="manifest" href="images/site.webmanifest">
+<meta name="theme-color" content="#ffffff">
+    <title>KOKO — Brand Identity Project | Adersh c.s</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DynaPuff:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Playfair Display', 'serif'],
+                        cochon: ['"DynaPuff"', 'system-ui', 'cursive']
+                    },
+                    colors: {
+                        accent: '#FF6B2B',
+                        'accent-light': '#FF8F5C',
+                        'accent-dark': '#E0551A',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color .3s, color .3s;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .skip-link {
+            position: absolute;
+            top: -100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #FF6B2B;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0 0 0.5rem 0.5rem;
+            z-index: 10000;
+            font-weight: 600;
+            transition: top 0.2s ease;
+        }
+        .skip-link:focus { top: 0; }
+
+        .cursor-dot {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: #FF6B2B;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.2s;
+            will-change: transform;
+            mix-blend-mode: difference;
+        }
+        .cursor-ring {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 1.5px solid rgba(255, 107, 43, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, border-color 0.3s, background 0.3s;
+            will-change: transform;
+        }
+        .cursor-ring.hover { width: 64px; height: 64px; border-color: rgba(255, 107, 43, 0.9); background: rgba(255, 107, 43, 0.08); }
+        .cursor-ring.click { width: 28px; height: 28px; border-color: #FF6B2B; background: rgba(255, 107, 43, 0.2); }
+        .cursor-dot.hover { width: 12px; height: 12px; background: #FF8F5C; }
+
+        @media (hover: none) and (pointer: coarse) {
+            .cursor-dot, .cursor-ring { display: none !important; }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #FF6B2B; border-radius: 99px; }
+
+        [x-cloak] { display: none !important; }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity .7s cubic-bezier(.22, 1, .36, 1), transform .7s cubic-bezier(.22, 1, .36, 1);
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .d1 { transition-delay: .05s; }
+        .d2 { transition-delay: .12s; }
+        .d3 { transition-delay: .19s; }
+        .d4 { transition-delay: .26s; }
+        .d5 { transition-delay: .33s; }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .glass {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .nav-link {
+            position: relative;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #FF4D1C 0%, #FF8C42 50%, #FFB347 100%);
+            transition: width .3s cubic-bezier(.22, 1, .36, 1);
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        .nav-link.active { color: #FF4D1C !important; }
+        .dark .nav-link.active { color: #FF6B3D !important; }
+
+        .shimmer { position: relative; overflow: hidden; }
+        .shimmer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 60%;
+            height: 100%;
+            background: rgba(255, 255, 255, .25);
+            transform: skewX(-20deg);
+            transition: left .5s cubic-bezier(.22, 1, .36, 1);
+        }
+        .shimmer:hover::after { left: 160%; }
+
+        .photo-frame {
+            overflow: hidden;
+            background: #e4e4e7;
+            transition: background-color 0.3s;
+        }
+        .dark .photo-frame { background: #27272a; }
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform .5s cubic-bezier(.22, 1, .36, 1);
+        }
+        .photo-frame:hover img { transform: scale(1.03); }
+
+        .lightbox-overlay { background: rgba(0,0,0,0.92); backdrop-filter: blur(12px); }
+        .lightbox-btn {
+            transition: all .2s ease;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer !important;
+        }
+        .lightbox-btn:hover { background: rgba(255,255,255,0.16); color: white; }
+
+        .lightbox-image-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            max-width: 90vw;
+            max-height: 85vh;
+            padding: 1rem;
+        }
+        .lightbox-image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 0.75rem;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+            background: transparent;
+        }
+
+        .lightbox-video-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            max-width: 90vw;
+            max-height: 85vh;
+            padding: 1rem;
+        }
+        .lightbox-video-container video {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            border-radius: 0.75rem;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+            background: #000;
+        }
+
+        .gradient-text-hover {
+            background: linear-gradient(135deg, #FF6B2B 0%, #FF8F5C 50%, #FF6B2B 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease-in-out infinite;
+            transition: all 0.4s ease;
+        }
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        .gradient-text-hover:hover { background-size: 300% 300%; animation-duration: 1.5s; }
+
+        .gallery-item {
+            cursor: pointer !important;
+            position: relative;
+            overflow: hidden;
+            border-radius: 1rem;
+        }
+        .gallery-item::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255,107,43,0.15);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        .gallery-item:hover::after { opacity: 1; }
+
+        .lightbox-close-btn { cursor: pointer !important; transition: all 0.2s ease; }
+        .lightbox-close-btn:hover { color: white !important; transform: rotate(90deg); }
+
+        .tab-btn {
+            cursor: pointer !important;
+            transition: all 0.25s ease;
+            padding: 0.6rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+            border: 2px solid transparent;
+            background: transparent;
+            color: #71717a;
+        }
+        .tab-btn:hover { color: #18181b; background: #f4f4f5; }
+        .dark .tab-btn:hover { color: #fafafa; background: #27272a; }
+        .tab-btn.active { background: #FF6B2B; color: white; border-color: #FF6B2B; }
+        .dark .tab-btn.active { background: #FF8F5C; border-color: #FF8F5C; color: #0a0a0a; }
+
+        .process-card {
+            transition: all 0.3s ease;
+            cursor: default !important;
+        }
+        .process-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(255, 107, 43, 0.1);
+        }
+        .dark .process-card:hover {
+            box-shadow: 0 8px 24px rgba(255, 107, 43, 0.15);
+        }
+
+        .fab {
+            transition: all 0.3s cubic-bezier(.22, 1, .36, 1);
+        }
+        .fab:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 24px rgba(255, 107, 43, 0.25);
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.5rem;
+            top: 0.5rem;
+            bottom: 0.5rem;
+            width: 2px;
+            background: rgba(255, 107, 43, 0.25);
+            border-radius: 99px;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: -0.75rem;
+            top: 1.25rem;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            border: 2.5px solid #FF6B2B;
+            background: white;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .dark .timeline-dot { background: #0a0a0a; }
+        .process-card:hover .timeline-dot { background: #FF6B2B; transform: scale(1.15); }
+        .timeline-dot span {
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: #FF6B2B;
+            transition: color 0.3s ease;
+        }
+        .process-card:hover .timeline-dot span { color: white; }
+
+        .color-swatch {
+            transition: all 0.3s ease;
+        }
+        .color-swatch:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .gallery-item .zoom-overlay {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .gallery-item:hover .zoom-overlay { opacity: 1; }
+
+        .carousel-item {
+            flex: 0 0 100%;
+            max-width: 100%;
+            padding: 0 0.75rem;
+        }
+        @media (min-width: 640px) {
+            .carousel-item {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+        }
+        @media (min-width: 1024px) {
+            .carousel-item {
+                flex: 0 0 33.333%;
+                max-width: 33.333%;
+            }
+        }
+
+        .carousel-btn {
+            cursor: pointer !important;
+            transition: all 0.2s ease;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        .carousel-btn:hover {
+            background: rgba(255, 107, 43, 0.2);
+            border-color: #FF6B2B;
+            color: white;
+        }
+        .dark .carousel-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+        .dark .carousel-btn:hover {
+            background: rgba(255, 107, 43, 0.25);
+            border-color: #FF8F5C;
+        }
+
+        .carousel-card {
+            transition: all 0.4s ease;
+        }
+        .carousel-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 40px rgba(255, 107, 43, 0.12);
+        }
+        .dark .carousel-card:hover {
+            box-shadow: 0 12px 40px rgba(255, 107, 43, 0.18);
+        }
+
+        .pagination-link {
+            cursor: pointer !important;
+            transition: all 0.2s ease;
+            width: 2.25rem;
+            height: 2.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            border: 1px solid #e4e4e7;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #52525b;
+            background: transparent;
+        }
+        .dark .pagination-link {
+            border-color: #27272a;
+            color: #a1a1aa;
+        }
+        .pagination-link:hover {
+            border-color: #FF6B2B;
+            color: #FF6B2B;
+        }
+        .dark .pagination-link:hover {
+            border-color: #FF8F5C;
+            color: #FF8F5C;
+        }
+        .pagination-link.active-page {
+            background: #FF6B2B !important;
+            color: white !important;
+            border-color: #FF6B2B !important;
+        }
+        .dark .pagination-link.active-page {
+            background: #FF8F5C !important;
+            border-color: #FF8F5C !important;
+            color: #0a0a0a !important;
+        }
+
+        .pagination-ellipsis {
+            color: #a1a1aa;
+            font-size: 0.875rem;
+            padding: 0 0.25rem;
+        }
+        .dark .pagination-ellipsis { color: #52525b; }
+
+        .app-card {
+            transition: all 0.3s ease;
+            background: white;
+        }
+        .dark .app-card { background: #1a1a1a; }
+        .app-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(255, 107, 43, 0.08);
+        }
+
+        .logo-variant-card {
+            transition: all 0.3s ease;
+        }
+        .logo-variant-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(255, 107, 43, 0.1);
+        }
+
+        .metric-card {
+            transition: all 0.3s ease;
+        }
+        .metric-card:hover {
+            transform: translateY(-2px);
+            border-color: #FF6B2B;
+        }
+
+        a, button, .gallery-item, .photo-frame, .tab-btn, .pagination-link, .carousel-btn, .fab, .logo-variant-card, .app-card {
+            cursor: pointer !important;
+        }
+
+        :focus-visible {
+            outline: 2px solid #FF6B2B;
+            outline-offset: 2px;
+            border-radius: 0.25rem;
+        }
+
+        @media (max-width: 480px) {
+            .tab-btn {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.9rem;
+            }
+            .pagination-link {
+                width: 2rem !important;
+                height: 2rem !important;
+                font-size: 0.7rem !important;
+            }
+            .lightbox-image-container,
+            .lightbox-video-container {
+                max-width: 98vw;
+                max-height: 80vh;
+                padding: 0.5rem;
+            }
+        }
+
+        @media print {
+            .cursor-dot, .cursor-ring, .progress-bar, .fab, .fixed, .sticky, .shimmer,
+            .scroll-indicator, .carousel-btn, .pagination-link {
+                display: none !important;
+            }
+            .dark\:bg-\[\#0a0a0a\] { background: white !important; }
+            body { background: white !important; color: black !important; }
+            .photo-frame img { break-inside: avoid; max-height: 400px; }
+            .tab-btn {
+                border: 1px solid #ddd !important;
+                background: white !important;
+                color: black !important;
+            }
+            .tab-btn.active {
+                background: #FF6B2B !important;
+                color: white !important;
+                border-color: #FF6B2B !important;
+            }
+            .reveal { opacity: 1 !important; transform: none !important; }
+            .gradient-text-hover {
+                background: none !important;
+                -webkit-text-fill-color: #FF6B2B !important;
+                color: #FF6B2B !important;
+                animation: none !important;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.3s ease-out forwards;
+        }
+
+        .hero-container {
+            position: relative;
+            width: 100%;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            background: #0a0a0a;
+            transition: box-shadow 0.5s ease;
+        }
+        .hero-container:hover {
+            box-shadow: 0 24px 80px rgba(255, 107, 43, 0.12);
+        }
+
+        .hero-image-wrapper {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0a0a0a;
+        }
+        @media (min-width: 768px) {
+            .hero-image-wrapper { aspect-ratio: 16/7; }
+        }
+        @media (min-width: 1024px) {
+            .hero-image-wrapper { aspect-ratio: 16/6; }
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .hero-container:hover .hero-image { transform: scale(1.05); }
+
+        .hero-shine {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.04) 40%, rgba(255, 255, 255, 0.08) 45%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.08) 55%, rgba(255, 255, 255, 0.04) 60%, transparent 65%);
+            pointer-events: none;
+            z-index: 3;
+            animation: autoShine 5s ease-in-out infinite;
+            will-change: transform, opacity;
+        }
+        @keyframes autoShine {
+            0% { transform: translateX(-150%) skewX(-10deg); opacity: 0; }
+            15% { opacity: 1; }
+            35% { transform: translateX(150%) skewX(-10deg); opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 0; transform: translateX(150%) skewX(-10deg); }
+        }
+
+        .hero-blur-glow {
+            position: absolute;
+            bottom: -60px;
+            right: -60px;
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, rgba(255, 107, 43, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 1;
+            animation: glowPulse 4s ease-in-out infinite;
+        }
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 6px 14px 6px 10px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #0a0a0a;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s cubic-bezier(.22,1,.36,1);
+            cursor: pointer;
+            z-index: 10;
+            animation: upDown 2s ease-in-out infinite;
+        }
+        .hero-badge:hover {
+            transform: scale(1.05) translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            border-color: #FF6B2B;
+        }
+        @keyframes upDown {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        .hero-badge:nth-child(2) { animation-delay: 0.5s; }
+
+        .pulse-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulseDot 1.5s ease-in-out infinite;
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
+        }
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.4); }
+        }
+
+        .hero-bottom-content {
+            position: absolute;
+            bottom: 20px;
+            left: 24px;
+            right: 24px;
+            z-index: 10;
+        }
+        @media (min-width: 640px) {
+            .hero-bottom-content {
+                bottom: 28px;
+                left: 32px;
+                right: 32px;
+            }
+        }
+
+        .hero-badge-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+        @media (min-width: 640px) {
+            .hero-badge-group { gap: 12px; }
+        }
+
+        .scroll-indicator {
+            display: flex;
+            justify-content: center;
+            margin-top: 24px;
+        }
+        @media (min-width: 640px) {
+            .scroll-indicator { margin-top: 32px; }
+        }
+
+        .scroll-indicator-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            color: #a1a1aa;
+            font-size: 10px;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            cursor: pointer;
+        }
+        .scroll-indicator-inner:hover { opacity: 1; }
+        @media (min-width: 640px) {
+            .scroll-indicator-inner {
+                font-size: 12px;
+                gap: 8px;
+            }
+        }
+
+        .scroll-indicator-label {
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 500;
+        }
+
+        .scroll-indicator-box {
+            width: 20px;
+            height: 32px;
+            border-radius: 9999px;
+            border: 2px solid #a1a1aa;
+            display: flex;
+            justify-content: center;
+            padding-top: 8px;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s ease;
+        }
+        .scroll-indicator-inner:hover .scroll-indicator-box { border-color: #FF6B2B; }
+        @media (min-width: 640px) {
+            .scroll-indicator-box {
+                width: 24px;
+                height: 40px;
+                padding-top: 10px;
+            }
+        }
+
+        .scroll-indicator-dot {
+            width: 4px;
+            height: 8px;
+            background: #FF6B2B;
+            border-radius: 9999px;
+            animation: scrollBounce 1.8s ease-in-out infinite;
+        }
+        @media (min-width: 640px) {
+            .scroll-indicator-dot {
+                width: 5px;
+                height: 10px;
+            }
+        }
+
+        @keyframes scrollBounce {
+            0%, 100% { transform: translateY(0); opacity: 1; }
+            50% { transform: translateY(8px); opacity: 0.4; }
+        }
+
+        @media (max-width: 640px) {
+            .hero-blur-glow {
+                width: 150px;
+                height: 150px;
+                bottom: -30px;
+                right: -30px;
+                filter: blur(60px);
+            }
+            .hero-badge {
+                font-size: 10px;
+                padding: 4px 10px 4px 8px;
+            }
+            .hero-bottom-content {
+                bottom: 14px;
+                left: 16px;
+                right: 16px;
+            }
+        }
+
+        .dark .hero-badge {
+            background: rgba(20, 20, 20, 0.95);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+        .dark .hero-badge:hover {
+            background: rgba(255, 107, 43, 0.2);
+            border-color: #FF8F5C;
+        }
+
+        /* ═══ VIDEO CARD ═══ */
+        .video-card {
+            transition: all 0.3s ease;
+        }
+        .video-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(255, 107, 43, 0.15);
+        }
+        .video-card video {
+            background: #000;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-[#0a0a0a] text-zinc-800 dark:text-zinc-100 antialiased">
+
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+    <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+    <!-- ═══ NAV ═══ -->
+    <header class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[96%] max-w-7xl rounded-2xl glass shadow-lg shadow-black/5 dark:shadow-black/30 transition-all duration-300" :class="scrolled ? 'py-1' : 'py-2'" role="banner">
+        <nav class="px-5 md:px-6 flex items-center justify-between h-14 md:h-14" aria-label="Main navigation">
+            <a href="index.html" class="font-bold text-xl tracking-tight flex items-center gap-1 shrink-0" aria-label="Adersh C.S Home">
+                <span class="text-zinc-900 dark:text-white">Ade</span>
+                <span class="text-accent">rsh</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-accent to-accent-light animate-pulse ml-0.5" aria-hidden="true"></span>
+            </a>
+
+            <ul class="hidden md:flex items-center gap-7 text-sm font-medium" role="list">
+                <li><a href="projects-uiux.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">UX Work</a></li>
+                <li><a href="projects-frontend.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">Frontend Work</a></li>
+                <li><a href="projects-graphic.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors active">Graphic Work</a></li>
+            </ul>
+
+            <div class="flex items-center gap-1 md:gap-2">
+                <button @click="dark=!dark" class="w-9 h-9 flex items-center justify-center rounded-full bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-white/70 dark:hover:bg-white/10 transition-colors shrink-0" :aria-label="dark ? 'Switch to light mode' : 'Switch to dark mode'">
+                    <svg x-show="!dark" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                    <svg x-show="dark" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
+                </button>
+
+                <a href="index.html#contact" class="hidden md:inline-flex items-center gap-1.5 px-5 py-2 rounded-full text-white text-sm font-semibold shadow-lg shadow-accent/30 hover:shadow-accent/50 transition-all hover:scale-105 shrink-0" style="background: linear-gradient(135deg, #FF4D1C 0%, #FF8C42 50%, #FFB347 100%);">
+                    Hire Me
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                </a>
+
+                <button @click="mobileMenu=!mobileMenu" class="md:hidden w-9 h-9 flex items-center justify-center rounded-full bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-white/70 dark:hover:bg-white/10 transition-colors" aria-label="Toggle menu">
+                    <svg x-show="!mobileMenu" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    <svg x-show="mobileMenu" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+        </nav>
+
+        <div x-show="mobileMenu" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" class="md:hidden bg-white/80 dark:bg-black/80 backdrop-blur-xl border-t border-zinc-200/30 dark:border-zinc-700/30 rounded-b-2xl overflow-hidden">
+            <ul class="flex flex-col px-6 py-6 gap-3 text-sm" role="list">
+                <li><a href="projects-uiux.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">UX Work</a></li>
+                <li><a href="projects-frontend.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Frontend Work</a></li>
+                <li><a href="projects-graphic.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Graphic Work</a></li>
+                <li class="pt-3 border-t border-zinc-200/30 dark:border-zinc-700/30">
+                    <a href="index.html#contact" @click="mobileMenu=false" class="inline-flex shimmer bg-accent text-white font-medium text-sm px-6 py-2.5 rounded-full hover:bg-accent-dark transition-colors">
+                        Hire me →
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <main id="main-content">
+
+        <!-- ═══ HERO ═══ -->
+        <section class="relative pt-24 pb-6 max-w-6xl mx-auto px-4 sm:px-6" aria-label="Project hero">
+            <nav class="flex items-center gap-2 text-sm text-zinc-400 mb-4 mt-2" aria-label="Breadcrumb">
+                <a href="projects-graphic.html" class="hover:text-accent transition-colors flex items-center gap-1.5 hover:gap-2 duration-300">Graphic Work</a>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <span class="text-zinc-600 dark:text-zinc-300 font-medium truncate max-w-[120px] sm:max-w-[200px]" x-text="project.title">KOKO — Brand Identity</span>
+            </nav>
+
+            <div class="hero-container w-full relative group">
+                <div class="hero-image-wrapper w-full rounded-2xl overflow-hidden shadow-2xl relative bg-zinc-900/5 dark:bg-zinc-800/30">
+                    <div class="relative overflow-hidden">
+                        <img :src="project.heroImage"
+                             :alt="project.title"
+                             class="hero-image w-full h-full object-cover aspect-[16/10] sm:aspect-[16/9] md:aspect-[21/9] lg:aspect-[21/8]"
+                             fetchpriority="high"
+                             @error="$el.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%221200%22 height=%22600%22%3E%3Crect width=%221200%22 height=%22600%22 fill=%22%23121212%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-family=%22sans-serif%22 font-size=%2236%22 fill=%22%23FF6B2B%22 text-anchor=%22middle%22 dy=%22.3em%22%3EBrand Identity%3C/text%3E%3C/svg%3E'" />
+                    </div>
+                    <div class="hero-gradient-overlay"></div>
+                    <div class="hero-shine"></div>
+                    <div class="hero-blur-glow"></div>
+                </div>
+
+                <div class="absolute top-4 right-4 flex flex-wrap items-center gap-2 z-20">
+                    <span class="hero-badge">
+                        <span class="pulse-dot"></span>
+                        Brand Identity
+                    </span>
+                </div>
+
+                <div class="hero-bottom-content">
+                    <div class="hero-badge-group"></div>
+                </div>
+            </div>
+
+            <div class="scroll-indicator">
+                <div class="scroll-indicator-inner" @click="window.scrollTo({top:800,behavior:'smooth'})">
+                    <span class="scroll-indicator-label">Scroll to explore</span>
+                    <div class="scroll-indicator-box">
+                        <div class="scroll-indicator-dot"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ PROJECT DETAILS ═══ -->
+        <section class="max-w-6xl mx-auto px-4 sm:px-6 pb-16">
+            <div class="grid lg:grid-cols-3 gap-6 sm:gap-10">
+
+                <div class="lg:col-span-2 space-y-8 sm:space-y-10 reveal d1">
+                    <div>
+                        <h1 class="font-bold text-2xl sm:text-4xl md:text-5xl text-zinc-900 dark:text-white mt-2 mb-4 gradient-text-hover" x-text="project.title"></h1>
+                        <p class="text-base sm:text-lg text-zinc-600 dark:text-zinc-300 leading-relaxed" x-text="project.overview"></p>
+
+                        <div class="flex flex-wrap gap-2 mt-4">
+                            <span class="text-[10px] sm:text-xs bg-accent/10 text-accent px-2 sm:px-3 py-1 rounded-full font-medium">Brand Strategy</span>
+                            <span class="text-[10px] sm:text-xs bg-accent/10 text-accent px-2 sm:px-3 py-1 rounded-full font-medium">Visual Identity</span>
+                            <span class="text-[10px] sm:text-xs bg-accent/10 text-accent px-2 sm:px-3 py-1 rounded-full font-medium">Packaging Design</span>
+                            <span class="text-[10px] sm:text-xs bg-accent/10 text-accent px-2 sm:px-3 py-1 rounded-full font-medium">Typography</span>
+                            <span class="text-[10px] sm:text-xs bg-accent/10 text-accent px-2 sm:px-3 py-1 rounded-full font-medium">Color Theory</span>
+                            <span class="text-[10px] sm:text-xs bg-accent/10 text-accent px-2 sm:px-3 py-1 rounded-full font-medium">Art Direction</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-3 sm:gap-4">
+                        <template x-for="metric in project.metrics" :key="metric.label">
+                            <div class="metric-card bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-4 sm:p-5 text-center border border-zinc-100 dark:border-zinc-800 hover:border-accent/50 hover:shadow-lg transition-all duration-300 cursor-default">
+                                <p class="text-xl sm:text-2xl md:text-3xl font-bold text-accent" x-text="metric.value"></p>
+                                <p class="text-[10px] sm:text-xs text-zinc-500 dark:text-zinc-400 mt-1" x-text="metric.label"></p>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Tabs -->
+                    <div class="flex flex-wrap gap-1 sm:gap-2 border-b border-zinc-100 dark:border-zinc-800 pb-4" role="tablist" aria-label="Project details">
+                        <button @click="activeTab='overview'" class="tab-btn text-xs sm:text-sm" :class="activeTab==='overview'?'active':''" role="tab" :aria-selected="activeTab==='overview'" aria-controls="panel-overview">Overview</button>
+                        <button @click="activeTab='process'" class="tab-btn text-xs sm:text-sm" :class="activeTab==='process'?'active':''" role="tab" :aria-selected="activeTab==='process'" aria-controls="panel-process">Design Process</button>
+                        <button @click="activeTab='moodboard'" class="tab-btn text-xs sm:text-sm" :class="activeTab==='moodboard'?'active':''" role="tab" :aria-selected="activeTab==='moodboard'" aria-controls="panel-moodboard">Moodboard</button>
+                        <button @click="activeTab='gallery'" class="tab-btn text-xs sm:text-sm" :class="activeTab==='gallery'?'active':''" role="tab" :aria-selected="activeTab==='gallery'" aria-controls="panel-gallery">Gallery</button>
+                    </div>
+
+                    <!-- OVERVIEW TAB -->
+                    <div x-show="activeTab==='overview'" id="panel-overview" role="tabpanel" class="space-y-6 sm:space-y-8">
+                        <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl p-5 sm:p-6 md:p-8 border border-zinc-100 dark:border-zinc-800 hover:border-accent/30 transition-all duration-300">
+                            <h3 class="font-semibold text-lg sm:text-xl text-zinc-900 dark:text-white mb-3 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-accent" aria-hidden="true"></span>
+                                The Challenge
+                            </h3>
+                            <p class="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed" x-text="project.challenge"></p>
+                        </div>
+                        <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl p-5 sm:p-6 md:p-8 border border-zinc-100 dark:border-zinc-800 hover:border-accent/30 transition-all duration-300">
+                            <h3 class="font-semibold text-lg sm:text-xl text-zinc-900 dark:text-white mb-3 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-accent" aria-hidden="true"></span>
+                                The Solution
+                            </h3>
+                            <p class="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed" x-text="project.solution"></p>
+                        </div>
+                    </div>
+
+                    <!-- PROCESS TAB -->
+                    <div x-show="activeTab==='process'" id="panel-process" role="tabpanel" class="space-y-4 timeline">
+                        <template x-for="(step, i) in project.process" :key="step.phase">
+                            <div class="process-card relative bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl p-5 sm:p-6 md:p-8 border border-zinc-100 dark:border-zinc-800 ml-4 group hover:border-accent/50 transition-all duration-300">
+                                <div class="timeline-dot" aria-hidden="true">
+                                    <span x-text="i+1"></span>
+                                </div>
+                                <div class="flex flex-wrap items-start gap-3 sm:gap-4">
+                                    <div class="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-accent/10 text-accent flex items-center justify-center font-bold text-xs sm:text-sm group-hover:bg-accent group-hover:text-white transition-all duration-300" x-text="i+1"></div>
+                                    <div class="flex-1 min-w-[140px] sm:min-w-[180px]">
+                                        <div class="flex flex-wrap items-center justify-between gap-2">
+                                            <h4 class="font-semibold text-sm sm:text-base text-zinc-900 dark:text-white group-hover:text-accent transition-colors" x-text="step.phase"></h4>
+                                            <span class="text-[10px] sm:text-xs text-zinc-400 flex items-center gap-1 bg-white dark:bg-zinc-800 px-2 py-1 rounded-full border border-zinc-200 dark:border-zinc-700">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                <span x-text="step.duration"></span>
+                                            </span>
+                                        </div>
+                                        <p class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mt-2" x-text="step.description"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- ═══ MOODBOARD TAB ═══ -->
+                    <div x-show="activeTab==='moodboard'" id="panel-moodboard" role="tabpanel" class="space-y-6 sm:space-y-8">
+
+                        <div class="text-center py-6 sm:py-8">
+                            <span class="inline-block px-4 py-1.5 bg-accent/10 text-accent text-[10px] font-bold tracking-[0.25em] uppercase rounded-full mb-4 border border-accent/20">
+                                Brand Moodboard
+                            </span>
+                            <h3 class="font-bold text-3xl sm:text-4xl md:text-5xl text-zinc-900 dark:text-white leading-[1.1] tracking-tight">
+                                Visual Research &amp;<br class="hidden sm:block"> Design System
+                            </h3>
+                            <p class="text-sm sm:text-base text-zinc-500 dark:text-zinc-400 mt-4 max-w-xl mx-auto">
+                                From inspiration to execution — the complete brand journey.
+                            </p>
+                            <div class="flex justify-center mt-6">
+                                <div class="w-16 h-1 bg-accent rounded-full"></div>
+                            </div>
+
+                            <div class="flex flex-wrap justify-center gap-2 mt-6">
+                                <template x-for="word in project.moodAdjectives" :key="word">
+                                    <span class="text-xs sm:text-sm font-medium text-accent bg-accent/10 px-3 sm:px-4 py-1.5 rounded-full border border-accent/20 hover:bg-accent hover:text-white transition-all duration-300 cursor-default" x-text="word"></span>
+                                </template>
+                            </div>
+                        </div>
+
+                        <div class="bg-zinc-50 dark:bg-zinc-900/40 rounded-2xl p-5 sm:p-8 md:p-10 border border-zinc-200 dark:border-zinc-700/50">
+                            <div class="grid md:grid-cols-12 gap-6 md:gap-10">
+                                <div class="md:col-span-4">
+                                    <p class="text-[10px] font-bold text-accent uppercase tracking-[0.2em] mb-3">01 — Strategy</p>
+                                    <h4 class="font-bold text-2xl sm:text-3xl text-zinc-900 dark:text-white leading-tight">
+                                        The thinking<br>behind the visuals
+                                    </h4>
+                                    <div class="w-12 h-1 bg-accent rounded-full mt-4"></div>
+                                </div>
+                                <div class="md:col-span-8 space-y-5">
+                                    <div>
+                                        <p class="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">Positioning</p>
+                                        <p class="text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed" x-text="project.strategy.positioning"></p>
+                                    </div>
+                                    <div class="grid sm:grid-cols-2 gap-5">
+                                        <div>
+                                            <p class="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">Audience</p>
+                                            <p class="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed" x-text="project.strategy.audience"></p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">Tone of Voice</p>
+                                            <p class="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed" x-text="project.strategy.tone"></p>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider mb-2">Brand Pillars</p>
+                                        <div class="flex flex-wrap gap-2">
+                                            <template x-for="pillar in project.strategy.pillars" :key="pillar">
+                                                <span class="text-xs bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-3 py-1.5 rounded-full hover:border-accent/50 transition-colors" x-text="pillar"></span>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex items-end justify-between mb-4 px-1">
+                                <div>
+                                    <p class="text-[10px] font-bold text-accent uppercase tracking-[0.2em] mb-1">02 — Inspiration</p>
+                                    <h4 class="font-bold text-xl sm:text-2xl text-zinc-900 dark:text-white">Visual references</h4>
+                                </div>
+                                <p class="text-xs text-zinc-400 hidden sm:block">Click to enlarge</p>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 sm:gap-4">
+                                <template x-for="(img, i) in project.moodboard" :key="i">
+                                    <div class="photo-frame aspect-square rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 hover:border-accent/50 transition-all duration-500 cursor-pointer group relative"
+                                         @click="galleryImages = project.moodboard; lightboxIndex = i; lightboxOpen = true; document.body.style.overflow = 'hidden';"
+                                         role="button"
+                                         :aria-label="'View inspiration image ' + (i+1)"
+                                         tabindex="0"
+                                         @keydown.enter="galleryImages = project.moodboard; lightboxIndex = i; lightboxOpen = true; document.body.style.overflow = 'hidden';">
+                                        <img :src="img" :alt="'Inspiration ' + (i+1)" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <div class="bg-zinc-50 dark:bg-zinc-900/40 rounded-2xl p-5 sm:p-8 border border-zinc-200 dark:border-zinc-700/50">
+                            <div class="mb-6">
+                                <p class="text-[10px] font-bold text-accent uppercase tracking-[0.2em] mb-1">03 — Palette</p>
+                                <h4 class="font-bold text-xl sm:text-2xl text-zinc-900 dark:text-white">Color System</h4>
+                                <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-1">Warm, natural tones inspired by botanical elements.</p>
+                            </div>
+
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+                                <template x-for="color in project.colors" :key="color.hex">
+                                    <div class="group">
+                                        <div class="aspect-[4/5] rounded-xl border border-zinc-200 dark:border-zinc-700 transition-all duration-300 hover:scale-[1.04] hover:shadow-xl hover:border-accent/40 relative overflow-hidden"
+                                             :style="`background: ${color.hex};`">
+                                            <div class="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                                <p class="text-white text-[10px] font-semibold" x-text="color.realName"></p>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2.5">
+                                            <p class="text-xs font-semibold text-zinc-800 dark:text-zinc-200" x-text="color.name"></p>
+                                            <p class="text-[10px] font-mono text-zinc-400" x-text="color.hex"></p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <div class="bg-zinc-50 dark:bg-zinc-900/40 rounded-2xl p-5 sm:p-8 border border-zinc-200 dark:border-zinc-700/50">
+                            <div class="mb-8">
+                                <p class="text-[10px] font-bold text-accent uppercase tracking-[0.2em] mb-1">04 — Typography</p>
+                                <h4 class="font-bold text-xl sm:text-2xl text-zinc-900 dark:text-white">Type System</h4>
+                                <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-1">Inter for UI · DynaPuff for display accents.</p>
+                            </div>
+
+                            <div class="space-y-8">
+                                <div class="grid md:grid-cols-12 gap-4 items-baseline">
+                                    <div class="md:col-span-3">
+                                        <p class="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">Heading</p>
+                                        <p class="text-[10px] text-zinc-400">Inter Bold</p>
+                                    </div>
+                                    <div class="md:col-span-9">
+                                        <p class="font-bold text-3xl sm:text-4xl md:text-5xl text-zinc-900 dark:text-white leading-[1.05] tracking-tight">
+                                            Straight from Nature
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="grid md:grid-cols-12 gap-4 pt-6 border-t border-zinc-200 dark:border-zinc-700">
+                                    <div class="md:col-span-3">
+                                        <p class="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">Body</p>
+                                        <p class="text-[10px] text-zinc-400">Inter Regular</p>
+                                    </div>
+                                    <div class="md:col-span-9">
+                                        <p class="text-base sm:text-lg text-zinc-600 dark:text-zinc-300 leading-relaxed max-w-2xl">
+                                            Pure, clean hydration packed with natural electrolytes and essential minerals — no added sugar, no preservatives.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="grid md:grid-cols-12 gap-4 pt-6 border-t border-zinc-200 dark:border-zinc-700 items-center">
+                                    <div class="md:col-span-3">
+                                        <p class="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">Accent</p>
+                                        <p class="text-[10px] text-zinc-400">DynaPuff Bold</p>
+                                    </div>
+                                    <div class="md:col-span-9">
+                                        <p class="text-4xl sm:text-5xl md:text-6xl gradient-text-hover inline-block leading-none"
+                                           style="font-family: 'DynaPuff', system-ui, cursive; font-weight: 700;">
+                                            #DrinkKoko
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-700">
+                                <p class="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider mb-4">Type Scale</p>
+                                <div class="space-y-3">
+                                    <template x-for="item in project.typography.scale" :key="item.label">
+                                        <div class="flex items-baseline gap-4 text-sm">
+                                            <span class="w-16 text-[10px] font-mono text-zinc-400 flex-shrink-0" x-text="item.label"></span>
+                                            <span class="w-16 text-[10px] font-mono text-zinc-400 flex-shrink-0" x-text="item.size"></span>
+                                            <span class="text-zinc-700 dark:text-zinc-300" :style="`font-size: ${item.size}; font-weight: ${item.weight}; line-height: 1;`">Aa</span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="mb-4 px-1">
+                                <p class="text-[10px] font-bold text-accent uppercase tracking-[0.2em] mb-1">05 — Logomarks</p>
+                                <h4 class="font-bold text-xl sm:text-2xl text-zinc-900 dark:text-white">Logo Variations</h4>
+                                <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-1">Adaptable logo system for different contexts.</p>
+                            </div>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+                                <template x-for="(variant, index) in project.logoVariants" :key="variant.name">
+                                    <div class="rounded-2xl p-3 border border-zinc-200 dark:border-zinc-700 text-center hover:border-accent/50 hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 cursor-pointer group"
+                                         :class="variant.bg"
+                                         @click="openLogoLightbox(index)"
+                                         role="button"
+                                         :aria-label="'View ' + variant.name + ' logo'"
+                                         tabindex="0"
+                                         @keydown.enter="openLogoLightbox(index)">
+                                        <div class="aspect-square flex items-center justify-center overflow-hidden">
+                                            <img :src="variant.image" :alt="variant.name + ' Logo'" class="w-full h-full object-contain p-2 transition-transform duration-300 group-hover:scale-105" loading="lazy" />
+                                        </div>
+                                        <p class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 mt-2" x-text="variant.name"></p>
+                                        <p class="text-[10px] text-zinc-400" x-text="variant.description"></p>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="mb-4 px-1">
+                                <p class="text-[10px] font-bold text-accent uppercase tracking-[0.2em] mb-1">06 — In the Wild</p>
+                                <h4 class="font-bold text-xl sm:text-2xl text-zinc-900 dark:text-white">Brand Applications</h4>
+                                <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-1">How the identity comes to life across touchpoints.</p>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+                                <template x-for="(app, index) in project.appImages" :key="index">
+                                    <div class="rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-700 hover:border-accent/50 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1.5 cursor-pointer group"
+                                         @click="openAppLightbox(index)"
+                                         role="button"
+                                         :aria-label="'View ' + app.title"
+                                         tabindex="0"
+                                         @keydown.enter="openAppLightbox(index)">
+                                        <div class="photo-frame aspect-square relative">
+                                            <img :src="app.image" :alt="app.title" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+                                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                                            <div class="absolute bottom-2 left-2">
+                                                <span class="text-white text-[9px] font-semibold bg-black/60 backdrop-blur-sm px-2.5 py-0.5 rounded-full" x-text="app.tag"></span>
+                                            </div>
+                                            <div class="absolute inset-0 bg-accent/30 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                                <div class="bg-white/90 dark:bg-zinc-800/90 backdrop-blur-sm rounded-lg px-4 py-2 shadow-xl transform scale-90 group-hover:scale-100 transition-transform duration-300">
+                                                    <span class="text-[10px] font-bold text-accent tracking-wider">PREVIEW</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="p-3 bg-white dark:bg-zinc-800">
+                                            <p class="text-xs font-semibold text-zinc-800 dark:text-zinc-200 truncate" x-text="app.title"></p>
+                                            <p class="text-[10px] text-zinc-400 truncate" x-text="app.subtitle"></p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- ═══ END MOODBOARD TAB ═══ -->
+
+                    <!-- ═══ GALLERY TAB ═══ -->
+                    <div x-show="activeTab==='gallery'" id="panel-gallery" role="tabpanel" class="space-y-8">
+
+                        <!-- ─── Video Section ─── -->
+                        <div x-show="project.videos && project.videos.length > 0">
+                            <div class="mb-4 px-1">
+                                <p class="text-[10px] font-bold text-accent uppercase tracking-[0.2em] mb-1">Video Showcase</p>
+                                <h4 class="font-bold text-xl sm:text-2xl text-zinc-900 dark:text-white">Motion &amp; Animation</h4>
+                                <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-1">Brand films, motion graphics, and animated content.</p>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                                <template x-for="(video, vi) in project.videos" :key="vi">
+                                    <div class="video-card rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-700 hover:border-accent/50 group bg-black"
+                                         @click="openVideoLightbox(vi)"
+                                         role="button"
+                                         :aria-label="'Play ' + video.title"
+                                         tabindex="0"
+                                         @keydown.enter="openVideoLightbox(vi)">
+                                        <div class="relative aspect-video bg-black cursor-pointer">
+                                            <video
+                                                class="w-full h-full object-cover pointer-events-none"
+                                                :src="video.src"
+                                                :poster="video.poster || ''"
+                                                preload="none"
+                                                muted
+                                                playsinline
+                                                autoplay="false"
+                                                x-ref="previewVideo"
+                                                @loadedmetadata="$el.pause(); $el.currentTime = 0;"
+                                                @play="$el.pause()">
+                                            </video>
+                                            <div class="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors duration-300 flex items-center justify-center">
+                                                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/90 dark:bg-zinc-800/90 backdrop-blur-sm flex items-center justify-center shadow-2xl transform group-hover:scale-110 transition-transform duration-300">
+                                                    <svg class="w-6 h-6 sm:w-7 sm:h-7 text-accent ml-1" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                                        <path d="M8 5v14l11-7z"/>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="p-4 bg-white dark:bg-zinc-800">
+                                            <div class="flex items-center justify-between gap-3">
+                                                <div class="min-w-0">
+                                                    <p class="text-sm font-semibold text-zinc-800 dark:text-zinc-200 truncate" x-text="video.title"></p>
+                                                    <p class="text-[10px] text-zinc-400 truncate" x-text="video.subtitle"></p>
+                                                </div>
+                                                <span class="text-[10px] font-medium text-accent bg-accent/10 px-2.5 py-1 rounded-full whitespace-nowrap" x-text="video.tag || 'Video'"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- ─── Image Gallery ─── -->
+                        <div>
+                            <div class="mb-4 px-1">
+                                <p class="text-[10px] font-bold text-accent uppercase tracking-[0.2em] mb-1">Image Gallery</p>
+                                <h4 class="font-bold text-xl sm:text-2xl text-zinc-900 dark:text-white">Visual Assets</h4>
+                            </div>
+
+                            <div class="columns-2 md:columns-3 gap-4 space-y-4">
+                                <template x-for="(img, i) in project.gallery" :key="i">
+                                    <div class="gallery-item photo-frame relative break-inside-avoid rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 hover:border-accent/50 transition-all duration-300 cursor-pointer group"
+                                         :class="{'aspect-[3/4]': i%3===0, 'aspect-[4/3]': i%3===1, 'aspect-[5/4]': i%3===2}"
+                                         @click="openLightbox(i)"
+                                         role="button"
+                                         :aria-label="'View gallery image ' + (i+1)"
+                                         tabindex="0"
+                                         @keydown.enter="openLightbox(i)">
+                                        <img :src="img"
+                                             :alt="'Gallery image ' + (i+1)"
+                                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                             loading="lazy"
+                                             decoding="async" />
+                                        <div class="zoom-overlay absolute inset-0 bg-accent/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
+                                            <div class="bg-white/90 dark:bg-zinc-800/90 backdrop-blur-sm rounded-full p-3 transform scale-75 group-hover:scale-100 transition-transform duration-300 shadow-lg">
+                                                <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- ═══ END GALLERY TAB ═══ -->
+                </div>
+
+                <!-- SIDEBAR -->
+                <div class="lg:col-span-1 reveal d2">
+                    <div class="sticky top-28 space-y-6 sm:space-y-8 bg-zinc-50 dark:bg-zinc-900/60 rounded-2xl p-4 sm:p-6 border border-zinc-100 dark:border-zinc-800">
+                        <div>
+                            <h4 class="text-[10px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Client</h4>
+                            <p class="font-medium text-sm sm:text-base text-zinc-900 dark:text-white" x-text="project.client"></p>
+                        </div>
+                        <div>
+                            <h4 class="text-[10px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Year</h4>
+                            <p class="font-medium text-sm sm:text-base text-zinc-900 dark:text-white" x-text="project.year"></p>
+                        </div>
+                        <div>
+                            <h4 class="text-[10px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Role</h4>
+                            <p class="font-medium text-sm sm:text-base text-zinc-900 dark:text-white" x-text="project.role"></p>
+                        </div>
+                        <div>
+                            <h4 class="text-[10px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">Deliverables</h4>
+                            <ul class="space-y-1.5" role="list">
+                                <template x-for="item in project.deliverables" :key="item">
+                                    <li class="flex items-center gap-2 text-xs sm:text-sm text-zinc-700 dark:text-zinc-300">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0" aria-hidden="true"></span>
+                                        <span x-text="item"></span>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-[10px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">Tools Used</h4>
+                            <div class="flex flex-wrap gap-1.5 sm:gap-2">
+                                <template x-for="tool in project.tools" :key="tool">
+                                    <span class="flex items-center gap-1 text-[10px] sm:text-xs bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 px-2 sm:px-3 py-1 rounded-full hover:border-accent/50 hover:bg-accent/5 transition-all duration-300">
+                                        <span x-text="getToolIcon(tool)"></span>
+                                        <span x-text="tool"></span>
+                                    </span>
+                                </template>
+                            </div>
+                        </div>
+                        <div class="pt-4 border-t border-zinc-200 dark:border-zinc-700">
+                            <a href="#" class="flex items-center justify-center gap-2 shimmer bg-accent text-white font-medium px-4 sm:px-6 py-2.5 sm:py-3 rounded-full hover:bg-accent-light hover:scale-105 transition-all duration-300 text-xs sm:text-sm w-full shadow-lg shadow-accent/20 hover:shadow-accent/40" aria-label="Download Brand Guidelines PDF (coming soon)">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                Download Brand Guidelines (PDF)
+                            </a>
+                            <p class="text-[8px] text-zinc-400 text-center mt-2">Coming soon</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ═══ CAROUSEL ═══ -->
+        <section class="py-10 sm:py-16 bg-zinc-50/60 dark:bg-zinc-900/30 border-y border-zinc-100 dark:border-zinc-800 reveal d4">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6">
+                <div class="flex items-center justify-between mb-6 sm:mb-10">
+                    <div>
+                        <span class="text-[10px] sm:text-xs font-semibold text-accent tracking-widest uppercase">Explore More</span>
+                        <h2 class="font-bold text-xl sm:text-2xl md:text-3xl text-zinc-900 dark:text-white mt-1">More Projects</h2>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button @click="prevSlide(); trackEvent('carousel', 'prev', currentPage)" class="carousel-btn" aria-label="Previous projects">
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                        </button>
+                        <button @click="nextSlide(); trackEvent('carousel', 'next', currentPage)" class="carousel-btn" aria-label="Next projects">
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="overflow-hidden rounded-2xl carousel-container" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
+                    <div class="flex transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                         :style="`transform: translateX(-${carouselIndex * (100 / 3)}%);`">
+                        <template x-for="(item, idx) in carouselItems" :key="item.id">
+                            <div class="carousel-item flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 px-2 sm:px-3">
+                                <div class="carousel-card bg-white dark:bg-zinc-900/80 rounded-xl sm:rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 hover:border-accent/50 hover:shadow-xl transition-all duration-500 h-full flex flex-col group">
+                                    <div class="photo-frame aspect-[16/10] relative">
+                                        <img :src="item.image" :alt="item.title" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" decoding="async" />
+                                    </div>
+                                    <div class="p-4 sm:p-5 flex flex-col flex-1">
+                                        <div class="flex items-center gap-2 mb-2 flex-wrap">
+                                            <span class="text-[10px] font-medium text-accent bg-accent/10 px-2 py-0.5 rounded-full" x-text="item.category"></span>
+                                        </div>
+                                        <h3 class="font-bold text-sm sm:text-lg text-zinc-900 dark:text-white mb-1.5 leading-tight" x-text="item.title"></h3>
+                                        <p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed flex-1" x-text="item.description"></p>
+                                        <a :href="item.link" class="mt-3 sm:mt-4 inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-accent hover:gap-3 transition-all self-start" :aria-label="'View case study for ' + item.title">View case study →</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <nav class="flex items-center justify-center gap-1 sm:gap-2 mt-6 sm:mt-8" aria-label="Carousel pagination">
+                    <template x-if="totalPages > 1">
+                        <button @click="prevSlide(); trackEvent('pagination', 'prev', currentPage)" class="pagination-link" aria-label="Previous page">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                        </button>
+                    </template>
+                    <template x-if="totalPages > 1">
+                        <template x-for="page in paginationPages" :key="page">
+                            <template x-if="page === -1">
+                                <span class="pagination-ellipsis" aria-hidden="true">…</span>
+                            </template>
+                            <template x-if="page !== -1">
+                                <button @click="goToPage(page); trackEvent('pagination', 'page', page)" class="pagination-link" :class="currentPage === page ? 'active-page' : ''" :aria-current="currentPage === page ? 'true' : 'false'" x-text="page" :aria-label="'Go to page ' + page"></button>
+                            </template>
+                        </template>
+                    </template>
+                    <template x-if="totalPages > 1">
+                        <button @click="nextSlide(); trackEvent('pagination', 'next', currentPage)" class="pagination-link" aria-label="Next page">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                        </button>
+                    </template>
+                </nav>
+                <p class="hidden sm:block text-center text-[10px] text-zinc-400 dark:text-zinc-500 mt-2" x-text="`Page ${currentPage} of ${totalPages}`" x-show="totalPages > 1" aria-live="polite" aria-atomic="true"></p>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="py-24">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="bg-zinc-900 dark:bg-zinc-800 rounded-3xl p-10 md:p-14 text-center relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-accent/20 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+                    <div class="absolute bottom-0 left-0 w-40 h-40 bg-accent/10 rounded-full blur-2xl pointer-events-none" aria-hidden="true"></div>
+                    <div class="relative z-10">
+                        <p class="text-xs font-semibold text-accent tracking-widest uppercase mb-4">Need a brand identity?</p>
+                        <h2 class="font-bold text-3xl md:text-4xl text-white mb-4">Let's build something<br class="sm:hidden"> remarkable</h2>
+                        <p class="text-zinc-400 max-w-md mx-auto mb-8">From brand strategy to packaging and guidelines — I'd love to hear about your project and help bring it to life.</p>
+                        <a href="index.html#contact" class="inline-flex items-center gap-2 shimmer bg-accent text-white font-medium px-8 py-3.5 rounded-full hover:bg-accent-light transition-colors hover:scale-105 duration-300 shadow-lg shadow-accent/20 hover:shadow-accent/40" aria-label="Start a project with Adersh">
+                            Start a project →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- LOGO LIGHTBOX -->
+    <div x-show="logoLightboxOpen" x-cloak class="fixed inset-0 z-[999] flex items-center justify-center p-4 lightbox-overlay" @click.self="closeLogoLightbox()">
+        <button @click="closeLogoLightbox()" class="absolute top-4 right-4 sm:top-6 sm:right-6 text-white/60 hover:text-white transition-colors text-2xl sm:text-3xl lightbox-close-btn z-10 bg-black/30 rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center backdrop-blur-sm" aria-label="Close lightbox">✕</button>
+        <button @click="prevLogoImage()" class="absolute left-2 sm:left-6 lightbox-btn z-10" aria-label="Previous logo" x-show="project.logoVariants.length > 1">‹</button>
+        <button @click="nextLogoImage()" class="absolute right-2 sm:right-6 lightbox-btn z-10" aria-label="Next logo" x-show="project.logoVariants.length > 1">›</button>
+        <p class="absolute bottom-4 sm:bottom-8 text-white/40 text-xs sm:text-sm z-10 bg-black/30 px-3 py-1 rounded-full backdrop-blur-sm" x-text="`${logoLightboxIndex + 1} / ${project.logoVariants.length}`" x-show="project.logoVariants.length > 1"></p>
+        <div class="lightbox-image-container">
+            <template x-if="project.logoVariants[logoLightboxIndex]">
+                <img :src="project.logoVariants[logoLightboxIndex].image" :alt="project.logoVariants[logoLightboxIndex].name + ' Logo'" class="rounded-xl shadow-2xl max-h-[80vh] max-w-[90vw] object-contain" />
+            </template>
+        </div>
+    </div>
+
+    <!-- APP LIGHTBOX -->
+    <div x-show="appLightboxOpen" x-cloak class="fixed inset-0 z-[999] flex items-center justify-center p-4 lightbox-overlay" @click.self="closeAppLightbox()">
+        <button @click="closeAppLightbox()" class="absolute top-4 right-4 sm:top-6 sm:right-6 text-white/60 hover:text-white transition-colors text-2xl sm:text-3xl lightbox-close-btn z-10 bg-black/30 rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center backdrop-blur-sm" aria-label="Close lightbox">✕</button>
+        <button @click="prevAppImage()" class="absolute left-2 sm:left-6 lightbox-btn z-10" aria-label="Previous app image" x-show="project.appImages.length > 1">‹</button>
+        <button @click="nextAppImage()" class="absolute right-2 sm:right-6 lightbox-btn z-10" aria-label="Next app image" x-show="project.appImages.length > 1">›</button>
+        <p class="absolute bottom-4 sm:bottom-8 text-white/40 text-xs sm:text-sm z-10 bg-black/30 px-3 py-1 rounded-full backdrop-blur-sm" x-text="`${appLightboxIndex + 1} / ${project.appImages.length}`" x-show="project.appImages.length > 1"></p>
+        <div class="lightbox-image-container">
+            <template x-if="project.appImages[appLightboxIndex]">
+                <img :src="project.appImages[appLightboxIndex].image" :alt="project.appImages[appLightboxIndex].title" class="rounded-xl shadow-2xl max-h-[80vh] max-w-[90vw] object-contain" />
+            </template>
+        </div>
+    </div>
+
+    <!-- VIDEO LIGHTBOX — NO AUTOPLAY ON LOAD ✅ -->
+    <div x-show="videoLightboxOpen" x-cloak class="fixed inset-0 z-[999] flex items-center justify-center p-4 lightbox-overlay" @click.self="closeVideoLightbox()">
+        <button @click="closeVideoLightbox()" class="absolute top-4 right-4 sm:top-6 sm:right-6 text-white/60 hover:text-white transition-colors text-2xl sm:text-3xl lightbox-close-btn z-10 bg-black/30 rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center backdrop-blur-sm" aria-label="Close video">✕</button>
+        <button @click="prevVideo()" class="absolute left-2 sm:left-6 lightbox-btn z-10" aria-label="Previous video" x-show="project.videos && project.videos.length > 1">‹</button>
+        <button @click="nextVideo()" class="absolute right-2 sm:right-6 lightbox-btn z-10" aria-label="Next video" x-show="project.videos && project.videos.length > 1">›</button>
+        <p class="absolute bottom-4 sm:bottom-8 text-white/40 text-xs sm:text-sm z-10 bg-black/30 px-3 py-1 rounded-full backdrop-blur-sm" x-text="`${videoLightboxIndex + 1} / ${project.videos.length}`" x-show="project.videos && project.videos.length > 1"></p>
+        <div class="lightbox-video-container">
+            <template x-if="project.videos && project.videos[videoLightboxIndex]">
+                <video
+                    id="lightboxVideo"
+                    :src="project.videos[videoLightboxIndex].src"
+                    :poster="project.videos[videoLightboxIndex].poster || ''"
+                    controls
+                    playsinline
+                    preload="none"
+                    muted
+                    class="rounded-xl shadow-2xl max-h-[80vh] max-w-[90vw] bg-black"
+                    x-effect="
+                        if (videoLightboxOpen) {
+                            $el.muted = false;
+                            $el.currentTime = 0;
+                            $el.play().catch(() => { $el.muted = true; $el.play().catch(() => {}); });
+                        } else {
+                            $el.pause();
+                            $el.currentTime = 0;
+                            $el.muted = true;
+                        }
+                    ">
+                    Your browser does not support the video tag.
+                </video>
+            </template>
+        </div>
+    </div>
+
+    <!-- IMAGE LIGHTBOX -->
+    <div x-show="lightboxOpen" x-cloak class="fixed inset-0 z-[999] flex items-center justify-center p-4 lightbox-overlay" @click.self="closeLightbox()">
+        <button @click="closeLightbox()" class="absolute top-4 right-4 sm:top-6 sm:right-6 text-white/60 hover:text-white transition-colors text-2xl sm:text-3xl lightbox-close-btn z-10 bg-black/30 rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center backdrop-blur-sm" aria-label="Close lightbox">✕</button>
+        <button @click="prevImage()" class="absolute left-2 sm:left-6 lightbox-btn z-10" aria-label="Previous image" x-show="galleryImages.length > 1">‹</button>
+        <button @click="nextImage()" class="absolute right-2 sm:right-6 lightbox-btn z-10" aria-label="Next image" x-show="galleryImages.length > 1">›</button>
+        <p class="absolute bottom-4 sm:bottom-8 text-white/40 text-xs sm:text-sm z-10 bg-black/30 px-3 py-1 rounded-full backdrop-blur-sm" x-text="`${lightboxIndex + 1} / ${galleryImages.length}`" x-show="galleryImages.length > 1"></p>
+        <div class="lightbox-image-container">
+            <template x-if="galleryImages.length > 0 && galleryImages[lightboxIndex]">
+                <img :src="galleryImages[lightboxIndex]" :alt="'Gallery image ' + (lightboxIndex + 1)" class="rounded-xl shadow-2xl max-h-[80vh] max-w-[90vw] object-contain" />
+            </template>
+        </div>
+    </div>
+
+    <!-- FLOATING ACTION BUTTONS -->
+    <div class="fixed right-6 bottom-24 z-40 flex flex-col gap-3">
+        <button @click="shareProject()" class="fab w-12 h-12 rounded-full bg-white dark:bg-zinc-800 shadow-lg border border-zinc-200 dark:border-zinc-700 hover:bg-accent hover:text-white hover:border-accent hover:scale-110 transition-all duration-300 flex items-center justify-center text-zinc-600 dark:text-zinc-300" aria-label="Share page">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+        </button>
+
+        <button @click="window.scrollTo({top:0,behavior:'smooth'})" x-show="scrolled" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90" class="relative w-12 h-12 rounded-full bg-white dark:bg-zinc-800 shadow-lg border border-zinc-200 dark:border-zinc-700 hover:bg-accent hover:text-white hover:border-accent hover:scale-110 transition-all duration-300 flex items-center justify-center text-zinc-600 dark:text-zinc-300 group" aria-label="Scroll to top">
+            <svg class="absolute inset-0 w-full h-full -rotate-90">
+                <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="2" class="text-zinc-200 dark:text-zinc-700"/>
+                <circle cx="24" cy="24" r="20" fill="none" stroke="#FF6B2B" stroke-width="2.5" :stroke-dasharray="`${progress * 125.6 / 100} 125.6`" class="transition-all duration-300"/>
+            </svg>
+            <svg class="w-5 h-5 relative z-10 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+        </button>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-zinc-100 dark:border-zinc-800 bg-white dark:bg-[#0a0a0a] transition-colors">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 text-center">
+            <p class="text-xs sm:text-sm text-zinc-400">
+                © <span id="yr"></span> . All rights reserved.
+                <br class="sm:hidden">
+                Developed by <a href="https://linkedin.com/in/adersh-c-s" target="_blank" rel="noopener noreferrer" class="font-medium hover:text-accent transition-colors">Adersh c.s</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('yr').textContent = new Date().getFullYear();
+
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+        });
+
+        const dot = document.getElementById('cursorDot');
+        const ring = document.getElementById('cursorRing');
+        let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0, dotX = 0, dotY = 0;
+        const ringEase = 0.12, dotEase = 0.18;
+
+        const onMouseMove = (e) => { mouseX = e.clientX; mouseY = e.clientY; };
+
+        const animateCursor = () => {
+            ringX += (mouseX - ringX) * ringEase;
+            ringY += (mouseY - ringY) * ringEase;
+            dotX += (mouseX - dotX) * dotEase;
+            dotY += (mouseY - dotY) * dotEase;
+            if (ring) ring.style.transform = `translate(${ringX - 20}px, ${ringY - 20}px)`;
+            if (dot) dot.style.transform = `translate(${dotX - 4}px, ${dotY - 4}px)`;
+            requestAnimationFrame(animateCursor);
+        };
+
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+        if (!isTouchDevice && dot && ring) {
+            document.addEventListener('mousemove', onMouseMove);
+            animateCursor();
+            const hoverElements = document.querySelectorAll('a, button, .nav-link, .shimmer, .photo-frame, .gallery-item, .lightbox-btn, .lightbox-close-btn, .tab-btn, .fab, .color-swatch, .carousel-btn, .pagination-link, .logo-variant-card, .app-card, .video-card');
+            hoverElements.forEach(el => {
+                el.addEventListener('mouseenter', () => { ring.classList.add('hover'); dot.classList.add('hover'); });
+                el.addEventListener('mouseleave', () => { ring.classList.remove('hover'); dot.classList.remove('hover'); });
+                el.addEventListener('mousedown', () => { ring.classList.add('click'); });
+                el.addEventListener('mouseup', () => { ring.classList.remove('click'); });
+            });
+        }
+
+        // ═══ KILL ALL VIDEO/AUDIO AUTOPLAY ON PAGE LOAD ═══
+        // Runs as soon as DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('video').forEach(v => {
+                v.pause();
+                v.muted = true;
+                v.currentTime = 0;
+            });
+        });
+
+        // Runs after all resources are loaded (belt + suspenders)
+        window.addEventListener('load', () => {
+            document.querySelectorAll('video').forEach(v => {
+                v.pause();
+                v.muted = true;
+                v.currentTime = 0;
+            });
+        });
+
+        // Force-pause any video that tries to play outside the lightbox
+        document.addEventListener('play', (e) => {
+            if (e.target.tagName === 'VIDEO' && !e.target.closest('.lightbox-video-container')) {
+                e.target.pause();
+                e.target.currentTime = 0;
+            }
+        }, true);
+    </script>
+
+</body>
+</html>
