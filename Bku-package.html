@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{
+  dark: localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches),
+  scrolled: false,
+  mobileMenu: false,
+  progress: 0,
+  activeTab: 'overview',
+  lightboxOpen: false,
+  lightboxIndex: 0,
+  galleryImages: [],
+  videoOpen: false,
+  selectedMetric: null,
+  showPacks: false,
+  project: {
+    id: 9,
+    title: 'BKU — Package Design',
+    category: 'package',
+    categoryLabel: 'Package Design',
+    heroImage: 'images/bkumain.png',
+    gallery: [],
+    overview: 'A vibrant and energetic poster series designed for a summer music festival. The campaign captures the essence of live music, beach vibes, and the carefree spirit of summer through custom illustrations, bold typography, and a striking tropical-inspired color palette.',
+    challenge: 'The festival organizers needed a cohesive visual identity that would stand out across both digital and print platforms. The posters had to convey energy, diversity of musical genres, and create instant visual recognition. The challenge was balancing multiple performers, dates, and venue information without sacrificing the artistic impact.',
+    solution: 'I developed a modular poster system with a consistent grid structure, custom hand-drawn illustrations of tropical elements and musical instruments, and a dynamic color scheme that shifts across the series while maintaining brand cohesion. Each poster features a unique central illustration while the typographic system remains consistent for easy event information scanning.',
+    posterSeries: [],
+    designProcess: [
+      { phase: 'Research', description: 'Studied 30+ music festival poster designs, analyzed color psychology for summer events, and researched tropical illustration styles.' },
+      { phase: 'Sketching', description: 'Created 50+ thumbnail sketches exploring layout variations, illustration concepts, and typography treatments.' },
+      { phase: 'Illustration', description: 'Hand-drawn custom illustrations using Procreate, then vectorized in Adobe Illustrator for scalability.' },
+      { phase: 'Layout & Type', description: 'Developed a flexible grid system and selected typography pairing: Bebas Neue for headlines and Montserrat for body text.' },
+      { phase: 'Color Development', description: 'Created a palette of 5 vibrant summer colors with variations for each poster in the series while maintaining cohesion.' }
+    ],
+    designElements: {
+      typography: ['Bebas Neue (Headlines)', 'Montserrat (Body)', 'Pacifico (Accent)'],
+      colors: ['#9FA174 (olive-green)', '#E9C6A0 (peach-orange)'],
+      illustrations: 'Custom hand-drawn tropical elements including palm trees, waves, musical notes, and festival icons'
+    },
+    applications: [
+      'Large format outdoor billboards (48×14 ft)',
+      'Social media promotional graphics',
+      'Digital display screens at venue'
+    ],
+    metrics: [
+  
+      { value: '6', label: 'Poster variations' },
+      { value: '2k', label: 'Social impressions' }
+    ],
+    year: '2024',
+    client: 'Summer Vibes Music Festival',
+    role: 'Lead Poster Designer & Illustrator',
+    deliverables: ['6 Poster Designs', 'Social Media Adaptations', 'Billboard Files (Vector)', 'Merchandise Graphics', 'Style Guide', 'Print-Ready Files (CMYK)', 'Digital Assets (RGB)'],
+    tools: ['Adobe Illustrator', 'Adobe Photoshop', 'Procreate', 'Google Flow'],
+    link: '#',
+    prevProject: { title: 'Urban — Editorial Series', url: '#' },
+    nextProject: { title: 'Urban — Poster Series', url: '#' }
+  },
+  setTab(tab) { this.activeTab = tab; },
+  showMetricDetail(metric) { this.selectedMetric = metric; },
+  openLightbox(index) {
+    this.galleryImages = [
+      'images/bkubillboard 1.png',
+      'images/socialmediapost.png',
+      'images/bkushelf.png',
+      'images/bkubag.png'
+    ];
+    this.lightboxIndex = index;
+    this.lightboxOpen = true;
+  },
+  closeLightbox() { this.lightboxOpen = false; },
+  prevImage() {
+    if (!this.galleryImages.length) return;
+    this.lightboxIndex = (this.lightboxIndex - 1 + this.galleryImages.length) % this.galleryImages.length;
+  },
+  nextImage() {
+    if (!this.galleryImages.length) return;
+    this.lightboxIndex = (this.lightboxIndex + 1) % this.galleryImages.length;
+  },
+  handleKeydown(e) {
+    if (!this.lightboxOpen) return;
+    if (e.key === 'Escape') this.closeLightbox();
+    if (e.key === 'ArrowLeft') this.prevImage();
+    if (e.key === 'ArrowRight') this.nextImage();
+  }
+}" :class="{'dark':dark}" x-init="
+  $watch('dark', v => localStorage.setItem('theme', v ? 'dark' : 'light'));
+  window.addEventListener('scroll', () => {
+    scrolled = window.scrollY > 20;
+    progress = Math.min(100, Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100));
+  }, { passive: true });
+  window.addEventListener('keydown', (e) => handleKeydown(e));
+" class="scroll-smooth" @keydown.window="handleKeydown($event)">
+<head>
+  <!-- ═══ BASIC META ═══ -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  <!-- ═══ PRIMARY META TAGS ═══ -->
+  <title>BKU Package Design — Premium Potato Chips Packaging | Adersh C.S</title>
+  <meta name="title" content="BKU Package Design — Premium Potato Chips Packaging | Adersh C.S" />
+  <meta name="description" content="BKU premium potato chips package design case study — bold typography, tropical color palette, and custom illustrations. Packaging design portfolio of Adersh C.S, Graphic Designer in Thrissur, Kerala." />
+  <meta name="keywords" content="BKU package design, potato chips packaging, premium snack packaging, food packaging design, graphic design portfolio, packaging design case study, Adersh C.S, Thrissur graphic designer, Kerala packaging designer, brand identity, consumer goods packaging" />
+  <meta name="author" content="Adersh C.S" />
+  <meta name="robots" content="index, follow" />
+  <meta name="googlebot" content="index, follow" />
+  <meta name="language" content="English" />
+  <meta name="revisit-after" content="7 days" />
+  <meta name="distribution" content="global" />
+  <link rel="canonical" href="https://adershcs.github.io/portfolio/bku-package-design.html" />
+
+  <!-- ═══ GEO TAGS ═══ -->
+  <meta name="geo.region" content="IN-KL" />
+  <meta name="geo.placename" content="Thrissur, Kerala" />
+  <meta name="geo.position" content="10.5276;76.2144" />
+  <meta name="ICBM" content="10.5276, 76.2144" />
+
+  <!-- ═══ HREFLANG ═══ -->
+  <link rel="alternate" href="https://adershcs.github.io/portfolio/bku-package-design.html" hreflang="en" />
+  <link rel="alternate" href="https://adershcs.github.io/portfolio/bku-package-design.html" hreflang="x-default" />
+
+  <!-- ═══ MOBILE & THEME ═══ -->
+  <meta name="theme-color" content="#FF6B2B" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="BKU Package Design" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="msapplication-TileColor" content="#FF6B2B" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="rating" content="General" />
+  <meta name="copyright" content="Adersh C.S" />
+  <meta name="coverage" content="Worldwide" />
+  <meta name="distribution" content="Global" />
+  <meta name="audience" content="All" />
+
+  <!-- ═══ OPEN GRAPH ═══ -->
+  <meta property="og:title" content="BKU Package Design — Premium Potato Chips Packaging | Adersh C.S" />
+  <meta property="og:description" content="BKU premium potato chips package design case study — bold typography, tropical color palette, and custom illustrations. Packaging design portfolio of Adersh C.S." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://adershcs.github.io/portfolio/bku-package-design.html" />
+  <meta property="og:image" content="https://adershcs.github.io/portfolio/images/bkumain.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:alt" content="BKU Package Design — Premium Potato Chips Packaging Case Study" />
+  <meta property="og:site_name" content="Adersh C.S — Graphic Designer Portfolio" />
+  <meta property="og:locale" content="en_IN" />
+  <meta property="og:email" content="adershcsengandiyur@gmail.com" />
+  <meta property="og:country-name" content="India" />
+
+  <!-- ═══ TWITTER CARDS ═══ -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="BKU Package Design — Premium Potato Chips Packaging | Adersh C.S" />
+  <meta name="twitter:description" content="BKU premium potato chips package design case study — bold typography, tropical color palette, and custom illustrations." />
+  <meta name="twitter:image" content="https://adershcs.github.io/portfolio/images/bkumain.png" />
+  <meta name="twitter:image:alt" content="BKU Package Design — Premium Potato Chips Packaging Case Study" />
+  <meta name="twitter:site" content="@adershcs" />
+  <meta name="twitter:creator" content="@adershcs" />
+
+  <!-- ═══ VERIFICATION & SECURITY ═══ -->
+  <meta name="google-site-verification" content="google1205c50f18b38cb5" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+
+
+    <!-- ═══ FAVICON ═══ -->
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="images/favicon-48.png">
+<link rel="icon" type="image/png" sizes="192x192" href="images/favicon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="images/favicon-180.png">
+<meta name="theme-color" content="#FF4D1C">
+
+  <!-- Safari Pinned Tab -->
+  <meta name="msapplication-TileImage" content="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23FF6B2B' rx='20'/%3E%3Ctext x='50' y='70' font-family='Arial' font-size='60' font-weight='bold' fill='white' text-anchor='middle'%3EB%3C/text%3E%3C/svg%3E" />
+
+  <!-- ═══ SCHEMA.ORG STRUCTURED DATA ═══ -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "BKU Package Design — Premium Potato Chips Packaging Case Study",
+      "description": "BKU premium potato chips package design case study — bold typography, tropical color palette, and custom illustrations. Packaging design portfolio of Adersh C.S.",
+      "image": "https://adershcs.github.io/portfolio/images/bkumain.png",
+      "author": {
+        "@type": "Person",
+        "name": "Adersh C.S",
+        "url": "https://github.com/Adershcs",
+        "sameAs": [
+          "https://linkedin.com/in/adersh-c-s",
+          "https://github.com/Adershcs",
+          "https://twitter.com/adershcs"
+        ]
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Adersh C.S Portfolio",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://adershcs.github.io/portfolio/images/og-image.jpg"
+        }
+      },
+      "datePublished": "2024-06-01",
+      "dateModified": "2026-09-03",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://adershcs.github.io/portfolio/bku-package-design.html"
+      },
+      "keywords": "BKU package design, potato chips packaging, food packaging design, graphic design portfolio, packaging design case study",
+      "about": {
+        "@type": "Thing",
+        "name": "Package Design Case Study"
+      }
+    }
+  </script>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://adershcs.github.io/portfolio/" },
+        { "@type": "ListItem", "position": 2, "name": "Graphic Work", "item": "https://adershcs.github.io/portfolio/projects-graphic.html" },
+        { "@type": "ListItem", "position": 3, "name": "BKU Package Design", "item": "https://adershcs.github.io/portfolio/bku-package-design.html" }
+      ]
+    }
+  </script>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Adersh C.S",
+      "jobTitle": "Graphic Designer",
+      "url": "https://github.com/Adershcs",
+      "email": "adershcsengandiyur@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Thrissur",
+        "addressRegion": "Kerala",
+        "addressCountry": "India"
+      },
+      "knowsAbout": ["Package Design", "Graphic Design", "Brand Identity", "Illustration", "Typography", "Adobe Illustrator", "Adobe Photoshop", "Procreate"],
+      "workExample": {
+        "@type": "CreativeWork",
+        "name": "BKU Package Design",
+        "description": "Premium potato chips packaging design with bold typography and custom illustrations."
+      }
+    }
+  </script>
+
+  <!-- ═══ PERFORMANCE PRELOADS ═══ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" />
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="https://cdn.tailwindcss.com" />
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+
+  <!-- ═══ FONTS ═══ -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+
+  <!-- ═══ PRELOAD HERO IMAGE ═══ -->
+  <link rel="preload" as="image" href="/images/bkumain.png" fetchpriority="high" />
+
+  <!-- ═══ TAILWIND ═══ -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            accent: '#FF6B2B',
+            'accent-light': '#FF8F5C',
+            'accent-dark': '#E0551A',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* ─── RESET & BASE ─── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      transition: background-color .3s, color .3s;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ─── SKIP LINK ─── */
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #FF6B2B;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0 0 0.5rem 0.5rem;
+      z-index: 10000;
+      font-weight: 600;
+      transition: top 0.2s ease;
+    }
+    .skip-link:focus {
+      top: 0;
+    }
+
+    /* ─── CUSTOM CURSOR ─── */
+    .cursor-dot {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      background: #FF6B2B;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, background 0.2s;
+      will-change: transform;
+    }
+    .cursor-ring {
+      position: fixed;
+      width: 40px;
+      height: 40px;
+      border: 1.5px solid rgba(255, 107, 43, 0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s, height 0.3s, border-color 0.3s, background 0.3s;
+      will-change: transform;
+    }
+    .cursor-ring.hover {
+      width: 64px;
+      height: 64px;
+      border-color: rgba(255, 107, 43, 0.9);
+      background: rgba(255, 107, 43, 0.08);
+    }
+    .cursor-ring.click {
+      width: 28px;
+      height: 28px;
+      border-color: #FF6B2B;
+      background: rgba(255, 107, 43, 0.2);
+    }
+    .cursor-dot.hover {
+      width: 12px;
+      height: 12px;
+      background: #FF8F5C;
+    }
+    @media (hover: none) and (pointer: coarse) {
+      .cursor-dot,
+      .cursor-ring {
+        display: none !important;
+      }
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #FF6B2B;
+      border-radius: 99px;
+    }
+
+    /* ─── ALPINE CLOCK ─── */
+    [x-cloak] {
+      display: none !important;
+    }
+
+    /* ─── REVEAL ANIMATION ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity .7s cubic-bezier(.22, 1, .36, 1), transform .7s cubic-bezier(.22, 1, .36, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .d1 {
+      transition-delay: .05s;
+    }
+    .d2 {
+      transition-delay: .12s;
+    }
+    .d3 {
+      transition-delay: .19s;
+    }
+    .d4 {
+      transition-delay: .26s;
+    }
+
+    /* ─── GLASS HEADER ─── */
+    .glass {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    }
+    .dark .glass {
+      background: rgba(10, 10, 10, 0.75);
+      border-color: rgba(255, 255, 255, 0.06);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    /* ─── NAV LINKS ─── */
+    .nav-link {
+      position: relative;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(135deg, #FF4D1C 0%, #FF8C42 50%, #FFB347 100%);
+      transition: width .3s cubic-bezier(.22, 1, .36, 1);
+    }
+    .nav-link:hover::after,
+    .nav-link.active::after {
+      width: 100%;
+    }
+    .nav-link.active {
+      color: #FF4D1C !important;
+    }
+    .dark .nav-link.active {
+      color: #FF6B3D !important;
+    }
+
+    /* ─── SHIMMER ─── */
+    .shimmer {
+      position: relative;
+      overflow: hidden;
+    }
+    .shimmer::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 60%;
+      height: 100%;
+      background: rgba(255, 255, 255, .25);
+      transform: skewX(-20deg);
+      transition: left .5s cubic-bezier(.22, 1, .36, 1);
+    }
+    .shimmer:hover::after {
+      left: 160%;
+    }
+
+    /* ─── PHOTO FRAME ─── */
+    .photo-frame {
+      overflow: hidden;
+      background: #e4e4e7;
+      transition: background-color 0.3s;
+    }
+    .dark .photo-frame {
+      background: #27272a;
+    }
+    .photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .5s cubic-bezier(.22, 1, .36, 1);
+    }
+    .photo-frame:hover img {
+      transform: scale(1.03);
+    }
+
+    /* ─── PROGRESS BAR ─── */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: #FF6B2B;
+      z-index: 100;
+      transition: width .1s linear;
+    }
+
+    /* ─── LIGHTBOX ─── */
+    .lightbox-overlay {
+      background: rgba(0, 0, 0, 0.92);
+      backdrop-filter: blur(12px);
+    }
+    .lightbox-btn {
+      transition: all .2s ease;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: rgba(255, 255, 255, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      cursor: pointer !important;
+    }
+    .lightbox-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+      color: white;
+    }
+    .lightbox-close-btn {
+      cursor: pointer !important;
+      transition: all 0.2s ease;
+    }
+    .lightbox-close-btn:hover {
+      color: white !important;
+      transform: rotate(90deg);
+    }
+
+    /* ─── GRADIENT TEXT ─── */
+    .gradient-text-hover {
+      background: linear-gradient(135deg, #FF6B2B 0%, #FF8F5C 50%, #FF6B2B 100%);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientShift 4s ease-in-out infinite;
+      transition: all 0.4s ease;
+    }
+    @keyframes gradientShift {
+      0%,
+      100% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+    }
+    .gradient-text-hover:hover {
+      background-size: 300% 300%;
+      animation-duration: 1.5s;
+    }
+
+    /* ─── GALLERY ITEM ─── */
+    .gallery-item {
+      cursor: pointer !important;
+      position: relative;
+      overflow: hidden;
+      border-radius: 1rem;
+    }
+    .gallery-item::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 107, 43, 0.15);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+    .gallery-item:hover::after {
+      opacity: 1;
+    }
+
+    /* ─── TAB BUTTONS ─── */
+    .tab-btn {
+      cursor: pointer !important;
+      transition: all 0.25s ease;
+      padding: 0.6rem 1.5rem;
+      border-radius: 0.75rem;
+      font-weight: 500;
+      font-size: 0.9rem;
+      border: 2px solid transparent;
+      background: transparent;
+      color: #71717a;
+    }
+    .tab-btn:hover {
+      color: #18181b;
+      background: #f4f4f5;
+    }
+    .dark .tab-btn:hover {
+      color: #fafafa;
+      background: #27272a;
+    }
+    .tab-btn.active {
+      background: #FF6B2B;
+      color: white;
+      border-color: #FF6B2B;
+    }
+    .dark .tab-btn.active {
+      background: #FF8F5C;
+      border-color: #FF8F5C;
+      color: #0a0a0a;
+    }
+
+    /* ─── PROCESS STEP ─── */
+    .process-step {
+      transition: all 0.3s ease;
+      cursor: default !important;
+      border-left: 4px solid transparent;
+    }
+    @media (hover: hover) {
+      .process-step:hover {
+        transform: translateX(4px);
+        border-left-color: #FF6B2B;
+      }
+      .dark .process-step:hover {
+        border-left-color: #FF8F5C;
+      }
+    }
+
+    /* ─── COLOR CHIP ─── */
+    .color-chip {
+      transition: transform 0.3s ease;
+    }
+    .color-chip:hover {
+      transform: scale(1.1);
+    }
+
+    /* ─── HERO SECTION ─── */
+    .hero-container {
+      position: relative;
+      width: 100%;
+      border-radius: 1rem;
+      overflow: hidden;
+      transition: box-shadow 0.5s ease;
+    }
+    .hero-container:hover {
+      box-shadow: 0 24px 80px rgba(255, 107, 43, 0.12);
+    }
+    .hero-image-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 21/9;
+      overflow: hidden;
+    }
+    @media (min-width: 768px) {
+      .hero-image-wrapper {
+        aspect-ratio: 21/8;
+      }
+    }
+    .hero-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .hero-container:hover .hero-image {
+      transform: scale(1.05);
+    }
+
+    /* .hero-gradient-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, transparent 50%, rgba(0,0,0,0.4) 100%);
+      pointer-events: none;
+      z-index: 2;
+    } */
+
+    .hero-shine {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.04) 40%, rgba(255, 255, 255, 0.08) 45%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.08) 55%, rgba(255, 255, 255, 0.04) 60%, transparent 65%);
+      pointer-events: none;
+      z-index: 3;
+      animation: autoShine 5s ease-in-out infinite;
+      will-change: transform, opacity;
+    }
+    @keyframes autoShine {
+      0% { transform: translateX(-150%) skewX(-10deg); opacity: 0; }
+      15% { opacity: 1; }
+      35% { transform: translateX(150%) skewX(-10deg); opacity: 1; }
+      50% { opacity: 0; }
+      100% { opacity: 0; transform: translateX(150%) skewX(-10deg); }
+    }
+
+    .hero-blur-glow {
+      position: absolute;
+      bottom: -60px;
+      right: -60px;
+      width: 280px;
+      height: 280px;
+      background: radial-gradient(circle, rgba(255, 107, 43, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 1;
+      animation: glowPulse 4s ease-in-out infinite;
+    }
+    @keyframes glowPulse {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.1); }
+    }
+
+    /* ─── 3D BADGE - PACKS WITH NAMES ─── */
+    .hero-3d-badge {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      gap: 2.5rem;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      pointer-events: none;
+      width: auto;
+      padding: 1.5rem 2.5rem;
+      background: rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(4px);
+      border-radius: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .pack-wrapper {
+      pointer-events: auto !important;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 25;
+    }
+
+    .pack-img {
+      width: 16rem;
+      height: 16rem;
+      object-fit: contain;
+      filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6));
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      animation: badgeFloat 3s ease-in-out infinite;
+      display: block;
+    }
+    .pack-wrapper:nth-child(2) .pack-img {
+      animation-delay: 0.6s;
+    }
+
+    .pack-name {
+      transition: all 0.3s ease;
+      display: inline-block;
+      line-height: 1.4;
+      white-space: nowrap;
+      color: white;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 0.4rem 1rem;
+      border-radius: 9999px;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.875rem;
+      font-weight: 500;
+      pointer-events: none;
+    }
+
+    .pack-1:hover .img-1 {
+      transform: scale(1.25) !important;
+      filter: drop-shadow(0 0 60px rgba(131, 40, 1, 0.551)) drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5)) !important;
+      animation-play-state: paused !important;
+    }
+    .pack-1:hover .name-1 {
+      color: #FF6B2B !important;
+      border-color: #FF6B2B !important;
+      background: rgba(0, 0, 0, 0.9) !important;
+      transform: scale(1.08) !important;
+    }
+    .pack-2:hover .img-2 {
+      transform: scale(1.25) !important;
+      filter: drop-shadow(0 0 60px rgba(137, 42, 2, 0.551)) drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5)) !important;
+      animation-play-state: paused !important;
+    }
+    .pack-2:hover .name-2 {
+      color: #FF6B2B !important;
+      border-color: #FF6B2B !important;
+      background: rgba(0, 0, 0, 0.9) !important;
+      transform: scale(1.08) !important;
+    }
+
+    /* Dim siblings on hover */
+    .pack-1:hover ~ .pack-2 .img-2,
+    .hero-3d-badge:hover .pack-2:not(:hover) .img-2 {
+      opacity: 0.25 !important;
+      transform: scale(0.85) !important;
+      filter: grayscale(0.6) blur(2px) !important;
+      animation-play-state: paused !important;
+    }
+    .pack-1:hover ~ .pack-2 .name-2,
+    .hero-3d-badge:hover .pack-2:not(:hover) .name-2 {
+      opacity: 0.3 !important;
+      transform: scale(0.95) !important;
+    }
+    .pack-2:hover ~ .pack-1 .img-1,
+    .hero-3d-badge:hover .pack-1:not(:hover) .img-1 {
+      opacity: 0.25 !important;
+      transform: scale(0.85) !important;
+      filter: grayscale(0.6) blur(2px) !important;
+      animation-play-state: paused !important;
+    }
+    .pack-2:hover ~ .pack-1 .name-1,
+    .hero-3d-badge:hover .pack-1:not(:hover) .name-1 {
+      opacity: 0.3 !important;
+      transform: scale(0.95) !important;
+    }
+
+    @keyframes badgeFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* ─── HERO BADGE ─── */
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 6px 14px 6px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #0a0a0a;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s cubic-bezier(.22,1,.36,1);
+      cursor: pointer;
+      z-index: 10;
+      animation: upDown 2s ease-in-out infinite;
+    }
+    .hero-badge:hover {
+      transform: scale(1.05) translateY(-4px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      border-color: #FF6B2B;
+    }
+    @keyframes upDown {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    .hero-badge:nth-child(2) {
+      animation-delay: 0.5s;
+    }
+
+    .dark .hero-badge {
+      background: rgba(20, 20, 20, 0.95);
+      color: white;
+      border-color: rgba(255, 255, 255, 0.05);
+    }
+    .dark .hero-badge:hover {
+      background: rgba(255, 107, 43, 0.2);
+      border-color: #FF8F5C;
+    }
+
+    /* ─── PULSE DOT ─── */
+    .pulse-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+      animation: pulseDot 1.5s ease-in-out infinite;
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
+    }
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.4); }
+    }
+
+    /* ─── BREADCRUMB ─── */
+    .breadcrumb-link {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      transition: all 0.3s cubic-bezier(.22,1,.36,1);
+      color: #a1a1aa;
+      font-weight: 500;
+    }
+    .breadcrumb-link:hover {
+      color: #FF6B2B;
+      gap: 0.625rem;
+    }
+    .dark .breadcrumb-link {
+      color: #71717a;
+    }
+    .dark .breadcrumb-link:hover {
+      color: #FF8F5C;
+    }
+    .breadcrumb-link svg {
+      transition: transform 0.3s ease;
+    }
+    .breadcrumb-link:hover svg {
+      transform: translateY(-1px);
+    }
+    .breadcrumb-current {
+      color: #18181b;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+    }
+    .dark .breadcrumb-current {
+      color: #fafafa;
+    }
+    .breadcrumb-dot {
+      width: 0.375rem;
+      height: 0.375rem;
+      border-radius: 50%;
+      background: #FF6B2B;
+      animation: pulseDot 2s ease-in-out infinite;
+      display: none;
+    }
+    @media (min-width: 640px) {
+      .breadcrumb-dot {
+        display: inline-block;
+      }
+    }
+
+    /* ─── SCROLL INDICATOR ─── */
+    .hero-scroll-indicator {
+      display: flex;
+      justify-content: center;
+      margin-top: 2rem;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0.8;
+      transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      cursor: pointer;
+    }
+    .hero-scroll-indicator:hover {
+      opacity: 1;
+    }
+    .hero-scroll-indicator .scroll-text {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 600;
+      font-size: 0.7rem;
+      color: #a1a1aa;
+    }
+    .dark .hero-scroll-indicator .scroll-text {
+      color: #71717a;
+    }
+    .hero-scroll-indicator .scroll-arrow {
+      width: 1.5rem;
+      height: 2.5rem;
+      border: 2px solid #d4d4d8;
+      border-radius: 9999px;
+      display: flex;
+      justify-content: center;
+      padding-top: 0.5rem;
+      position: relative;
+      transition: border-color 0.3s ease;
+    }
+    .hero-scroll-indicator:hover .scroll-arrow {
+      border-color: #FF6B2B;
+    }
+    .dark .hero-scroll-indicator .scroll-arrow {
+      border-color: #3f3f46;
+    }
+    .hero-scroll-indicator .scroll-arrow .scroll-dot {
+      width: 4px;
+      height: 10px;
+      background: #FF6B2B;
+      border-radius: 9999px;
+      animation: scrollBounce 2s ease-in-out infinite;
+    }
+    @keyframes scrollBounce {
+      0%, 100% { transform: translateY(0); opacity: 0.2; }
+      50% { transform: translateY(6px); opacity: 1; }
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 1024px) {
+      .pack-img { width: 12rem !important; height: 12rem !important; }
+      .hero-3d-badge { gap: 1.5rem !important; padding: 1rem 1.5rem !important; }
+    }
+    @media (max-width: 768px) {
+      .pack-img { width: 8rem !important; height: 8rem !important; }
+      .hero-3d-badge { gap: 1rem !important; padding: 0.75rem 1rem !important; border-radius: 1.5rem !important; }
+      .pack-name { font-size: 0.7rem !important; padding: 0.25rem 0.75rem !important; }
+      .hero-blur-glow { width: 150px; height: 150px; bottom: -30px; right: -30px; filter: blur(60px); }
+    }
+    @media (max-width: 640px) {
+      .hero-3d-badge { gap: 0.75rem !important; padding: 0.5rem 0.75rem !important; border-radius: 1rem !important; }
+      .pack-img { width: 5rem !important; height: 5rem !important; }
+      .pack-name { font-size: 0.6rem !important; padding: 0.15rem 0.5rem !important; }
+      .hero-badge { font-size: 10px; padding: 4px 10px 4px 8px; }
+    }
+    @media (max-width: 480px) {
+      .hero-3d-badge { gap: 0.5rem !important; padding: 0.3rem 0.5rem !important; }
+      .pack-img { width: 3.5rem !important; height: 3.5rem !important; }
+      .pack-name { font-size: 0.5rem !important; padding: 0.1rem 0.4rem !important; }
+      .tab-btn { font-size: 0.75rem; padding: 0.4rem 0.9rem; }
+    }
+
+    /* ─── LINKS & BUTTONS ─── */
+    a, button, .gallery-item, .photo-frame, .tab-btn {
+      cursor: pointer !important;
+    }
+  </style>
+</head>
+
+<body class="bg-white dark:bg-[#0a0a0a] text-zinc-800 dark:text-zinc-100 antialiased">
+
+  <!-- SKIP LINK -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- CUSTOM CURSOR -->
+  <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+  <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+  <!-- ═══ NAV ═══ -->
+  <header class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[96%] max-w-7xl rounded-2xl glass shadow-lg shadow-black/5 dark:shadow-black/30 transition-all duration-300" :class="scrolled ? 'py-1' : 'py-2'" role="banner">
+    <nav class="px-5 md:px-6 flex items-center justify-between h-14 md:h-14" aria-label="Main navigation">
+      <a href="index.html" class="font-bold text-xl tracking-tight flex items-center gap-1 shrink-0" aria-label="Adersh C.S Home">
+        <span class="text-zinc-900 dark:text-white">Ade</span>
+        <span class="text-accent">rsh</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-accent to-accent-light animate-pulse ml-0.5" aria-hidden="true"></span>
+      </a>
+      <ul class="hidden md:flex items-center gap-7 text-sm font-medium" role="list">
+        <li><a href="projects-uiux.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">UX Work</a></li>
+        <li><a href="projects-frontend.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">Frontend Work</a></li>
+        <li><a href="projects-graphic.html" class="nav-link text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors active">Graphic Work</a></li>
+      </ul>
+      <div class="flex items-center gap-1 md:gap-2">
+        <button @click="dark=!dark" class="w-9 h-9 flex items-center justify-center rounded-full bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-white/70 dark:hover:bg-white/10 transition-colors shrink-0" :aria-label="dark ? 'Switch to light mode' : 'Switch to dark mode'">
+          <svg x-show="!dark" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+          <svg x-show="dark" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
+        </button>
+        <a href="index.html#contact" class="hidden md:inline-flex items-center gap-1.5 px-5 py-2 rounded-full text-white text-sm font-semibold shadow-lg shadow-accent/30 hover:shadow-accent/50 transition-all hover:scale-105 shrink-0" style="background: linear-gradient(135deg, #FF4D1C 0%, #FF8C42 50%, #FFB347 100%);">
+          Hire Me
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+        <button @click="mobileMenu=!mobileMenu" class="md:hidden w-9 h-9 flex items-center justify-center rounded-full bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-white/70 dark:hover:bg-white/10 transition-colors" aria-label="Toggle menu">
+          <svg x-show="!mobileMenu" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+          <svg x-show="mobileMenu" class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+    </nav>
+    <div x-show="mobileMenu" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" class="md:hidden bg-white/80 dark:bg-black/80 backdrop-blur-xl border-t border-zinc-200/30 dark:border-zinc-700/30 rounded-b-2xl overflow-hidden">
+      <ul class="flex flex-col px-6 py-6 gap-3 text-sm" role="list">
+        <li><a href="projects-uiux.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">UX Work</a></li>
+        <li><a href="projects-frontend.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Frontend Work</a></li>
+        <li><a href="projects-graphic.html" @click="mobileMenu=false" class="block text-zinc-700 dark:text-zinc-300 hover:text-accent transition-colors py-1">Graphic Work</a></li>
+        <li class="pt-3 border-t border-zinc-200/30 dark:border-zinc-700/30">
+          <a href="index.html#contact" @click="mobileMenu=false" class="inline-flex shimmer bg-accent text-white font-medium text-sm px-6 py-2.5 rounded-full hover:bg-accent-dark transition-colors">Hire me →</a>
+        </li>
+      </ul>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ═══ ENHANCED CINEMATIC HERO SECTION ═══ -->
+    <section class="relative pt-24 pb-6 max-w-6xl mx-auto px-4 sm:px-6" aria-label="Project hero" @mouseenter="showPacks = true" @mouseleave="showPacks = false">
+      
+      <!-- Enhanced Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm text-zinc-400 mb-4 mt-2" aria-label="Breadcrumb">
+        <a href="projects-graphic.html" class="breadcrumb-link">
+          <!-- <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1m-2 0h2"/>
+          </svg> -->
+          <span>Graphic Work</span>
+        </a>
+        
+        <!-- Separator -->
+        <svg class="w-4 h-4 text-zinc-400 dark:text-zinc-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+        
+        <!-- Current Page -->
+        <span class="breadcrumb-current" x-text="project.title">
+          <span class="breadcrumb-dot" aria-hidden="true"></span>
+          BKU — Package Design
+        </span>
+      </nav>
+
+      <!-- Hero Container -->
+      <div class="hero-container">
+        <div class="hero-image-wrapper">
+          <img :src="project.heroImage" :alt="project.title" class="hero-image" fetchpriority="high" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%221200%22 height=%22600%22%3E%3Crect width=%221200%22 height=%22600%22 fill=%22%23121212%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-family=%22sans-serif%22 font-size=%2236%22 fill=%22%23FF6B2B%22 text-anchor=%22middle%22 dy=%22.3em%22%3EPackage Design%3C/text%3E%3C/svg%3E'" />
+          
+          <!-- Gradient Overlay -->
+          <div class="hero-gradient-overlay"></div>
+          
+          <!-- Shine Effect -->
+          <div class="hero-shine"></div>
+          
+          <!-- Glow Effect -->
+          <div class="hero-blur-glow"></div>
+          
+          <!-- 2 PACKS WITH NAMES - APPEAR ON MOUSE ENTER -->
+          <div class="hero-3d-badge" 
+               x-show="showPacks"
+               x-transition:enter="transition-all duration-700 ease-out"
+               x-transition:enter-start="opacity-0 scale-50 translate-y-8"
+               x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+               x-transition:leave="transition-all duration-500 ease-in"
+               x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+               x-transition:leave-end="opacity-0 scale-75 translate-y-8"
+               x-cloak>
+            
+            <!-- Pack 1 -->
+            <div class="pack-wrapper pack-1">
+              <img src="/images/bkufruits.png" alt="Potato Chips Package 1" 
+                   class="pack-img img-1" /><br>
+              <span class="pack-name name-1">Fruits Mix</span>
+            </div>
+            
+            <!-- Pack 2 -->
+            <div class="pack-wrapper pack-2">
+              <img src="/images/bkuveg.png" alt="Potato Chips Package 2" 
+                   class="pack-img img-2" /><br>
+              <span class="pack-name name-2">vegetables Mix</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Badges - Top Right -->
+        <div class="absolute top-4 right-4 flex flex-wrap items-center gap-2 z-10">
+          <span class="hero-badge">
+            <span class="pulse-dot"></span>
+            Package Design
+          </span>
+          <!-- <span class="hero-badge hidden sm:flex" style="animation-delay: 0.5s;">
+            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
+            <span x-text="project.year">2024</span>
+          </span> -->
+        </div>
+
+        <!-- Bottom Content - Title & Category Badges -->
+        <div class="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 z-10">
+          <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+            <!-- <span class="px-2 sm:px-3 py-1 bg-accent/90 backdrop-blur-sm text-white text-[10px] sm:text-xs font-semibold rounded-full shadow-lg" x-text="project.categoryLabel">Package Design</span> -->
+            <!-- <span class="text-white/80 text-xs sm:text-sm flex items-center gap-1 bg-black/30 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full">
+              <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
+              <span x-text="project.year">2024</span>
+            </span> -->
+            <!-- <span class="text-white/80 text-xs sm:text-sm flex items-center gap-1 bg-black/30 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full">
+              <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/></svg>
+              <span x-text="project.deliverables[0]">6 Poster Designs</span>
+            </span> -->
+          </div>
+          <!-- <h2 class="text-xl sm:text-3xl md:text-4xl font-bold text-white mt-2 sm:mt-3 drop-shadow-lg" x-text="project.title">BKU — Package Design</h2> -->
+        </div>
+      </div>
+
+      <!-- Scroll Indicator -->
+      <div class="hero-scroll-indicator" @click="window.scrollTo({top:800,behavior:'smooth'})">
+        <span class="scroll-text">Scroll to explore</span>
+        <div class="scroll-arrow">
+          <div class="scroll-dot"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ PROJECT DETAILS ═══ -->
+    <section class="max-w-6xl mx-auto px-6 pb-16">
+      <div class="grid lg:grid-cols-3 gap-10">
+
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-10 reveal d1">
+          <div>
+            <span class="text-xs font-semibold text-accent tracking-widest uppercase" x-text="project.categoryLabel"></span>
+            <h1 class="font-bold text-4xl md:text-5xl text-zinc-900 dark:text-white mt-2 mb-4 gradient-text-hover" x-text="project.title"></h1>
+            <p class="text-lg text-zinc-600 dark:text-zinc-300 leading-relaxed" x-text="project.overview"></p>
+          </div>
+
+          <!-- Key Metrics -->
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <template x-for="metric in project.metrics" :key="metric.label">
+              <div @click="showMetricDetail(metric)" class="bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-4 text-center border border-zinc-100 dark:border-zinc-800 transition-all duration-300 hover:border-accent hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+                <p class="text-2xl md:text-3xl font-bold text-accent" x-text="metric.value"></p>
+                <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1" x-text="metric.label"></p>
+              </div>
+            </template>
+          </div>
+
+          <!-- Tabs -->
+          <div class="flex flex-wrap gap-2 border-b border-zinc-100 dark:border-zinc-800 pb-4" role="tablist" aria-label="Project details">
+            <button @click="setTab('overview')" class="tab-btn" :class="activeTab==='overview'?'active':''" role="tab" :aria-selected="activeTab==='overview'" aria-controls="panel-overview">Overview</button>
+            <button @click="setTab('process')" class="tab-btn" :class="activeTab==='process'?'active':''" role="tab" :aria-selected="activeTab==='process'" aria-controls="panel-process">Design Process</button>
+            <button @click="setTab('packaging')" class="tab-btn" :class="activeTab==='packaging'?'active':''" role="tab" :aria-selected="activeTab==='packaging'" aria-controls="panel-packaging">Packaging</button>
+          </div>
+
+          <!-- Tab: Overview -->
+          <div x-show="activeTab==='overview'" id="panel-overview" role="tabpanel" class="space-y-8">
+            <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl p-6 md:p-8 border border-zinc-100 dark:border-zinc-800 transition-colors">
+              <h3 class="font-semibold text-xl text-zinc-900 dark:text-white mb-3 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-accent" aria-hidden="true"></span>
+                The Challenge
+              </h3>
+              <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed" x-text="project.challenge"></p>
+            </div>
+            <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl p-6 md:p-8 border border-zinc-100 dark:border-zinc-800 transition-colors">
+              <h3 class="font-semibold text-xl text-zinc-900 dark:text-white mb-3 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-accent" aria-hidden="true"></span>
+                The Solution
+              </h3>
+              <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed" x-text="project.solution"></p>
+            </div>
+
+            <!-- Design Elements -->
+            <div class="bg-accent/5 dark:bg-accent/10 rounded-2xl p-6 md:p-8 border border-accent/20">
+              <h3 class="font-semibold text-xl text-zinc-900 dark:text-white mb-4">🎨 Design Elements</h3>
+
+              <div class="mb-4">
+                <h4 class="text-sm font-semibold text-accent mb-2">Typography</h4>
+                <div class="flex flex-wrap gap-2">
+                  <template x-for="font in project.designElements.typography" :key="font">
+                    <span class="text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-3 py-1.5 rounded-full" x-text="font"></span>
+                  </template>
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <h4 class="text-sm font-semibold text-accent mb-2">Color Palette</h4>
+                <div class="flex flex-wrap gap-3">
+                  <template x-for="(color, i) in project.designElements.colors" :key="color">
+                    <div class="flex items-center gap-2">
+                      <div class="color-chip w-8 h-8 rounded-full border-2 border-zinc-200 dark:border-zinc-700" :style="'background-color: ' + color.split(' ')[0]"></div>
+                      <span class="text-xs text-zinc-600 dark:text-zinc-400" x-text="color.split('(')[1]?.replace(')', '') || color"></span>
+                    </div>
+                  </template>
+                </div>
+              </div>
+
+              <div>
+                <h4 class="text-sm font-semibold text-accent mb-2">Illustrations</h4>
+                <p class="text-sm text-zinc-600 dark:text-zinc-400" x-text="project.designElements.illustrations"></p>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="font-semibold text-xl text-zinc-900 dark:text-white mb-4">Applications</h3>
+              <div class="grid grid-cols-2 gap-3">
+                <template x-for="app in project.applications" :key="app">
+                  <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-3 border border-zinc-100 dark:border-zinc-800 text-sm text-zinc-600 dark:text-zinc-400 flex items-center gap-2">
+                    <span class="text-accent">✓</span>
+                    <span x-text="app"></span>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: Design Process -->
+          <div x-show="activeTab==='process'" id="panel-process" role="tabpanel" class="space-y-4">
+            <template x-for="(step, i) in project.designProcess" :key="step.phase">
+              <div class="process-step bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl p-6 md:p-8 border border-zinc-100 dark:border-zinc-800 border-l-4 border-l-transparent transition-all">
+                <div class="flex items-center gap-4">
+                  <div class="flex-shrink-0 w-10 h-10 rounded-full bg-accent text-white flex items-center justify-center font-bold text-sm" x-text="i+1"></div>
+                  <div>
+                    <h4 class="font-semibold text-zinc-900 dark:text-white" x-text="step.phase"></h4>
+                    <p class="text-sm text-zinc-600 dark:text-zinc-400" x-text="step.description"></p>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <!-- Tab: Packaging -->
+          <div x-show="activeTab==='packaging'" id="panel-packaging" role="tabpanel" class="space-y-8">
+
+            <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl p-6 md:p-8 border border-zinc-100 dark:border-zinc-800 transition-colors">
+              <h3 class="font-semibold text-xl text-zinc-900 dark:text-white mb-3 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-accent" aria-hidden="true"></span>
+                Packaging Design
+              </h3>
+              <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                To extend the festival's vibrant identity into physical products, I designed a line of limited-edition packaging for merchandise and promotional items. The packaging echoes the poster's bold typography, tropical motifs, and energetic color palette, creating a cohesive brand experience from the wall to the shelf.
+              </p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <template x-for="(pkg, idx) in [
+                { name: '🏪Outdoor Advertising', img: '/images/Frame 2147236680.png' },
+                { name: '📱Digital & Social Media', img: '/images/socialmediapost.png' },
+                { name: '🛒Retail & Store Branding', img: '/images/bkushelf.png' },
+                { name: '🚚Brand Extensions', img: '/images/bkubag.png' }
+              ]" :key="idx">
+                <div class="gallery-item photo-frame aspect-square rounded-xl overflow-hidden border-2 border-zinc-200 dark:border-zinc-700 hover:border-accent/50 transition-all" @click="openLightbox(idx)" role="button" :aria-label="'View packaging: ' + pkg.name" tabindex="0" @keydown.enter="openLightbox(idx)">
+                  <img :src="pkg.img" :alt="pkg.name" class="w-full h-full object-cover" loading="lazy" />
+                  <div class="absolute inset-0 flex items-end justify-start p-3 bg-gradient-to-t from-black/60 to-transparent pointer-events-none">
+                    <span class="text-white text-sm font-medium bg-black/40 backdrop-blur-sm rounded-lg px-2 py-1" x-text="pkg.name"></span>
+                  </div>
+                </div>
+              </template>
+            </div>
+
+            <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl p-6 md:p-8 border border-zinc-100 dark:border-zinc-800 transition-colors">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="font-semibold text-xl text-zinc-900 dark:text-white flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-accent" aria-hidden="true"></span>
+                  Packaging in Motion
+                </h3>
+                <span class="text-xs font-medium text-accent bg-accent/10 px-2 py-0.5 rounded-full">Unboxing Experience</span>
+              </div>
+
+              <div class="relative rounded-xl overflow-hidden group border border-zinc-200 dark:border-zinc-700">
+                <img src="images/bkuthumbnail.png" alt="Packaging video poster" class="w-full h-auto object-cover aspect-video transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-center justify-center">
+                  <button @click="videoOpen = !videoOpen" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/90 backdrop-blur-sm text-accent flex items-center justify-center shadow-2xl hover:scale-110 hover:bg-accent hover:text-white transition-all duration-300" aria-label="Play packaging video">
+                    <svg x-show="!videoOpen" class="w-6 h-6 sm:w-8 sm:h-8 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                    <svg x-show="videoOpen" class="w-6 h-6 sm:w-8 sm:h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z" /></svg>
+                  </button>
+                </div>
+                <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
+                  <p class="text-white text-xs sm:text-sm font-medium drop-shadow-lg">Watch the box open, see the materials, and feel the premium finish.</p>
+                </div>
+                <div x-show="videoOpen" x-cloak x-transition.opacity.duration.300ms class="absolute inset-0 bg-black flex items-center justify-center">
+                  <video src="images/BKU.mp4" class="w-full h-full object-contain" controls playsinline poster="">
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+              </div>
+
+              <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-4 flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                Concept video available for client presentation.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Sidebar Metadata -->
+        <div class="lg:col-span-1 reveal d2">
+          <div class="sticky top-28 space-y-8 bg-zinc-50 dark:bg-zinc-900/60 rounded-2xl p-6 border border-zinc-100 dark:border-zinc-800 transition-colors">
+            <div>
+              <h4 class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Client</h4>
+              <p class="font-medium text-zinc-900 dark:text-white" x-text="project.client"></p>
+            </div>
+            <div>
+              <h4 class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Year</h4>
+              <p class="font-medium text-zinc-900 dark:text-white" x-text="project.year"></p>
+            </div>
+            <div>
+              <h4 class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Role</h4>
+              <p class="font-medium text-zinc-900 dark:text-white" x-text="project.role"></p>
+            </div>
+            <div>
+              <h4 class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">Deliverables</h4>
+              <ul class="space-y-1.5" role="list">
+                <template x-for="item in project.deliverables" :key="item">
+                  <li class="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+                    <span class="w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0" aria-hidden="true"></span>
+                    <span x-text="item"></span>
+                  </li>
+                </template>
+                <li class="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+                  <span class="w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0" aria-hidden="true"></span>
+                  <span>Packaging Dielines &amp; Mockups</span>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">Tools Used</h4>
+              <div class="flex flex-wrap gap-2">
+                <template x-for="tool in project.tools" :key="tool">
+                  <span class="text-xs bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 px-3 py-1.5 rounded-full transition-colors" x-text="tool"></span>
+                </template>
+                <span class="text-xs bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 px-3 py-1.5 rounded-full transition-colors">Esko ArtiosCAD</span>
+              </div>
+            </div>
+            <div class="pt-4 border-t border-zinc-200 dark:border-zinc-700 space-y-2">
+              <a :href="project.link" class="flex items-center justify-center gap-2 shimmer bg-accent text-white font-medium px-6 py-3 rounded-full hover:bg-accent-light transition-colors text-sm w-full">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                View Full Collection
+              </a>
+              <a :href="project.link" class="flex items-center justify-center gap-2 text-sm font-medium text-accent hover:text-accent-dark transition-colors py-2 w-full">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                Download Print Files
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ CTA ═══ -->
+    <section class="py-16 reveal d4">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="bg-zinc-900 dark:bg-zinc-800 rounded-3xl p-10 md:p-14 text-center relative overflow-hidden transition-colors">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-accent/20 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+          <div class="absolute bottom-0 left-0 w-40 h-40 bg-accent/10 rounded-full blur-2xl pointer-events-none" aria-hidden="true"></div>
+          <div class="relative z-10">
+            <p class="text-xs font-semibold text-accent tracking-widest uppercase mb-4">Need eye-catching packaging?</p>
+            <h2 class="font-bold text-3xl md:text-4xl text-white mb-4">Let's make your product<br class="sm:hidden"> impossible to ignore</h2>
+            <p class="text-zinc-400 max-w-md mx-auto mb-8">From concept to print-ready files — I'll design packaging that stops scrollers and sells out your product.</p>
+            <a href="index.html#contact" class="inline-flex items-center gap-2 shimmer bg-accent text-white font-medium px-8 py-3.5 rounded-full hover:bg-accent-light transition-colors">
+              Start a project →
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══ LIGHTBOX ═══ -->
+  <div x-show="lightboxOpen" x-cloak class="fixed inset-0 z-[999] lightbox-overlay flex items-center justify-center p-4" @click.self="closeLightbox()">
+    <button @click="closeLightbox()" class="absolute top-6 right-6 text-white/60 hover:text-white transition-colors text-3xl lightbox-close-btn" aria-label="Close lightbox">✕</button>
+    <button @click="prevImage()" class="absolute left-6 lightbox-btn" aria-label="Previous image">‹</button>
+    <button @click="nextImage()" class="absolute right-6 lightbox-btn" aria-label="Next image">›</button>
+    <div class="max-w-5xl max-h-[85vh] rounded-2xl overflow-hidden shadow-2xl">
+      <img :src="galleryImages[lightboxIndex]" :alt="'Gallery image ' + (lightboxIndex + 1)" class="w-full h-full object-contain" />
+    </div>
+    <p class="absolute bottom-8 text-white/40 text-sm" x-text="`${lightboxIndex + 1} / ${galleryImages.length}`"></p>
+  </div>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="border-t border-zinc-100 dark:border-zinc-800 bg-white dark:bg-[#0a0a0a] transition-colors">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 text-center">
+      <p class="text-xs sm:text-sm text-zinc-400">
+        © <span id="yr"></span> . All rights reserved.
+        <br class="sm:hidden">
+        Developed by <a href="https://linkedin.com/in/adersh-c-s" target="_blank" rel="noopener noreferrer" class="font-medium hover:text-accent transition-colors">Adersh c.s</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('yr').textContent = new Date().getFullYear();
+
+    // ─── REVEAL ON SCROLL ───
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    });
+
+    // ─── CUSTOM CURSOR ───
+    const dot = document.getElementById('cursorDot');
+    const ring = document.getElementById('cursorRing');
+    let mouseX = 0,
+      mouseY = 0,
+      ringX = 0,
+      ringY = 0,
+      dotX = 0,
+      dotY = 0;
+    const ringEase = 0.12,
+      dotEase = 0.18;
+
+    const onMouseMove = (e) => { mouseX = e.clientX;
+      mouseY = e.clientY; };
+
+    const animateCursor = () => {
+      ringX += (mouseX - ringX) * ringEase;
+      ringY += (mouseY - ringY) * ringEase;
+      dotX += (mouseX - dotX) * dotEase;
+      dotY += (mouseY - dotY) * dotEase;
+      if (ring) ring.style.transform = `translate(${ringX - 20}px, ${ringY - 20}px)`;
+      if (dot) dot.style.transform = `translate(${dotX - 4}px, ${dotY - 4}px)`;
+      requestAnimationFrame(animateCursor);
+    };
+
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+    if (!isTouchDevice && dot && ring) {
+      document.addEventListener('mousemove', onMouseMove);
+      animateCursor();
+      const hoverElements = document.querySelectorAll('a, button, .nav-link, .shimmer, .photo-frame, .gallery-item, .lightbox-btn, .lightbox-close-btn, .tab-btn, .hero-badge, .pack-wrapper');
+      hoverElements.forEach(el => {
+        el.addEventListener('mouseenter', () => { ring.classList.add('hover');
+          dot.classList.add('hover'); });
+        el.addEventListener('mouseleave', () => { ring.classList.remove('hover');
+          dot.classList.remove('hover'); });
+        el.addEventListener('mousedown', () => { ring.classList.add('click'); });
+        el.addEventListener('mouseup', () => { ring.classList.remove('click'); });
+      });
+    }
+  </script>
+
+</body>
+</html>
